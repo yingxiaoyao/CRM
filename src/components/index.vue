@@ -1,0 +1,79 @@
+<template>
+	<div class="index">
+		<Header></Header>
+        <div class="warpper">
+            <div class="leftMenu">
+                <LeftMenu></LeftMenu>
+            </div>
+            <div class="content">
+                <div class="home-warp">
+                    <router-view :time='"2017-04-08"'></router-view>
+                </div>
+            </div>
+        </div>
+	</div>
+</template>
+
+<script>
+import Header from '@/components/common/header'
+import LeftMenu from '@/components/common/leftMenu'
+// import action from '@/api/action.js'
+
+// import Welcome from '@/components/welcome/welcome'
+export default {
+  name: 'index',
+  components : {
+  	Header,
+    LeftMenu,
+    // Welcome
+  },
+  data () {
+    return {
+      
+    }
+  },
+  methods : {
+    ajax () {
+        // console.log(this.$store.state.api.login());
+        this.$store.dispatch('login')
+        // this.$store.dispatch('register')
+        // console.log(this.$ajax);
+        // this.$ajax(this.$store.state.host + '/gainList')
+        //     .then(function (response) {
+        //        console.log(response);
+        //      })
+        //      .catch(function (error) {
+        //        console.log(error);
+        //      });
+        // console.log(this.$action.login('123',123,123));
+        // console.log(this.$store.state.host);
+        this.$store.commit('showUserName');
+        console.log(this.$store.state.user.userInfo.name);
+    }
+  }
+}
+</script>
+
+<style scoped>
+  .index {
+    height: 100%;
+    background: #eee;
+  }
+  .warpper {
+    display: flex;
+    height: calc(100% - 44px);
+  }
+  .leftMenu {
+    height: 100%;
+    position: relative;
+    padding: 10px 0 0 10px;
+  }
+  .content {
+    flex-grow: 1;
+    padding: 10px 10px 0;
+  }
+    .home-warp {
+        position: relative;
+    }
+    
+</style>
