@@ -1,17 +1,18 @@
 export default{
     state:{
-        userInfo: {
+        user: {
 
     	},
-    	logindata : {}
+        corp : {
+
+        }
     },
     mutations:{
-        showUserName(state){
-            alert(state.userInfo.name);
+        saveUser (state,msg) {
+            state.user = msg;
         },
-        saveUserInfo (state,msg) {
-            state.userInfo = '';
-            state.userInfo = msg;
+        saveCorp (state , msg) {
+            state.corp = msg;
         }
 
     },

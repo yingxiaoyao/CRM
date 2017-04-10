@@ -12,7 +12,7 @@
         			         <div class="header-pad-20">
                 				<span>
                                     <span>{{ userInfo.name }}</span>
-                					<span>({{ userInfo.company }})</span>
+                					<span>({{ corp.name }})</span>
                 					<Icon type="android-person"></Icon>
                 				</span>
                              </div>
@@ -53,7 +53,10 @@
         },
         computed : {
             userInfo () {
-                return this.$store.state.user.userInfo;
+                return this.$store.state.user.user;
+            },
+            corp () {
+                return this.$store.state.user.corp;
             }
         }
     }
