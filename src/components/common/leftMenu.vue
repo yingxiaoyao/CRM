@@ -2,7 +2,7 @@
     <div class="left-menu" @click='aaa'>
              <Menu :open-names="['1']" accordion width='160px'>
 
-                 <Submenu v-for='menu in menuList' :name="menu.id">
+                 <!-- <Submenu v-for='menu in menuList' :name="menu.id">
                      <template slot="title">
                          <Icon v-bind:type="menu.iconType"></Icon>
                          {{ menu.name }}
@@ -12,8 +12,79 @@
                         {{seconMenu.name}}
                       </Menu-item>
                      </router-link>
+                 </Submenu> -->
+                 <Submenu name="3">
+                     <template slot="title">
+                         <Icon type="stats-bars"></Icon>
+                         统计分析
+                     </template>
+                     <Menu-group title="使用">
+                         <Menu-item name="3-1">新增和启动</Menu-item>
+                         <Menu-item name="3-2">活跃分析</Menu-item>
+                         <Menu-item name="3-3">时段分析</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
                  </Submenu>
-                 <!-- <Submenu name="2">
+                 <!-- <Submenu name="1">
+                     <template slot="title">
+                         <Icon type="ios-people"></Icon>
+                         用户管理
+                     </template>
+                     <Menu-item name="2-1">新增用户</Menu-item>
+                     <Menu-item name="2-2">活跃用户</Menu-item>
+                 </Submenu>
+                 <Submenu name="2">
                      <template slot="title">
                          <Icon type="ios-people"></Icon>
                          用户管理
@@ -47,16 +118,23 @@
 </template>
 
 <script>
-import ajax from '../../api/menu/meun'
+import api from '@/api/api'
 export default {
   name: 'leftMenu',
   mounted () {
      var $this = this;
-      ajax.menuJson(this.$store,function(res){
+     this.axios(api.menus)
+        .then(function(res){
             $this.menuList = res.data.datas;
-
-            console.log($this.menuList);
         })
+        .catch(function (error) {
+            console.log(error);
+        });
+      // ajax.menuJson(this.$store,function(res){
+      //       $this.menuList = res.data.datas;
+
+      //       console.log($this.menuList);
+      //   })
   },
   data () {
     return {
@@ -79,6 +157,9 @@ export default {
 <style scoped>
   .left-menu {
     height: 100%;
+    overflow-y : auto;
+    background: #fff;
+    padding-bottom: 50px;
   }
   .left-menu .logo {
     position: absolute;

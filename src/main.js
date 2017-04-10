@@ -6,25 +6,26 @@ import router from './router'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css' 
 import './my-theme/index.less'
-import axios from 'axios'
+import axios from './http'
+// import axios from 'axios'
+import VueAxios from 'vue-axios'
 import vuex from 'vuex'
 import store from './vuex/store'
-import action from './api/action'
 
 
+// 用 axios 进行 Ajax 请求
+Vue.use(VueAxios, axios);
 
 Vue.use(iView);
-Vue.prototype.$ajax = axios;
-// Vue.prototype.$action = action;
 
 
-Vue.config.productionTip = false
-
+Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
+  axios,
   template: '<App/>',
   components: { App }
 })
