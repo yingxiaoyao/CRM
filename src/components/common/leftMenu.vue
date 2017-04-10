@@ -2,7 +2,7 @@
     <div class="left-menu" @click='aaa'>
              <Menu :open-names="['1']" accordion width='160px'>
 
-                 <!-- <Submenu v-for='menu in menuList' :name="menu.id">
+                 <Submenu v-for='menu in menuList' :name="menu.id">
                      <template slot="title">
                          <Icon v-bind:type="menu.iconType"></Icon>
                          {{ menu.name }}
@@ -12,7 +12,7 @@
                         {{seconMenu.name}}
                       </Menu-item>
                      </router-link>
-                 </Submenu> -->
+                 </Submenu>
                  <Submenu name="3">
                      <template slot="title">
                          <Icon type="stats-bars"></Icon>
@@ -169,8 +169,9 @@ export default {
   }
   .ivu-menu-light {
     height: 100%;
+    overflow: hidden;
+    overflow-y: auto; 
   }
-
   .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
     background : #eee;
     color: inherit;
@@ -181,12 +182,15 @@ export default {
     color: #fff;
     border: none;
   }
+  /*.ivu-menu-vertical .ivu-menu-item-group-title {
+    line-height: 20px;
+  }
   .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title {
     padding: 10px;
   }
   .ivu-menu-light.ivu-menu-vertical .ivu-menu-item {
     width: 160px;
-  }
+  }*/
   .ivu-menu-vertical.ivu-menu-light:after {
     width: 0;
   }
