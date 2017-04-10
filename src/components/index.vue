@@ -47,8 +47,7 @@ export default {
         //      });
         // console.log(this.$action.login('123',123,123));
         // console.log(this.$store.state.host);
-        this.$store.commit('showUserName');
-        console.log(this.$store.state.user.userInfo.name);
+        console.log(this.$store.state.user.user.name);
     }
   }
 }
