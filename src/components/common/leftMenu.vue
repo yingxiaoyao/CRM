@@ -77,9 +77,11 @@ export default {
 <style scoped>
   .left-menu {
     height: 100%;
-    overflow-y : auto;
+    /* overflow-y: auto; */
     background: #fff;
     padding-bottom: 50px;
+    width: 180px;
+    overflow: hidden;
   }
   .left-menu .logo {
     position: absolute;
@@ -89,8 +91,12 @@ export default {
   }
   .ivu-menu-light {
     height: 100%;
-    overflow: hidden;
-    overflow-y: auto;
+    /* overflow: hidden; */
+    /* overflow-y: auto; */
+    overflow: auto;
+    width: 100% !important;
+    padding-right: 10px;
+    box-sizing: content-box;
   }
   .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
     background : #eee;
