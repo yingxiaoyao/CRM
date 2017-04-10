@@ -19,7 +19,7 @@
                           用户管理
                       </template>
                       <router-link to='/clientClassify'>
-                        <Menu-item name="2-1">新增用户</Menu-item>
+                        <Menu-item name="2-1">客户分类</Menu-item>
                       </router-link>
                       <router-link to='/'>
                         <Menu-item name="2-2">新增用户</Menu-item>
@@ -41,20 +41,17 @@ import api from '@/api/api'
 export default {
   name: 'leftMenu',
   mounted () {
-     var $this = this;
+     var _this = this;
      this.axios(api.menus)
         .then(function(res){
-            console.log(res);
-            $this.menuList = res.data.datas;
+            // console.log(res);
+            _this.menuList = res.data.datas;
         })
         .catch(function (error) {
             console.log(error);
         });
-      // ajax.menuJson(this.$store,function(res){
-      //       $this.menuList = res.data.datas;
 
-      //       console.log($this.menuList);
-      //   })
+        console.log(window.localStorage.getItem('token'))
   },
   data () {
     return {

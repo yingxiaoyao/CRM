@@ -49,9 +49,11 @@ const routes = [
     },
 ]
 
-// 页面刷新，重新给token 赋值
+// 页面刷新，重新给 token 赋值
 if (window.localStorage.getItem('token')) {
-    store.commit('login', window.localStorage.getItem('token'))
+    store.commit('login', window.localStorage.getItem('token'));
+    store.commit('saveUser', JSON.parse(window.sessionStorage.getItem('user')));
+    store.commit('saveCorp', JSON.parse(window.sessionStorage.getItem('corp')));
 }
 
 var router = new Router({
