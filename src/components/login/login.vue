@@ -38,7 +38,7 @@
 </template>
 
 <script>
-    import AAA from '@/api/login/action'
+    import api from '@/api/api'
 export default {
     mounted () {
         // var kid = this.$route.params.id;
@@ -48,7 +48,8 @@ export default {
                 loginInfo: {
                     name: '',
                     password: '' ,
-                    keyId : this.$route.params.id
+                    keyId : this.$route.params.id,
+                    // token_id : 'aaavvbb'
                 },
                 relInfo: {
                     username: [
@@ -64,17 +65,38 @@ export default {
         methods: {
             handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
-                    var router = this.$router;
-                    var message = this.$Message;
+                    const _this = this;
+
                     if (valid) {
-                        AAA.login( this.$store , this.loginInfo , function(res) {
-                            console.log(res.data.status);
-                            if(res.data.status == 1) {
-                                router.push('/');
-                            } else if(res.data.status == 0) {
-                                message.error('该用户不存在!');
+                        /*api.login( _this , this.loginInfo , function(res) {
+                            var data = res.data;
+                            if(data.status == 1) {
+                                console.log(res);
+                                // _this.$store.commit(types.LOGIN, data.datas.token_id);
+                                _this.$router.push('/');
+                            } else if(data.status == 0) {
+                                _this.$message.error('该用户不存在!');
                             }
-                        });
+
+                        });*/
+
+
+                        this.axios(api.login,{params : this.loginInfo})
+                            .then(function(res) {
+                                var data = res.data;
+                                if(data.status == 1) {
+                                    console.log(res);
+                                    _this.$store.commit('login', data.datas.token_id);
+                                    _this.$router.push('/');
+                                } else if(data.status == 0) {
+                                    _this.$message.error('该用户不存在!');
+                                }
+                            })
+
+                            .catch(function (res) {
+                              console.log(res);
+                            }); 
+                        
                     } else {
                         this.$Message.error('表单验证失败!');
                     }
@@ -124,6 +146,9 @@ export default {
     }
     .login-body .login-body-left {
         text-align: right;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .login-body-left .login-bg {
         display: inline-block;

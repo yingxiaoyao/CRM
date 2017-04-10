@@ -9,9 +9,10 @@ export default{
         showUserName(state){
             alert(state.userInfo.name);
         },
-        updateUserInfo (state,msg) {
+        saveUserInfo (state,msg) {
             state.userInfo = '';
             state.userInfo = msg;
         }
+
     },
 }

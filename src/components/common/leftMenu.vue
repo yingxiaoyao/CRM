@@ -13,7 +13,78 @@
                       </Menu-item>
                      </router-link>
                  </Submenu>
-                 <!-- <Submenu name="2">
+                 <Submenu name="3">
+                     <template slot="title">
+                         <Icon type="stats-bars"></Icon>
+                         统计分析
+                     </template>
+                     <Menu-group title="使用">
+                         <Menu-item name="3-1">新增和启动</Menu-item>
+                         <Menu-item name="3-2">活跃分析</Menu-item>
+                         <Menu-item name="3-3">时段分析</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                     <Menu-group title="留存">
+                         <Menu-item name="3-4">用户留存</Menu-item>
+                         <Menu-item name="3-5">流失用户</Menu-item>
+                     </Menu-group>
+                 </Submenu>
+                 <!-- <Submenu name="1">
+                     <template slot="title">
+                         <Icon type="ios-people"></Icon>
+                         用户管理
+                     </template>
+                     <Menu-item name="2-1">新增用户</Menu-item>
+                     <Menu-item name="2-2">活跃用户</Menu-item>
+                 </Submenu>
+                 <Submenu name="2">
                      <template slot="title">
                          <Icon type="ios-people"></Icon>
                          用户管理
@@ -47,16 +118,23 @@
 </template>
 
 <script>
-import ajax from '../../api/menu/meun'
+import api from '@/api/api'
 export default {
   name: 'leftMenu',
   mounted () {
      var $this = this;
-      ajax.menuJson(this.$store,function(res){
+     this.axios(api.menus)
+        .then(function(res){
             $this.menuList = res.data.datas;
-
-            console.log($this.menuList);
         })
+        .catch(function (error) {
+            console.log(error);
+        });
+      // ajax.menuJson(this.$store,function(res){
+      //       $this.menuList = res.data.datas;
+
+      //       console.log($this.menuList);
+      //   })
   },
   data () {
     return {
@@ -79,6 +157,9 @@ export default {
 <style scoped>
   .left-menu {
     height: 100%;
+    overflow-y : auto;
+    background: #fff;
+    padding-bottom: 50px;
   }
   .left-menu .logo {
     position: absolute;
@@ -88,8 +169,9 @@ export default {
   }
   .ivu-menu-light {
     height: 100%;
+    overflow: hidden;
+    overflow-y: auto; 
   }
-
   .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
     background : #eee;
     color: inherit;
@@ -100,12 +182,15 @@ export default {
     color: #fff;
     border: none;
   }
+  /*.ivu-menu-vertical .ivu-menu-item-group-title {
+    line-height: 20px;
+  }
   .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title {
     padding: 10px;
   }
   .ivu-menu-light.ivu-menu-vertical .ivu-menu-item {
     width: 160px;
-  }
+  }*/
   .ivu-menu-vertical.ivu-menu-light:after {
     width: 0;
   }
