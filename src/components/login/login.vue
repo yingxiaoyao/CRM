@@ -148,7 +148,7 @@ export default {
         width: 400px;
         height: 400px;
         margin: 50px 50px;
-        background: url('/static/img/pic-login-bg.png');
+        background: url('../../assets/img/pic-login-bg.png');
     }
     .login-body .login-body-right {
         position: relative;

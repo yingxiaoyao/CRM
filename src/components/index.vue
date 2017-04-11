@@ -17,7 +17,7 @@
 <script>
 import Header from '@/components/common/header'
 import LeftMenu from '@/components/common/leftMenu'
-// import action from '@/api/action.js'
+import IconA from '@/components/common/icon'
 
 // import Welcome from '@/components/welcome/welcome'
 export default {
@@ -25,6 +25,7 @@ export default {
   components : {
   	Header,
     LeftMenu,
+    IconA
     // Welcome
   },
   data () {
@@ -34,19 +35,7 @@ export default {
   },
   methods : {
     ajax () {
-        // console.log(this.$store.state.api.login());
         this.$store.dispatch('login')
-        // this.$store.dispatch('register')
-        // console.log(this.$ajax);
-        // this.$ajax(this.$store.state.host + '/gainList')
-        //     .then(function (response) {
-        //        console.log(response);
-        //      })
-        //      .catch(function (error) {
-        //        console.log(error);
-        //      });
-        // console.log(this.$action.login('123',123,123));
-        // console.log(this.$store.state.host);
         console.log(this.$store.state.user.user.name);
     }
   }
