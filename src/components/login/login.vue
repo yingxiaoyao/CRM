@@ -73,16 +73,15 @@ export default {
                             .then(function(res) {
                                 var data = res.data;
                                 if(data.status == 1) {
-                                    // console.log(data);
+                                    console.log(data);
                                     _this.$store.commit('login', data.datas.token_id);
                                     _this.$store.commit('saveUser',data.datas.user);
                                     _this.$store.commit('saveCorp',data.datas.corp);
-                                    // console.log()
                                     var user = JSON.stringify(data.datas.user);
                                     var corp = JSON.stringify(data.datas.corp);
                                     window.sessionStorage.setItem('user',user);
                                     window.sessionStorage.setItem('corp',corp);
-                                    // _this.$router.push('/');
+                                    _this.$router.push('/');
                                 } else if(data.status == 0) {
                                     _this.$message.error('该用户不存在!');
                                 }

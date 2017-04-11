@@ -1,6 +1,6 @@
 <template>
     <div class="left-menu" @click='aaa'>
-             <Menu :open-names="['1']" accordion width='180px'>
+             <Menu :open-names="['openNames']" accordion width='180px'>
 
                  <Submenu v-for='menu in menuList' :name="menu.id">
                      <template slot="title">
@@ -24,7 +24,14 @@
                       <router-link to='/'>
                         <Menu-item name="2-2">新增用户</Menu-item>
                       </router-link>
-
+                        <Menu-item name="2-3">新增用户</Menu-item>
+                        <Menu-item name="2-4">新增用户</Menu-item>
+                        <Menu-item name="2-5">新增用户</Menu-item>
+                        <Menu-item name="2-6">新增用户</Menu-item>
+                        <Menu-item name="2-7">新增用户</Menu-item>
+                        <Menu-item name="2-8">新增用户</Menu-item>
+                        <Menu-item name="2-9">新增用户</Menu-item>
+                        <Menu-item name="2-10">新增用户</Menu-item>
                   </Submenu>
              </Menu>
 
@@ -44,18 +51,18 @@ export default {
      var _this = this;
      this.axios(api.menus)
         .then(function(res){
-            // console.log(res);
+            console.log(res);
             _this.menuList = res.data.datas;
+            _this.openNames = res.data.datas[0].id;
         })
         .catch(function (error) {
             console.log(error);
         });
-
-        console.log(window.localStorage.getItem('token'))
   },
   data () {
     return {
-      menuList : ''
+      menuList : '',
+      openNames : ''
     }
   },
   methods : {
@@ -88,11 +95,10 @@ export default {
   }
   .ivu-menu-light {
     height: 100%;
-    /* overflow: hidden; */
-    /* overflow-y: auto; */
-    overflow: auto;
-    width: 100% !important;
-    padding-right: 10px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 197px !important;
+    /* padding-right: 16px; */
     box-sizing: content-box;
   }
   .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
@@ -100,20 +106,11 @@ export default {
     color: inherit;
   }
   .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
-    width: 160px;
+    width: 180px;
     background : #03b8cc;
     color: #fff;
     border: none;
   }
-  /*.ivu-menu-vertical .ivu-menu-item-group-title {
-    line-height: 20px;
-  }
-  .ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title {
-    padding: 10px;
-  }
-  .ivu-menu-light.ivu-menu-vertical .ivu-menu-item {
-    width: 160px;
-  }*/
   .ivu-menu-vertical.ivu-menu-light:after {
     width: 0;
   }

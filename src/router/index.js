@@ -43,8 +43,8 @@ const routes = [
     },
 
     {
-      path: '/hello',
-      name: 'Hello',
+      path: '/aa',
+      name: 'aa',
       component: Hello
     },
 ]
@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
         }
         else {
             next({
-                path: 'hello',
+                path: 'aa',
                 // query: {redirect: to.fullPath}
             })
         }
