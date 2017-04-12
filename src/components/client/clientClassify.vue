@@ -20,8 +20,20 @@
             </div>
         </Row>
         <div class="fileHandle">
-            <Table :columns="columns1" width='100%' :data="data1" size='small'></Table>
+            <div class="table">
+                <div class="table-header">
+                    <div class="table-td align_left">客户分类</div>
+                    <div class="table-td">操作</div>
+                </div>
+                <div class="table-tbody">
+                    <div class="table-tr" v-for='classify in data'>
+                        <tree-table :model='classify' v-on:del='del'></tree-table>
+                    </div>
+                </div>
+            </div>
         </div>
+                     
+
         <Modal
             v-model="clientClassifyModel"
             title="新增分类">
@@ -50,39 +62,53 @@
 
 <script>
     import api from '@/api/api'
+    import treeTable from '@/components/client/treeTable'
 export default {
+    components : {
+        treeTable : treeTable
+    },
     mounted () {
-        // var kid = this.$route.params.id;
+        const _this = this;
+        this.axios(api.categoryGetRoots)
+            .then(function(res) {
+                // _this.data = res.data;
+                console.log(res);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
     },
     data () {
             return {
-                columns1 : [
+                data :[
                     {
-                        title : '客户分类',
-                        align : 'center',
-                        key : 'name'
+                        name : 'abc',
+                        level : 1,
+                        child : [
+                            {
+                                name : 123,
+                                level : 2,
+                                child : [
+                                    {
+                                        name : 789,
+                                        level : 3,
+                                        child : [
+                                            {
+                                                name : 123456,
+                                                level : 4
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     {
-                        title : '操作',
-                        key : 'action',
-                        align: 'center',
-                        render (row, column, index) {
-                            return `<i-button type="text" size="small" @click="show(${index})">新增子类</i-button> <i-button type="text" size="small">编辑</i-button> <i-button type='text' size='small' @click='handle(${index},"prev")'>上移</i-button> <i-button type='text' size='small' @click='handle(${index},"next")'>下移</i-button> <i-button type='text' size='small' @click="handle(${index},'delete')">删除</i-button>`;
-                        }
+                        name : 'bcd',
+                        level : 1
                     }
                 ],
-                data1 : [
-                    {
-                        name : '办公类',
-                        prevClass : null
-                    },
-                    {
-                        name : '工具类'
-                    },
-                    {
-                        name : '商品类'
-                    }
-                ],
+                iconType : 'plus-round',
                 clientClassifyModel : false,
                 formValidate: {
                     name: '',
@@ -130,6 +156,9 @@ export default {
                     this.data1.splice(index,1);
                 }
 
+            },
+            del () {
+                this.$Message.info('你点击的了删除');
             }
         }
     }
@@ -168,5 +197,55 @@ export default {
         /*float: none;*/
         display: inline-block;
         width: 100%;
+    }
+
+    .table {
+        display: table;
+        width: 100%;
+        margin: 10px;
+    }
+    .child-table {
+        display: table;
+        width: 200%;
+    }
+    .table-header {
+        display: table-header-group;
+        background : #f5f7f9;
+        border: 1px solid #ddd;
+        /*color: #fff;*/
+    }
+    .table-tbody {
+        display: table-row-group;
+    }
+    .table-tr {
+        display: table-row;
+        background: #fff;
+    }
+    .table-tr:hover {
+        background: #f9f9f9;
+    }
+    .table-td {
+        display: table-cell;
+        height: 30px;
+        width: 50%;
+        vertical-align: middle;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    /*.table-td {
+        width: 200%;
+    }*/
+    .align_left {
+        text-align: left;
+        padding-left: 30px;
+    }
+    .classityTeite {
+        position: relative;
+    }
+    .isOpenicon {
+        position: absolute;
+        padding: 0 5px;
+        font-size: 16px;
+        left: -20px;
     }
 </style>

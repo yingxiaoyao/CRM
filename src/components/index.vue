@@ -58,7 +58,7 @@ export default {
   }
   .content {
     flex-grow: 1;
-    padding: 20px 10px 0;
+    padding: 20px 30px 0 10px;
   }
     .home-warp {
         position: relative;

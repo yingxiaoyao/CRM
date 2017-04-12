@@ -51,7 +51,7 @@ export default {
      var _this = this;
      this.axios(api.menus)
         .then(function(res){
-            console.log(res);
+            // console.log(res);
             _this.menuList = res.data.datas;
             _this.openNames = res.data.datas[0].id;
         })
@@ -59,7 +59,7 @@ export default {
             console.log(error);
         });
   },
-  data () {
+  data () { 
     return {
       menuList : '',
       openNames : ''
@@ -67,12 +67,7 @@ export default {
   },
   methods : {
     aaa (key) {
-      // var $this = this;
-      // ajax.menuJson(this.$store,function(res){
-      //       $this.menuList = res.data.datas;
-
-      //       console.log($this.menuList);
-      //   })
+      
     }
   }
 }
