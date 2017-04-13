@@ -7,15 +7,15 @@
             <div class="table-td align_left" :style="{paddingLeft : model.level * 30 + 'px'}">
                 <div class="classityTeite"  @click="toggle">
                     <Icon :type="open ? 'minus-round' : 'plus-round'" class='isOpenicon' v-if='isFolder'></Icon>
-                    {{model.name}} {{index}}
+                    {{model.name}}
                 </div>
             </div>
             <div class="table-td">
                 <Button type="text" v-on:click='addChild'>添加子类</Button>
                 <Button type="text" v-on:click='edit'>编辑</Button>
-                <Button type="text" v-on:click='moveUp'>上移</Button>
-                <Button type="text" v-on:click='moveDown'>下移</Button>
-                <Button type="text" v-on:click='del'>删除</Button>
+                <Button type="text" v-on:click='moveUp(model)'>上移</Button>
+                <Button type="text" v-on:click='moveDown(model)'>下移</Button>
+                <Button type="text" v-on:click.stop='del(model)'>删除</Button>
             </div>
         </div>
         <div class="table-tr" v-if='isFolder' v-show='open'>
@@ -56,11 +56,20 @@ export default {
 		moveUp () {
 			this.$emit('moveUp',this.model,this.index);
 		},
-		moveDown () {
+		moveDown (data) {
+			// console.log(event);
+			if(data.name) {
+				
+				this.$emit('moveDown', data , this.model);
+				return;
+			}
 			this.$emit('moveDown',this.model);
 		},
-		del () {
-			this.$emit('del',this.model);
+		del (data) {
+			console.log(data);
+			if(data) {
+				this.$emit('del',data);
+			}
 		}
 	}
 }

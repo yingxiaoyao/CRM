@@ -72,6 +72,7 @@ export default {
                         this.axios(api.login,{params : this.loginInfo})
                             .then(function(res) {
                                 var data = res.data;
+                                console.log(data);
                                 if(data.status == 1) {
                                     console.log(data);
                                     _this.$store.commit('login', data.datas.token_id);
@@ -85,9 +86,10 @@ export default {
                                 } else if(data.status == 0) {
                                     _this.$message.error('该用户不存在!');
                                 }
+                                // console.log(res);
                             })
                             .catch(function (res) {
-                              console.log(res);
+                                console.log(res);
                             }); 
                         
                     } else {

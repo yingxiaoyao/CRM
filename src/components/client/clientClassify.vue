@@ -91,6 +91,13 @@ export default {
                             child : [{
                                 name : 'dd',
                                 level : 3
+                            },{
+                                name : 'abc',
+                                level : 3,
+                                child : [{
+                                    name: 'qeqwer',
+                                    level : 4
+                                }]
                             }]
                         },
                         {
@@ -207,18 +214,34 @@ export default {
                 console.log(model);
                 this.$Message.info('index',index);
             },
-            moveDown (data,count) {
-                console.log(data);
+            moveDown (targetModel,model) {
+                console.log(targetModel);
+                console.log(model);
                 this.$Message.info('你点击的了下移');
+
             },
             del (model) {
                 this.$Message.info('你点击的了删除');
-                const id = model.id;
-                console.log(id);
-                this.axios(api.category + id + api.cetegoryDelete)
-                    .then(function(res) {
-                        console.log(res);
-                    })
+                // console.log($event.target);
+                // this.data.forEach(function(e , i) {
+                //     if()
+                // })
+
+
+                // const id = model.id;
+                // console.log(id);
+
+                // this.axios(api.category + id + api.cetegoryDelete)
+                //     .then(function(res) {
+                //         console.log(res);
+                //     })
+            },
+            recursion (arr,arr2) {
+                arr.forEach(function(e,i){
+                    if(e.child.name == arr2.name) {
+                        return e;
+                    }
+                })
             }
         }
     }
