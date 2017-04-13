@@ -5,9 +5,9 @@
     <div class="table-tbody">
         <div class="table-tr">
             <div class="table-td align_left" :style="{paddingLeft : model.level * 30 + 'px'}">
-                <div class="classityTeite">
-                    <Icon :type="open ? 'plus-round' : 'minus-round'" class='isOpenicon' v-if='isFolder'></Icon>
-                    {{model.name}}
+                <div class="classityTeite"  @click="toggle">
+                    <Icon :type="open ? 'minus-round' : 'plus-round'" class='isOpenicon' v-if='isFolder'></Icon>
+                    {{model.name}} {{index}}
                 </div>
             </div>
             <div class="table-td">
@@ -18,35 +18,22 @@
                 <Button type="text" v-on:click='del'>删除</Button>
             </div>
         </div>
-        <div class="table-tr" v-if='isFolder'>
-        	<tree-table v-for="item in model.child" :model="item" v-on:del='del'></tree-table>
+        <div class="table-tr" v-if='isFolder' v-show='open'>
+        	<tree-table v-for="(item , index) in model.child" :model="item" :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
         </div>
     </div>
 </div>
 
-
-
-
-
- <!-- <li>
-	 <span @click="toggle">
-		 <i v-if="isFolder" class="icon" :class="[open ? 'folder-open': 'folder']"></i>
-		 <i v-if="!isFolder" class="icon file-text"></i>
-		 {{ model.menuName }}
-	 </span>
-	 <ul v-show="open" v-if="isFolder">
-	 	<tree-table v-for="item in model.children" :model="item"></tree-table>
-	 </ul>
- </li> -->
 </template>
  <script>
 export default {
 	name: 'treeTable',
-	props: ['model'],
+	props: ['model','index'],
  	data() {
 	 	return {
-			 open: false,
-			 isFolder: this.model.child && this.model.child.length > 0,
+	 		open : false,
+		 	isFolder: this.model.child && this.model.child.length > 0,
+		 	moveDownCount : 0,
 		}
 	},
 	computed: {
@@ -55,25 +42,25 @@ export default {
 		// }
 	},
 	methods: {
-	 	toggle: function() {
+	 	toggle () {
 			if (this.isFolder) {
 				this.open = !this.open
 		 	}
 		},
 		addChild () {
-			this.$emit('addChild');
+			this.$emit('addChild',this.model);
 		},
 		edit () {
-			this.$emit('edit');
+			this.$emit('edit',this.model);
 		},
 		moveUp () {
-			this.$emit('moveUp');
+			this.$emit('moveUp',this.model,this.index);
 		},
 		moveDown () {
-			this.$emit('moveDown');
+			this.$emit('moveDown',this.model);
 		},
 		del () {
-			this.$emit('del');
+			this.$emit('del',this.model);
 		}
 	}
 }

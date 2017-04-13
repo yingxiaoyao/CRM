@@ -7,7 +7,7 @@ import router from './router'
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = 'http://lookat.soonergz.com:8888/easycrm';
 // axios.defaults.baseURL = 'http://localhost:3000';
-// axios.defaults.headers = {"Access-Control-Allow-Headers":"Authorization,Origin, X-Requested-With, Content-Type, Accept"};
+// axios.defaults.headers = {"Access-Control-Allow-Headers":"token_id, X-Requested-With, Content-Type"};
 // axios.defaults.headers = {"Access-Control-Allow-Headers":"Content-Type"};
 
 
