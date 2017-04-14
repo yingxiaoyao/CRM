@@ -9,6 +9,7 @@ axios.defaults.baseURL = 'http://lookat.soonergz.com:8888/easycrm';
 // axios.defaults.baseURL = 'http://localhost:3000';
 // axios.defaults.headers = {"Access-Control-Allow-Headers":"token_id, X-Requested-With, Content-Type"};
 // axios.defaults.headers = {"Access-Control-Allow-Headers":"Content-Type"};
+// axios.defaults.headers['Content-Type'] = `application/x-www-form-urlencoded`;
 
 
 // http request 拦截器

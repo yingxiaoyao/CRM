@@ -1,5 +1,17 @@
 
 export default {
+	jsonData : function(data){
+		// console.log(data);
+		var jsondata = '';
+		for(const key in data) {
+			if(data[key]) {
+				// var json = ;
+				jsondata += key + '=' + data[key] + '&';
+			}
+		}
+		const json = jsondata.substr(0,jsondata.length-1);
+		return json;
+	},
 	login : '/verifyUser.do',
 	menus : '/sys/menu/fetchUserMenus.do',
 	category : '/api/customer/category/', //客户分类 api 根路径

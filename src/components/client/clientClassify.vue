@@ -27,7 +27,7 @@
                 </div>
                 <div class="table-tbody">
                     <div class="table-tr" v-for='(classify , index) in data'>
-                        <tree-table :model='classify' :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
+                        <tree-table :model='classify' :parentModel='data'  :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
                     </div>
                 </div>
             </div>
@@ -84,32 +84,44 @@ export default {
                 data : [{
                     name : 'aa',
                     level : 1,
+                    isChild : true,
                     child : [
                         {
                             name : 'cc',
                             level: 2,
+                            isChild : true,
                             child : [{
                                 name : 'dd',
+                                isChild : false,
                                 level : 3
                             },{
                                 name : 'abc',
                                 level : 3,
+                                isChild : true,
                                 child : [{
                                     name: 'qeqwer',
+                                    isChild : false,
+                                    level : 4
+                                },{
+                                    name : '123456',
+                                    isChild : false,
                                     level : 4
                                 }]
                             }]
                         },
                         {
                             name : 'jdskfja',
+                            isChild : true,
                             level : 2 ,
                             child : [{
                                 name : 'adfasdfasd',
+                                isChild : false,
                                 level : 3
                             }]
                         }
                     ]
                 }],
+                // data : '',
                 clientClassifyModel : false,
                 enterType : 1,  //  1 : root  2: child 3 : edit
                 compileForm: {
@@ -129,44 +141,25 @@ export default {
                 },
                 parentName : '无',
                 prevClass : null ,
-
+                 
             }
         },
         methods: {
             show (index) {
                 this.clientClassifyModel = true;
             },
-            handle (index,type) {
-                var newValue1,
-                 newValue2;
-                if(type == 'prev') {
-                    if(index == 0) {
-                        return;
-                    }
-                    newValue1 = this.data1[index];
-                    newValue2 = this.data1[index-1];
-                    this.data1.splice(index-1,2,newValue1,newValue2);
-                }else if (type == 'next') {
-                    if(index == this.data1.length-1) {
-                        return;
-                    }
-                    newValue1 = this.data1[index+1];
-                    newValue2 = this.data1[index];
-                    this.data1.splice(index,2,newValue1,newValue2);
-                }else if (type == 'delete')　{
-                    this.data1.splice(index,1);
-                }
-
-            },
             confirm () {
                 const _this = this;
                 if(_this.enterType == 1) {
-                    console.log(_this.compileForm);
+                    console.log(api.jsonData(this.compileForm));
                     _this.axios({
                         method : 'post',
+                        header : {
+                            "Content-Type" : 'application/x-www-form-urlencoded'
+                        },
                         url :api.category + api.categoryPostAddRoot,
                         // url : '/prize',
-                        data : _this.compileForm
+                        data : api.jsonData(_this.compileForm)
                     })
                     .then(function(res) {
                         console.log(res);
@@ -210,39 +203,22 @@ export default {
                 this.$Message.info('你点击的了编辑');
             },
             moveUp (model,index) {
-                console.log(index);
-                console.log(model);
-                this.$Message.info('index',index);
+                this.$Message.info('上移');
             },
-            moveDown (targetModel,model) {
-                console.log(targetModel);
-                console.log(model);
+            moveDown (model) {
                 this.$Message.info('你点击的了下移');
+
+                console.log(model);
 
             },
             del (model) {
                 this.$Message.info('你点击的了删除');
-                // console.log($event.target);
-                // this.data.forEach(function(e , i) {
-                //     if()
-                // })
-
-
-                // const id = model.id;
-                // console.log(id);
-
-                // this.axios(api.category + id + api.cetegoryDelete)
+               
+                // this.axios(api.category + id + api.cetegoryDelete) 
                 //     .then(function(res) {
                 //         console.log(res);
                 //     })
             },
-            recursion (arr,arr2) {
-                arr.forEach(function(e,i){
-                    if(e.child.name == arr2.name) {
-                        return e;
-                    }
-                })
-            }
         }
     }
 </script>
