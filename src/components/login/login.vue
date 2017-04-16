@@ -80,8 +80,8 @@ export default {
                                     _this.$store.commit('saveCorp',data.datas.corp);
                                     var user = JSON.stringify(data.datas.user);
                                     var corp = JSON.stringify(data.datas.corp);
-                                    window.sessionStorage.setItem('user',user);
-                                    window.sessionStorage.setItem('corp',corp);
+                                    window.localStorage.setItem('user',user);
+                                    window.localStorage.setItem('corp',corp);
                                     _this.$router.push('/');
                                 } else if(data.status == 0) {
                                     _this.$message.error('该用户不存在!');

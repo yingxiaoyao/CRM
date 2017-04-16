@@ -54,6 +54,7 @@
         computed : {
             userInfo () {
                 // console.log(this.$store.state.user.user);
+                // console.log(this.$store.state.user.user);
                 return this.$store.state.user.user;
             },
             corp () {

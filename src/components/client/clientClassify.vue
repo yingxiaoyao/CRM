@@ -27,7 +27,7 @@
                 </div>
                 <div class="table-tbody">
                     <div class="table-tr" v-for='(classify , index) in data'>
-                        <tree-table :model='classify' :parentModel='data'  :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
+                        <tree-table :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></tree-table>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,8 @@
         <Modal
             v-model="clientClassifyModel"
             title="新增分类"
-            @on-ok="confirm">
+            @on-ok="confirm"
+            @on-cancel="cancel">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <div class="prevClassName">
@@ -72,7 +73,7 @@ export default {
         const _this = this;
         this.axios(api.category + api.categoryGetRoots)
             .then(function(res) {
-                // _this.data = res.data;
+                _this.data = res.data.datas;
                 console.log(res);
             })
             .catch(function(err) {
@@ -81,49 +82,9 @@ export default {
     },
     data () {
             return {
-                data : [{
-                    name : 'aa',
-                    level : 1,
-                    isChild : true,
-                    child : [
-                        {
-                            name : 'cc',
-                            level: 2,
-                            isChild : true,
-                            child : [{
-                                name : 'dd',
-                                isChild : false,
-                                level : 3
-                            },{
-                                name : 'abc',
-                                level : 3,
-                                isChild : true,
-                                child : [{
-                                    name: 'qeqwer',
-                                    isChild : false,
-                                    level : 4
-                                },{
-                                    name : '123456',
-                                    isChild : false,
-                                    level : 4
-                                }]
-                            }]
-                        },
-                        {
-                            name : 'jdskfja',
-                            isChild : true,
-                            level : 2 ,
-                            child : [{
-                                name : 'adfasdfasd',
-                                isChild : false,
-                                level : 3
-                            }]
-                        }
-                    ]
-                }],
-                // data : '',
+                data : '',
                 clientClassifyModel : false,
-                enterType : 1,  //  1 : root  2: child 3 : edit
+                // enterType : 1,  //  1 : root  2: child 3 : edit
                 compileForm: {
                     parentId : '',
                     name: '',
@@ -150,75 +111,49 @@ export default {
             },
             confirm () {
                 const _this = this;
-                if(_this.enterType == 1) {
-                    console.log(api.jsonData(this.compileForm));
-                    _this.axios({
-                        method : 'post',
-                        header : {
-                            "Content-Type" : 'application/x-www-form-urlencoded'
-                        },
-                        url :api.category + api.categoryPostAddRoot,
-                        // url : '/prize',
-                        data : api.jsonData(_this.compileForm)
-                    })
-                    .then(function(res) {
-                        console.log(res);
+                // console.log(api.jsonData(this.compileForm));
+                _this.axios({
+                    method : 'post',
+                    header : {
+                        "Content-Type" : 'application/x-www-form-urlencoded'
+                    },
+                    url :api.category + api.categoryPostAddRoot,
+                    // url : '/prize',
+                    data : api.jsonData(_this.compileForm)
+                })
+                .then(function(res) {
+                    console.log(res);
+                    if(res.data.status == 1) {
+                        _this.data.push(res.data.datas);
                         _this.compileForm.name = '';
                         _this.compileForm.parentId = '';
                         _this.compileForm.EPR = '';
                         _this.compileForm.code = '';
-                        _this.compileForm.descripttion = '';
-                    })
-
-                }else if(_this.enterType == 2) {
-                    
-                    _this.axios({
-                      method: 'post',
-                      url: api.category + api.cetegoryAdd,
-                      data: _this.compileForm
-                    })
-                    .then(function(res) {
-                        console.log(res);
-                        _this.compileForm.name = '';
-                        _this.compileForm.parentId = '';
-                        _this.compileForm.EPR = '';
-                        _this.compileForm.code = '';
-                        _this.compileForm.descripttion = '';
-                    })
-                }
+                        _this.compileForm.description = '';
+                        _this.$Message.success('添加成功');
+                    }
+                })
             },
             addRoot () {
-                this.enterType = 1;
+                // this.enterType = 1;
                 this.parentName = '无';
                 this.clientClassifyModel = true;
+                console.log(this.data);
             },
-            addChild (data) {
-                this.$Message.info('你点击的了添加子类');
-                this.clientClassifyModel = true;
-                this.parentName = data.name;
-                this.enterType = 2;
-                this.compileForm.parentId = data.id;
+            moveUp (data) {
+                // console.log(data);
             },
-            edit () {
-                this.$Message.info('你点击的了编辑');
-            },
-            moveUp (model,index) {
-                this.$Message.info('上移');
-            },
-            moveDown (model) {
-                this.$Message.info('你点击的了下移');
-
-                console.log(model);
-
-            },
-            del (model) {
-                this.$Message.info('你点击的了删除');
-               
-                // this.axios(api.category + id + api.cetegoryDelete) 
-                //     .then(function(res) {
-                //         console.log(res);
-                //     })
-            },
+            cancel () {
+                // this.delModel = false;
+                this.clientClassifyModel = false;
+                this.compileForm.name = '';
+                this.compileForm.parentId = '';
+                // this.compileForm.EPR = '';
+                this.compileForm.code = '';
+                this.compileForm.description = '';
+            }
+            
+            
         }
     }
 </script>

@@ -51,7 +51,7 @@ export default {
      var _this = this;
      this.axios(api.menus)
         .then(function(res){
-            console.log(res);
+            // console.log(res);
             _this.menuList = res.data.datas;
             _this.openNames = res.data.datas[0].id;
         })
