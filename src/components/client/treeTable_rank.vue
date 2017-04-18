@@ -5,13 +5,12 @@
     <div class="table-tbody">
         <div class="table-tr">
             <div class="table-td ">
-                <div class="classityTeite"  @click="toggle">
-                    <Icon :type="open ? 'minus-round' : 'plus-round'" class='isOpenicon' v-if='model.children'></Icon>
+                <div class="classityTeite">
                     {{model.name}}
                 </div>
             </div>
             <div class="table-td">
-                <Button type="text" v-on:click='toEdit'>编辑</Button>
+                <Button type="text" v-on:click='edit'>编辑</Button>
                 <Button type="text" v-on:click='isDel'>删除</Button>
             </div>
         </div>
@@ -29,32 +28,6 @@
                 <Button type="error" @click="del">删除</Button>
             </div>
         </Modal>
-
-        <Modal
-            v-model="clientClassifyModel"
-            title="新增分类"
-            @on-ok="addChild"
-            @on-cancel="cancel">
-
-            <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
-                <div class="prevClassName">
-                    <div class="title">上级分类</div>
-                    <div class="prevName">{{ parentName }}</div>
-                </div>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
-                </Form-item>
-                <Form-item label="分类名称" prop="name">
-                    <Input v-model="compileForm.name" placeholder="分类名称"></Input>
-                </Form-item>
-                <!-- <Form-item label="EPR编码" prop="EPR">
-                    <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
-                </Form-item> -->
-                <Form-item label="描述" prop="description">
-                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
-                </Form-item>
-            </Form>
-        </Modal>
     </div>
 </div>
 
@@ -63,32 +36,19 @@
 import api from '@/api/api'
 export default {
 	name: 'treeTable',
-	props: ['model','index', 'parentModel'],
+	props: ['model','index'],
  	data() {
 	 	return {
-	 		open : false,
 		 	// isFolder: this.model.child && this.model.child.length > 0,
 		 	moveDownCount : 0,
 		 	newValue1 : '',
 		 	newValue2 : '',
 		 	delModel : false,
-		 	clientClassifyModel : false,
 		 	compileForm: {
-                parentId : '',
                 name: '',
-                // EPR: '',
                 code: '',
                 description : ''
             },
-            ruleValidate: {
-                name: [
-                    { required: true, message: '分类名称不能为空', trigger: 'blur' }
-                ],
-                code: [
-                    { required: true, message: '分类编码不能为空', trigger: 'blur' }
-                ]
-            },
-            parentName : '无',  //父级分类名称
             isEdit : false
             
 		}
@@ -97,197 +57,21 @@ export default {
 		// this.routerName = this.$router.currentRoute.name;
 	},
 	methods: {
-	 	toggle () {
-			if (this.model.children) {
-				this.open = !this.open
-		 	}
-		},
-		add () {
-			this.parentName = this.model.name;
-			this.compileForm.parentId = this.model.id;
-			this.clientClassifyModel = true;
-		},
-		addChild (data) {
-			const _this = this;
-			if(!this.isEdit){
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.category + api.cetegoryAdd,
-				    data : api.jsonData(_this.compileForm)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    if(res.data.status == 1) {
-				    	if(_this.model.children) {
-				    		_this.model.children.push(res.data.datas);
-				    	}else {
-				    		_this.model.children = [res.data.datas];
-
-				    	}
-					    _this.compileForm.name = '';
-					    _this.compileForm.parentId = '';
-					    _this.compileForm.code = '';
-					    _this.compileForm.description = '';
-				    }
-				})
-			}else {
-				console.log('编辑');
-				// console.log(_this.model);
-				const editInfo = _this.compileForm;
-				editInfo.id = this.model.id;
-				console.log( api.category + api.cetegoryModify);
-				console.log( api.jsonData(editInfo));
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.category + api.cetegoryModify,
-				    data : api.jsonData(editInfo)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    // _this.model = res.data.datas;
-				    _this.compileForm.name = '';
-				    _this.compileForm.parentId = '';
-				    _this.compileForm.code = '';
-				    _this.compileForm.description = '';
-				})
-				this.isEdit = false;
-			}
-		},
-		toEdit () {
-
-			const _this = this;
-
-			_this.axios(api.category + _this.model.id + api.categoryGetById)
-				.then(function(res) {
-					var data = res.data.datas;
-					console.log(data);
-
-					if(res.data.status == 1) {
-						_this.clientClassifyModel = true;
-						_this.compileForm.name = data.name;
-						_this.compileForm.parentId = data.parentId;
-						_this.compileForm.code = data.code;
-						_this.compileForm.description = data.description;
-						_this.isEdit = true;
-					}
-				})
-
-
-		},
 		edit () {
-		// 	// this.$emit('edit',this.model);
+			
+			this.$emit('edit',this.index);
+			
 		},
-		moveUp (data) {
-			if (data.id) {
-				this.$emit('moveUp',data);
-				return;
-			}
-			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveUp)
-				.then(function(res) {
-					// console.log(res);
-					if(res.data.status == 1) {
-
-						if(_this.model.level !== 1) {
-							// console.log(data);
-							if(_this.index == 0) {
-							    return;
-							}
-							// console.log(this.parentModel);
-							_this.newValue1 = _this.model;
-							_this.newValue2 = _this.parentModel.children[_this.index - 1];
-							_this.parentModel.children.splice(_this.index-1,2,_this.newValue1,_this.newValue2);
-							_this.$emit('moveUp',_this.model);
-						} else {
-							
-							if(_this.index == 0) {
-							    return;
-							}
-							_this.newValue1 = _this.model;
-							_this.newValue2 = _this.parentModel[_this.index - 1];
-							_this.parentModel.splice(_this.index-1,2,_this.newValue1,_this.newValue2);
-						}
-						_this.$Message.success('上移成功');
-					}
-				})
-
-
-		},
-		moveDown (data) {
-			const _this = this;
-			if (data.id) {
-				_this.$emit('moveDown',data);
-				return;
-			}
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveDown)
-				.then(function(res){
-					if(res.data.status == 1) {
-						if(_this.model.level !== 1) {
-							
-							if(_this.index == _this.parentModel.children.length - 1) {
-							    return;
-							}
-							_this.newValue1 = _this.parentModel.children[_this.index + 1];
-							_this.newValue2 = _this.model;
-							_this.parentModel.children.splice(_this.index,2,_this.newValue1,_this.newValue2);
-							_this.$emit('moveDown',_this.model);
-						}else {
-							
-							if(_this.index == _this.parentModel.length - 1) {
-							    return;
-							}
-							_this.newValue1 = _this.parentModel[_this.index + 1];
-							_this.newValue2 = _this.model;
-							_this.parentModel.splice(_this.index,2,_this.newValue1,_this.newValue2);
-							// _this.$emit('moveDown',_this.model);
-						}
-						_this.$Message.success('下移成功');
-					}
-				})
-
-		},
-		del (data) {
-			if(data.id) {
-				this.$emit('del',data);
-				return;
-			}
-
-			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryDelete)
-				.then(function(res) {
-					console.log(res);
-					if(res.data.status == 1) {
-						if(_this.model.level !== 1) {
-							_this.parentModel.children.splice(_this.index,1);
-							_this.delModel = false;
-							_this.$Message.success('删除成功');
-							_this.$emit('del',_this.model);
-						}else {
-							_this.parentModel.splice(_this.index,1);
-							_this.delModel = false;
-							_this.$Message.success('删除成功');
-							_this.$emit('del',_this.model);
-						}
-					}
-				})
-
+		del () {
+			this.$emit('del',this.index);
+			this.delModel = false;
 		},
 		isDel () {
-			// console.log(this.$router.currentRoute.name);
 			this.delModel = true;
 		},
 		cancel () {
 			this.delModel = false;
-			this.clientClassifyModel = false;
 			this.compileForm.name = '';
-			this.compileForm.parentId = '';
-			// this.compileForm.EPR = '';
 			this.compileForm.code = '';
 			this.compileForm.description = '';
 		}

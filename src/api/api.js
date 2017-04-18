@@ -27,6 +27,7 @@ export default {
 	//  客户级别
 	clientLevel : '/api/customer/level/',   // 客户级别 api 根路径
 	clientLevelqueryAll : 'queryAll.do',   // 查询客户级别列表
+	clientLevelQueryById : '/query.do',  // 根据ID查询某一个客户级别详情 -- 之前添加查询ID 如 /12/query.do
 	clientLevelAdd : 'add.do',   // 添加客户级别
 	clientLevelModify : 'modify.do',   // 编辑客户级别
 	clientLevelDel : '/delete.do',   // 删除指定节点 -- 之前添加删除ID  如 /12/delete.do

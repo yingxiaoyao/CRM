@@ -27,7 +27,7 @@
                 </div>
                 <div class="table-tbody">
                     <div class="table-tr" v-for='(classify , index) in data'>
-                        <tree-table :model='classify' :parentModel='data'  :index='index'></tree-table>
+                        <tree-table :model='classify' :index='index' @del='del' @edit='edit'></tree-table>
                     </div>
                 </div>
             </div>
@@ -91,8 +91,9 @@ export default {
                         { required: true, message: '分类编码不能为空', trigger: 'blur' }
                     ]
                 },
-                // parentName : '无',
+                isEdit : false,
                 prevClass : null ,
+                editIndex : ''
                  
             }
         },
@@ -102,35 +103,78 @@ export default {
             },
             confirm () {
                 const _this = this;
-                // console.log(api.jsonData(this.compileForm));
-                _this.axios({
-                    method : 'post',
-                    header : {
-                        "Content-Type" : 'application/x-www-form-urlencoded'
-                    },
-                    url :api.clientLevel + api.clientLevelAdd,
-                    // url : '/prize',
-                    data : api.jsonData(_this.compileForm)
-                })
-                .then(function(res) {
-                    console.log(res);
-                    if(res.data.status == 1) {
-                        _this.data.push(res.data.datas);
+
+                if(!this.isEdit) {
+                    _this.axios({
+                        method : 'post',
+                        header : {
+                            "Content-Type" : 'application/x-www-form-urlencoded'
+                        },
+                        url :api.clientLevel + api.clientLevelAdd,
+                        data : api.jsonData(_this.compileForm)
+                    })
+                    .then(function(res) {
+                        console.log(res);
+                        if(res.data.status == 1) {
+                            _this.data.push(res.data.datas);
+                            _this.compileForm.name = '';
+                            _this.compileForm.code = '';
+                            _this.compileForm.description = '';
+                            _this.$Message.success('添加成功');
+                        }
+                    })
+                }else {
+
+                    const editInfo = _this.compileForm;
+                    editInfo.id = this.data[this.editIndex].id;
+                    console.log( api.clientLevel + api.clientLevelModify);
+                    console.log( api.jsonData(editInfo));
+                    _this.axios({
+                        method : 'post',
+                        header : {
+                            "Content-Type" : 'application/x-www-form-urlencoded'
+                        },
+                        url :api.clientLevel + api.clientLevelModify,
+                        data : api.jsonData(editInfo)
+                    })
+                    .then(function(res) {
+                        _this.data[_this.editIndex] = res.data.datas;
                         _this.compileForm.name = '';
                         _this.compileForm.code = '';
                         _this.compileForm.description = '';
-                        _this.$Message.success('添加成功');
-                    }
-                })
+                        _this.isEdit =false;
+                    })
+                }
             },
             addRoot () {
                 this.clientClassifyModel = true;
+            },
+            edit (index) {
+                 
+                 const _this = this;
+                 this.editIndex = index;
+
+                 _this.axios(api.clientLevel + _this.data[index].id + api.clientLevelQueryById)
+                    .then(function(res) {
+                        const info = res.data.datas;
+                        _this.clientClassifyModel = true;
+                        _this.compileForm.name = info.name;
+                        _this.compileForm.code = info.code;
+                        _this.compileForm.description = info.description;
+                        _this.isEdit = true;
+                    })
+            },
+            del (index) {
+                const _this = this;
+                _this.axios(api.clientLevel + this.data[index].id + api.clientLevelDel)
+                    .then(function(res) {
+                        _this.data.splice(index,1);
+                    })
             },
             cancel () {
                 // this.delModel = false;
                 this.clientClassifyModel = false;
                 this.compileForm.name = '';
-                this.compileForm.parentId = '';
                 // this.compileForm.EPR = '';
                 this.compileForm.code = '';
                 this.compileForm.description = '';
