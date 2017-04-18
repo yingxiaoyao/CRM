@@ -84,11 +84,9 @@ export default {
             return {
                 data : '',
                 clientClassifyModel : false,
-                // enterType : 1,  //  1 : root  2: child 3 : edit
                 compileForm: {
                     parentId : '',
                     name: '',
-                    // EPR: '',
                     code: '',
                     description : ''
                 },
@@ -111,7 +109,6 @@ export default {
             },
             confirm () {
                 const _this = this;
-                // console.log(api.jsonData(this.compileForm));
                 _this.axios({
                     method : 'post',
                     header : {
