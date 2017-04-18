@@ -21,8 +21,8 @@
                       <router-link to='/clientClassify'>
                         <Menu-item name="2-1">客户分类</Menu-item>
                       </router-link>
-                      <router-link to='/'>
-                        <Menu-item name="2-2">新增用户</Menu-item>
+                      <router-link to='/clinetRank'>
+                        <Menu-item name="2-2">客户级别</Menu-item>
                       </router-link>
                         <Menu-item name="2-3">新增用户</Menu-item>
                         <Menu-item name="2-4">新增用户</Menu-item>

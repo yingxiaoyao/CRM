@@ -3,11 +3,11 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>客户管理</Breadcrumb-item>
-            <Breadcrumb-item>客户分类</Breadcrumb-item>
+            <Breadcrumb-item>客户级别</Breadcrumb-item>
         </Breadcrumb>
         <Row type="flex" justify="end" class="fileHandle">
             <div class="buttonM">
-                <Button type="warning" @click='addRoot'>新增一级分类</Button>
+                <Button type="warning" @click='addRoot'>新增</Button>
             </div>
             <div class="buttonM">
                 <Button type="info">导入</Button>
@@ -22,12 +22,12 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td align_left">客户分类</div>
-                    <div class="table-td">操作</div>
+                    <div class="table-td bold">客户级别</div>
+                    <div class="table-td bold">操作</div>
                 </div>
                 <div class="table-tbody">
                     <div class="table-tr" v-for='(classify , index) in data'>
-                        <tree-table :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></tree-table>
+                        <tree-table :model='classify' :parentModel='data'  :index='index'></tree-table>
                     </div>
                 </div>
             </div>
@@ -41,19 +41,12 @@
             @on-cancel="cancel">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
-                <div class="prevClassName">
-                    <div class="title">上级分类</div>
-                    <div class="prevName">{{ parentName }}</div>
-                </div>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
+                <Form-item label="编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="编码"></Input>
                 </Form-item>
-                <Form-item label="分类名称" prop="name">
-                    <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                <Form-item label="名称" prop="name">
+                    <Input v-model="compileForm.name" placeholder="名称"></Input>
                 </Form-item>
-                <!-- <Form-item label="EPR编码" prop="EPR">
-                    <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
-                </Form-item> -->
                 <Form-item label="描述" prop="description">
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
                 </Form-item>
@@ -64,14 +57,14 @@
 
 <script>
     import api from '@/api/api'
-    import treeTable from '@/components/client/treeTable_classify'
+    import treeTable from '@/components/client/treeTable_rank.vue'
 export default {
     components : {
         treeTable : treeTable
     },
     mounted () {
         const _this = this;
-        this.axios(api.category + api.categoryGetRoots)
+        this.axios(api.clientLevel + api.clientLevelqueryAll)
             .then(function(res) {
                 _this.data = res.data.datas;
                 console.log(res);
@@ -86,9 +79,7 @@ export default {
                 clientClassifyModel : false,
                 // enterType : 1,  //  1 : root  2: child 3 : edit
                 compileForm: {
-                    parentId : '',
                     name: '',
-                    // EPR: '',
                     code: '',
                     description : ''
                 },
@@ -100,7 +91,7 @@ export default {
                         { required: true, message: '分类编码不能为空', trigger: 'blur' }
                     ]
                 },
-                parentName : '无',
+                // parentName : '无',
                 prevClass : null ,
                  
             }
@@ -117,7 +108,7 @@ export default {
                     header : {
                         "Content-Type" : 'application/x-www-form-urlencoded'
                     },
-                    url :api.category + api.categoryPostAddRoot,
+                    url :api.clientLevel + api.clientLevelAdd,
                     // url : '/prize',
                     data : api.jsonData(_this.compileForm)
                 })
@@ -126,8 +117,6 @@ export default {
                     if(res.data.status == 1) {
                         _this.data.push(res.data.datas);
                         _this.compileForm.name = '';
-                        _this.compileForm.parentId = '';
-                        _this.compileForm.EPR = '';
                         _this.compileForm.code = '';
                         _this.compileForm.description = '';
                         _this.$Message.success('添加成功');
@@ -135,13 +124,7 @@ export default {
                 })
             },
             addRoot () {
-                // this.enterType = 1;
-                this.parentName = '无';
                 this.clientClassifyModel = true;
-                console.log(this.data);
-            },
-            moveUp (data) {
-                // console.log(data);
             },
             cancel () {
                 // this.delModel = false;
@@ -241,5 +224,8 @@ export default {
         padding: 0 5px;
         font-size: 16px;
         left: -20px;
+    }
+    .bold {
+        font-weight: bold;
     }
 </style>

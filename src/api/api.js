@@ -14,6 +14,7 @@ export default {
 	},
 	login : '/verifyUser.do',
 	menus : '/sys/menu/fetchUserMenus.do',
+	/* 客户分类 */
 	category : '/api/customer/category/', //客户分类 api 根路径
 	categoryGetRoots : 'queryAll.do' , //查询客户分类列表
 	categoryGetById : '/query.do', // 根据ID查询某一个客户分类详情 -- 之前添加查询ID 如 /12/query.do
@@ -23,4 +24,12 @@ export default {
 	cetegoryDelete : '/delete.do',  //删除指定节点 -- 之前添加删除ID  如 /12/delete.do
 	cetegoryMoveUp : '/moveUp.do', //将特定节点上移-- 之前添加上移ID  如 /12/moveUp.do
 	cetegoryMoveDown : '/moveDown.do', //将特定节点下移-- 之前添加上移ID  如 /12/moveDown.do
+	//  客户级别
+	clientLevel : '/api/customer/level/',   // 客户级别 api 根路径
+	clientLevelqueryAll : 'queryAll.do',   // 查询客户级别列表
+	clientLevelAdd : 'add.do',   // 添加客户级别
+	clientLevelModify : 'modify.do',   // 编辑客户级别
+	clientLevelDel : '/delete.do',   // 删除指定节点 -- 之前添加删除ID  如 /12/delete.do
+
+
 }

@@ -7,6 +7,7 @@ import Hello from '@/components/Hello'
 import Index from '@/components/index'
 import Welcome from '@/components/welcome/welcome'
 import clientClassify from '@/components/client/clientClassify'
+import clientRank from '@/components/client/clientRank'
 
 
 Vue.use(Router)
@@ -33,6 +34,11 @@ const routes = [
           path : '/clientClassify',
           name : 'clientClassify',
           component : clientClassify
+        },
+        {
+          path : '/clinetRank',
+          name : 'clientRank',
+          component : clientRank
         }
       ]
     },
