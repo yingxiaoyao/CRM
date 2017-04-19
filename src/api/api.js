@@ -33,7 +33,7 @@ export default {
 	clientLevelDel : '/delete.do',   		// 删除指定节点 -- 之前添加删除ID  如 /12/delete.do
 	// 区域设置
 	region : '/api/customer/region/', 	//区域设置 api 根路径
-	regionGetRoot : 'getRoots.do',		//查询区域设置列表
+	regionGetRoot : 'queryAll.do',		//查询区域设置列表
 	regionGetById : '/query.do',		//根据ID查询某一个节点详情 -- 之前添加查询ID 如 /12/query.do
 	regionAddRoot : 'addRoot.do',		//添加一级区域
 	regionAdd : 'add.do',				//添加区域设置子分类

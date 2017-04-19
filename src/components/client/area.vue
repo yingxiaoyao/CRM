@@ -71,7 +71,6 @@ export default {
         this.axios(api.region + api.regionGetRoot)
             .then(function(res) {
                 _this.data = res.data.datas;
-                console.log(res);
             })
             .catch(function(err) {
                 console.log(err);
