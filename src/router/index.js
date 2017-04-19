@@ -8,6 +8,8 @@ import Index from '@/components/index'
 import Welcome from '@/components/welcome/welcome'
 import clientClassify from '@/components/client/clientClassify'
 import clientRank from '@/components/client/clientRank'
+import area from '@/components/client/area'
+import trade from '@/components/client/trade'
 
 
 Vue.use(Router)
@@ -39,6 +41,16 @@ const routes = [
           path : '/clinetRank',
           name : 'clientRank',
           component : clientRank
+        },
+        {
+          path : '/area',
+          name : area,
+          component : area
+        },
+        {
+          path : '/trade',
+          name : 'trade',
+          component : trade
         }
       ]
     },

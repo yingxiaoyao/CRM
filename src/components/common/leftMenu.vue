@@ -24,14 +24,12 @@
                       <router-link to='/clinetRank'>
                         <Menu-item name="2-2">客户级别</Menu-item>
                       </router-link>
-                        <Menu-item name="2-3">新增用户</Menu-item>
-                        <Menu-item name="2-4">新增用户</Menu-item>
-                        <Menu-item name="2-5">新增用户</Menu-item>
-                        <Menu-item name="2-6">新增用户</Menu-item>
-                        <Menu-item name="2-7">新增用户</Menu-item>
-                        <Menu-item name="2-8">新增用户</Menu-item>
-                        <Menu-item name="2-9">新增用户</Menu-item>
-                        <Menu-item name="2-10">新增用户</Menu-item>
+                      <router-link to='/area'>
+                        <Menu-item name="2-3">区域设置</Menu-item>
+                      </router-link>
+                      <router-link to='/trade'>
+                        <Menu-item name="2-4">行业设置</Menu-item>
+                      </router-link>
                   </Submenu>
              </Menu>
 

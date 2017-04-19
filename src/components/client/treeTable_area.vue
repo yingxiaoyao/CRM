@@ -74,7 +74,6 @@ export default {
  	data() {
 	 	return {
 	 		open : false,
-		 	// isFolder: this.model.child && this.model.child.length > 0,
 		 	moveDownCount : 0,
 		 	newValue1 : '',
 		 	newValue2 : '',
@@ -100,9 +99,6 @@ export default {
             
 		}
 	},
-	computed: {
-		// this.routerName = this.$router.currentRoute.name;
-	},
 	methods: {
 	 	toggle () {
 			if (this.model.children) {
@@ -122,7 +118,7 @@ export default {
 				    header : {
 				        "Content-Type" : 'application/x-www-form-urlencoded'
 				    },
-				    url :api.category + api.cetegoryAdd,
+				    url :api.region + api.regionAdd,
 				    data : api.jsonData(_this.compileForm)
 				})
 				.then(function(res) {
@@ -148,7 +144,7 @@ export default {
 				    header : {
 				        "Content-Type" : 'application/x-www-form-urlencoded'
 				    },
-				    url :api.category + api.cetegoryModify,
+				    url :api.region + api.regionModify,
 				    data : api.jsonData(editInfo)
 				})
 				.then(function(res) {
@@ -166,7 +162,7 @@ export default {
 
 			const _this = this;
 
-			_this.axios(api.category + _this.model.id + api.categoryGetById)
+			_this.axios(api.region + _this.model.id + api.regionGetById)
 				.then(function(res) {
 					var data = res.data.datas;
 					console.log(data);
@@ -192,7 +188,7 @@ export default {
 				return;
 			}
 			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveUp)
+			_this.axios(api.region + _this.model.id + api.regionMoveUp)
 				.then(function(res) {
 					// console.log(res);
 					if(res.data.status == 1) {
@@ -228,7 +224,7 @@ export default {
 				_this.$emit('moveDown',data);
 				return;
 			}
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveDown)
+			_this.axios(api.region + _this.model.id + api.regionMoveDown)
 				.then(function(res){
 					if(res.data.status == 1) {
 						if(_this.model.level !== 1) {
@@ -262,7 +258,7 @@ export default {
 			}
 
 			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryDelete)
+			_this.axios(api.region + _this.model.id + api.regionDel)
 				.then(function(res) {
 					console.log(res);
 					if(res.data.status == 1) {
@@ -285,7 +281,6 @@ export default {
 
 		},
 		isDel () {
-			// console.log(this.$router.currentRoute.name);
 			this.delModel = true;
 		},
 		cancel () {
@@ -293,7 +288,6 @@ export default {
 			this.clientClassifyModel = false;
 			this.compileForm.name = '';
 			this.compileForm.parentId = '';
-			// this.compileForm.EPR = '';
 			this.compileForm.code = '';
 			this.compileForm.description = '';
 		}
