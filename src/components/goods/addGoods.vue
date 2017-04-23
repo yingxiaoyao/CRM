@@ -91,7 +91,7 @@
                         </Form-item>
                     </Col>
                     <Col span="24" class='span8'>
-                        <Form-item label="商品属性" prop='sort'>
+                        <Form-item label="商品属性">
                             <Row>
                                 <Col span='24'>
                                     <label class="goodsAttr">颜色</label>
@@ -111,6 +111,11 @@
                             </Row>
                             <Icon type="android-add-circle" class='attrAdd'></Icon>
                         </Form-item>
+                    </Col>
+                    <Col span='24' class='span8'>
+                         <Form-item label="商品SKU">
+                             
+                         </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
                         <Form-item label="商品描述"></Form-item>
@@ -321,5 +326,8 @@ export default {
 .attrAdd {
     font-size: 24px;
     cursor: pointer;
+}
+.attrAdd:hover {
+    color: #09f;
 }
 </style>
