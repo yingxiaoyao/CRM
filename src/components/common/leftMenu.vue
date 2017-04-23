@@ -19,16 +19,34 @@
                           用户管理
                       </template>
                       <router-link to='/clientClassify'>
-                        <Menu-item name="2-1">客户分类</Menu-item>
+                        <Menu-item name="1-1">客户分类</Menu-item>
                       </router-link>
                       <router-link to='/clinetRank'>
-                        <Menu-item name="2-2">客户级别</Menu-item>
+                        <Menu-item name="1-2">客户级别</Menu-item>
                       </router-link>
                       <router-link to='/area'>
-                        <Menu-item name="2-3">区域设置</Menu-item>
+                        <Menu-item name="1-3">区域设置</Menu-item>
                       </router-link>
                       <router-link to='/trade'>
-                        <Menu-item name="2-4">行业设置</Menu-item>
+                        <Menu-item name="1-4">行业设置</Menu-item>
+                      </router-link>
+                  </Submenu>
+                  <Submenu name="2">
+                      <template slot="title">
+                          <Icon type="ios-people"></Icon>
+                          商品信息
+                      </template>
+                      <router-link to='/goodsList'>
+                        <Menu-item name="2-1">商品列表</Menu-item>
+                      </router-link>
+                      <router-link to='/'>
+                        <Menu-item name="2-2">商品属性</Menu-item>
+                      </router-link>
+                      <router-link to='/'>
+                        <Menu-item name="2-3">库存量设置</Menu-item>
+                      </router-link>
+                      <router-link to='/'>
+                        <Menu-item name="2-4">仓库设置</Menu-item>
                       </router-link>
                   </Submenu>
              </Menu>

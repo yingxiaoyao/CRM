@@ -10,6 +10,8 @@ import clientClassify from '@/components/client/clientClassify'
 import clientRank from '@/components/client/clientRank'
 import area from '@/components/client/area'
 import trade from '@/components/client/trade'
+import goodsList from '@/components/goods/goodsList'
+import addGoods from '@/components/goods/addGoods'
 
 
 Vue.use(Router)
@@ -51,7 +53,19 @@ const routes = [
           path : '/trade',
           name : 'trade',
           component : trade
-        }
+        },
+        {
+          path : '/goodsList',
+          name : 'goodsList',
+          component : goodsList,
+         },
+          {
+            path : '/goodsList/add',
+            name : 'addGoods',
+            component : addGoods
+          }
+          
+        
       ]
     },
     {

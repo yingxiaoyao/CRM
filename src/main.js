@@ -11,10 +11,13 @@ import axios from './http'
 import VueAxios from 'vue-axios'
 import vuex from 'vuex'
 import store from './vuex/store'
+import editor from 'wangeditor'
+import 'wangeditor/dist/js/wangEditor.js'
 
 
 // 用 axios 进行 Ajax 请求
 Vue.use(VueAxios, axios);
+Vue.use(editor);
 
 Vue.use(iView);
 
