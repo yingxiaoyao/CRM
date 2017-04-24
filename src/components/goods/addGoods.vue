@@ -68,7 +68,7 @@
                         <Form-item label="起订量" prop='quantify'>
                             <Input type="text" v-model="formItem.quantify"></Input>
                         </Form-item>
-                    </Col> 
+                    </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="排序号" prop='sort'>
                             <Input type="text" v-model="formItem.sort"></Input>
@@ -104,7 +104,7 @@
                                 </Col>
                                 <Col span='24'>
                                     <label class="goodsAttr">材料</label>
-                                    <Checkbox-group v-model="stuff"> 
+                                    <Checkbox-group v-model="stuff">
                                         <Checkbox label="布"></Checkbox>
                                         <Checkbox label="棉"></Checkbox>
                                     </Checkbox-group>
@@ -116,7 +116,7 @@
                     </Col>
                     <Col span='24' class='span8'>
                          <Form-item label="商品SKU">
-                             
+
                          </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
@@ -127,18 +127,18 @@
                                     @on-content-change="onContentChange"></editor> -->
 
 
-                            <quill-editor v-model="goodsDesc"
-                                        ref="myQuillEditor"
-                                        :options="editorOption"
-                                        @blur="onEditorBlur($event)"
-                                        @focus="onEditorFocus($event)"
-                                        @ready="onEditorReady($event)">
-                              </quill-editor>
+                            <!--<quill-editor v-model="goodsDesc"-->
+                                        <!--ref="myQuillEditor"-->
+                                        <!--:options="editorOption"-->
+                                        <!--@blur="onEditorBlur($event)"-->
+                                        <!--@focus="onEditorFocus($event)"-->
+                                        <!--@ready="onEditorReady($event)">-->
+                              <!--</quill-editor>-->
                         </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
                         <Form-item label="商品图册">
-                            
+
                             <div class="demo-upload-list" v-for="item in uploadList">
                                 <template v-if="item.status === 'finished'">
                                     <img :src="item.url">
@@ -185,8 +185,8 @@
                     </Col>
 
                 </Row>
-                
-               
+
+
            </Form>
          </div>
 

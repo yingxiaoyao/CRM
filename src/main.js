@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import iView from 'iview'
-import 'iview/dist/styles/iview.css' 
+import 'iview/dist/styles/iview.css'
 import './my-theme/index.less'
 import axios from './http'
 // import axios from 'axios'
@@ -14,7 +14,7 @@ import store from './vuex/store'
 // import VueKindEditor from 'vue-kindeditor'
 // import 'kindeditor/kindeditor-all-min.js'
 // import 'kindeditor/themes/default/default.css'
-import VueQuillEditor from 'vue-quill-editor'
+// import VueQuillEditor from 'vue-quill-editor'
 
 
 // 用 axios 进行 Ajax 请求
@@ -25,7 +25,7 @@ Vue.use(iView);
 
 Vue.config.productionTip = false;
 // Vue.use(VueKindEditor);
-Vue.use(VueQuillEditor);
+// Vue.use(VueQuillEditor);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
