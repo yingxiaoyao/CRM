@@ -13,6 +13,7 @@
     "iview": "^2.0.0-rc.9",
     "vue": "^2.2.2",
     "vue-axios": "^2.0.1",
+    "vue-quill-editor": "^2.1.2",
     "vue-router": "^2.2.0",
     "vuex": "^2.2.1",
     "wangeditor": "^2.1.23"
@@ -45,6 +46,7 @@
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
     "url-loader": "^0.5.7",
+    "vue-kindeditor": "^0.1.0",
     "vue-loader": "^11.1.4",
     "vue-style-loader": "^2.0.0",
     "vue-template-compiler": "^2.2.4",

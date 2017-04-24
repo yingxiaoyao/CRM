@@ -92,23 +92,25 @@
                     </Col>
                     <Col span="24" class='span8'>
                         <Form-item label="商品属性">
-                            <Row>
+                            <!-- <Row>
                                 <Col span='24'>
                                     <label class="goodsAttr">颜色</label>
-                                    <Checkbox-group v-model="fruit">
+                                    <Checkbox-group v-model='color'>
                                         <Checkbox label="红色"></Checkbox>
                                         <Checkbox label="黄色"></Checkbox>
                                         <Checkbox label="蓝色"></Checkbox>
                                     </Checkbox-group>
+                                    <div>{{color}}</div>
                                 </Col>
                                 <Col span='24'>
                                     <label class="goodsAttr">材料</label>
-                                    <Checkbox-group v-model="fruit">
+                                    <Checkbox-group v-model="stuff"> 
                                         <Checkbox label="布"></Checkbox>
                                         <Checkbox label="棉"></Checkbox>
                                     </Checkbox-group>
+                                    <div>{{stuff}}</div>
                                 </Col>
-                            </Row>
+                            </Row> -->
                             <Icon type="android-add-circle" class='attrAdd'></Icon>
                         </Form-item>
                     </Col>
@@ -118,7 +120,21 @@
                          </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
-                        <Form-item label="商品描述"></Form-item>
+                        <Form-item label="商品描述">
+                            <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
+                                    pluginsPath="/static/kindeditor/plugins/"
+                                    :loadStyleMode="false"
+                                    @on-content-change="onContentChange"></editor> -->
+
+
+                            <quill-editor v-model="goodsDesc"
+                                        ref="myQuillEditor"
+                                        :options="editorOption"
+                                        @blur="onEditorBlur($event)"
+                                        @focus="onEditorFocus($event)"
+                                        @ready="onEditorReady($event)">
+                              </quill-editor>
+                        </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
                         <Form-item label="商品图册">
@@ -180,12 +196,9 @@
    </div>
 </template>
 <script>
-// import editor from 'wangeditor'
 
 export default {
     mounted () {
-        // var editor = new editor('editor');
-        //     editor.create();
         this.uploadList = this.$refs.upload.fileList;
     },
     data () {
@@ -203,6 +216,7 @@ export default {
                 sort : '',
                 isRecommend : '',
             },
+            goodsDesc: '<h2>I am Example</h2>',
             goodsRule : {
                 code : [
                     {required: true, message: '商品编码不能为空'}
@@ -229,7 +243,12 @@ export default {
             ],
             imgName: '',
             visible: false,
-            uploadList: []
+            uploadList: [],
+            editorOption : {
+
+            },
+            color : [],
+            stuff :[]
 
         }
     },
@@ -268,7 +287,20 @@ export default {
                 });
             }
             return check;
-        }
+        },
+        onEditorBlur(editor) {
+                console.log('editor blur!', editor)
+              },
+              onEditorFocus(editor) {
+                console.log('editor focus!', editor)
+              },
+              onEditorReady(editor) {
+                console.log('editor ready!', editor)
+              },
+              onEditorChange({ editor, html, text }) {
+                console.log('editor change!', editor, html, text)
+                this.content = html
+              }
     }
 }
 </script>
