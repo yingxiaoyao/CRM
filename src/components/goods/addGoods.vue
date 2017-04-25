@@ -92,35 +92,24 @@
                     </Col>
                     <Col span="24" class='span8'>
                         <Form-item label="商品属性">
-                            <!-- <Row>
-                                <Col span='24'>
-                                    <label class="goodsAttr">颜色</label>
-                                    <Checkbox-group v-model='color'>
-                                        <Checkbox label="红色"></Checkbox>
-                                        <Checkbox label="黄色"></Checkbox>
-                                        <Checkbox label="蓝色"></Checkbox>
+                            <Row>
+                                <Col span='24' v-for='(attrItem,index) in attrList'>
+                                    <label class="goodsAttr">{{attrItem.attrName}}</label>
+                                    <Checkbox-group v-model='attrCheck[index]'>
+                                        <Checkbox v-for='item in attrItem.attr' :label="item"></Checkbox>
                                     </Checkbox-group>
-                                    <div>{{color}}</div>
                                 </Col>
-                                <Col span='24'>
-                                    <label class="goodsAttr">材料</label>
-                                    <Checkbox-group v-model="stuff"> 
-                                        <Checkbox label="布"></Checkbox>
-                                        <Checkbox label="棉"></Checkbox>
-                                    </Checkbox-group>
-                                    <div>{{stuff}}</div>
-                                </Col>
-                            </Row> -->
+                            </Row>
                             <Icon type="android-add-circle" class='attrAdd'></Icon>
                         </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
                          <Form-item label="商品SKU">
-                             
+                             <Table :columns="skuTitle" :data="skuList"></Table>
                          </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
-                        <Form-item label="商品描述">
+                        <Form-item label="商品描述aaa">
                             <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
                                     pluginsPath="/static/kindeditor/plugins/"
                                     :loadStyleMode="false"
@@ -247,8 +236,78 @@ export default {
             editorOption : {
 
             },
-            color : [],
-            stuff :[]
+            attrList : [
+                {
+                    attrName : '颜色',
+                    attr : ['红色','黄色','蓝色']
+                },
+                {
+                    attrName : '材料',
+                    attr : ['布','棉']
+                }
+            ],
+            attrCheck : [],
+            skus: {
+                SKUCode : '',
+                prize : '',
+                count : '',
+                isUp : true,
+            },
+            skuTitle : [
+                {
+                    title : '颜色',
+                    key : 'name',
+                },
+                {
+                    title : 'SKU编码',
+                    key : 'SKUCode',
+                    render (row,column,index) {
+                        return `<i-input size="small"></i-input>`
+                    }
+                },
+                {
+                    title : '销售价格',
+                    key : 'prize',
+                    render (row,column,index) {
+                        return `<i-input  size="small"></i-input>`
+                    }
+                },
+                {
+                    title : '起订量',
+                    key : 'count',
+                    render (row,column,index) {
+                        return `<i-input size="small"></i-input>`
+                    }
+                },
+                {
+                    title : '上下架',
+                    render (row, column, index) {
+                        return `<i-switch size="large">
+                                    <span slot="open">开启</span>
+                                    <span slot="close">关闭</span>
+                                </i-switch>
+                                <a href="javascript:">
+                                    <Icon type="compose"></Icon>
+                                    库存设置
+                                </a>`
+                    }
+                },
+                {
+                    title : '操作',
+                    render (row,column,index) {
+                        return `<i-button type="text">删除</i-button>`
+                    }
+                }
+            ],
+            skuList : [
+                {
+                    name : '红色'
+                },
+                {
+                    name : '蓝色'
+                }
+            ]
+
 
         }
     },
