@@ -103,13 +103,53 @@
                             <Icon type="android-add-circle" class='attrAdd'></Icon>
                         </Form-item>
                     </Col>
-                    <Col span='24' class='span8'>
+                    <Col span='24' class='span8' v-show='SKUstate'>
                          <Form-item label="商品SKU">
-                             <Table :columns="skuTitle" :data="skuList"></Table>
+                             <div class="table">
+                                <div class="table-header">
+                                    <div class="table-td bold" v-for='attr in attrList'>{{attr.attrName}}</div>
+                                    <div class="table-td bold">SKU编码</div>
+                                    <div class="table-td bold">ERP编码</div>
+                                    <div class="table-td bold">销售价格</div>
+                                    <div class="table-td bold">起订量</div>
+                                    <div class="table-td bold">上下架</div>
+                                    <div class="table-td bold">操作</div>
+                                </div>
+                                <div class="table-tbody">
+                                    <div class="table-tr" v-for='(sku , index) in skus'>
+                                        <div class="table-td" style='width : 50px;' v-for='attr in sku.attrText'>{{attr}}</div>
+                                        <div class="table-td">
+                                            <Input v-model="skus[index].SKUCode" size="small" style='width:150px'></Input>
+                                        </div>
+                                        <div class="table-td">
+                                            <Input v-model="skus[index].ERPCode" size="small" style='width:150px'></Input>
+                                        </div>
+                                        <div class="table-td">
+                                            <Input v-model="skus[index].prize" size="small" style='width:150px'></Input>
+                                        </div>
+                                        <div class="table-td">
+                                            <Input v-model="skus[index].count" size="small" style='width:150px'></Input>
+                                        </div>
+                                        <div class="table-td">
+                                            <i-switch size="large" v-model='skus[index].isUp'>
+                                                <span slot="open">上架</span>
+                                                <span slot="close">下架</span>
+                                            </i-switch>
+                                            <a href="javascript" class="link">
+                                                <Icon type="compose"></Icon>
+                                                库存设置
+                                            </a>
+                                        </div>
+                                        <div class="table-td">
+                                            <Button type="text" @click='del'>删除</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
                          </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
-                        <Form-item label="商品描述aaa">
+                        <Form-item label="商品描述">
                             <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
                                     pluginsPath="/static/kindeditor/plugins/"
                                     :loadStyleMode="false"
@@ -182,6 +222,8 @@
 
 
 
+
+
    </div>
 </template>
 <script>
@@ -189,6 +231,32 @@
 export default {
     mounted () {
         this.uploadList = this.$refs.upload.fileList;
+        window.doExchange = function(doubleArrays) {
+            var len = doubleArrays.length;
+               if (len >= 2) {
+                   var len1 = doubleArrays[0].length;
+                   var len2 = doubleArrays[1].length;
+                   var newlen = len1 * len2;
+                   var temp = new Array(newlen);
+                   var index = 0;
+                   for (var i = 0; i < len1; i++) {
+                       for (var j = 0; j < len2; j++) {
+                           temp[index] = doubleArrays[0][i] + '--' + doubleArrays[1][j];
+                           index++;
+                       }
+                   }
+                   var newArray = new Array(len - 1);
+                   for (var i = 2; i < len; i++) {
+                       newArray[i - 1] = doubleArrays[i];
+                   }
+                   newArray[0] = temp;
+                   
+                   return window.doExchange(newArray);
+               }
+               else {
+                   return doubleArrays[0];
+               }
+        }
     },
     data () {
         return {
@@ -247,68 +315,33 @@ export default {
                 }
             ],
             attrCheck : [],
-            skus: {
-                SKUCode : '',
-                prize : '',
-                count : '',
-                isUp : true,
-            },
-            skuTitle : [
-                {
-                    title : '颜色',
-                    key : 'name',
-                },
-                {
-                    title : 'SKU编码',
-                    key : 'SKUCode',
-                    render (row,column,index) {
-                        return `<i-input size="small"></i-input>`
-                    }
-                },
-                {
-                    title : '销售价格',
-                    key : 'prize',
-                    render (row,column,index) {
-                        return `<i-input  size="small"></i-input>`
-                    }
-                },
-                {
-                    title : '起订量',
-                    key : 'count',
-                    render (row,column,index) {
-                        return `<i-input size="small"></i-input>`
-                    }
-                },
-                {
-                    title : '上下架',
-                    render (row, column, index) {
-                        return `<i-switch size="large">
-                                    <span slot="open">开启</span>
-                                    <span slot="close">关闭</span>
-                                </i-switch>
-                                <a href="javascript:">
-                                    <Icon type="compose"></Icon>
-                                    库存设置
-                                </a>`
-                    }
-                },
-                {
-                    title : '操作',
-                    render (row,column,index) {
-                        return `<i-button type="text">删除</i-button>`
-                    }
-                }
-            ],
-            skuList : [
-                {
-                    name : '红色'
-                },
-                {
-                    name : '蓝色'
-                }
-            ]
+        }
+    },
+    computed : {
+        skus : function() {
+            if(this.attrCheck.length == this.attrList.length) {
+                const result = [];
+                const checkds = window.doExchange(this.attrCheck);
+                checkds.forEach(function(item,index){
+                    // console.log(item);
+                    var itemArr = item.split('--');
+                    result.push({
+                        attrText : itemArr,
+                        SKUCode : '',
+                        ERPCode : '',
+                        prize : '',
+                        count : '',
+                        isUp : true,
+                    })
+                })
+                return result;
+            }
 
-
+        },
+        SKUstate : function() {
+            if(this.skus) {
+                return this.skus.length >= 1;
+            }
         }
     },
     methods: {
@@ -348,18 +381,22 @@ export default {
             return check;
         },
         onEditorBlur(editor) {
-                console.log('editor blur!', editor)
-              },
-              onEditorFocus(editor) {
-                console.log('editor focus!', editor)
-              },
-              onEditorReady(editor) {
-                console.log('editor ready!', editor)
-              },
-              onEditorChange({ editor, html, text }) {
-                console.log('editor change!', editor, html, text)
-                this.content = html
-              }
+            console.log('editor blur!', editor)
+        },
+        onEditorFocus(editor) {
+            console.log('editor focus!', editor)
+        },
+        onEditorReady(editor) {
+            console.log('editor ready!', editor)
+        },
+        onEditorChange({ editor, html, text }) {
+            console.log('editor change!', editor, html, text)
+            this.content = html
+        },
+        del () {
+            
+            console.log(this.skus);
+        }
     }
 }
 </script>
@@ -420,5 +457,42 @@ export default {
 }
 .attrAdd:hover {
     color: #09f;
+}
+
+.table {
+    display: table;
+    width: 100%;
+    margin: 10px;
+}
+.child-table {
+    display: table;
+    width: 200%;
+}
+.table-header {
+    display: table-header-group;
+    background : #f5f7f9;
+    border: 1px solid #ddd;
+    /*color: #fff;*/
+}
+.table-tbody {
+    display: table-row-group;
+}
+.table-tr {
+    display: table-row;
+    background: #fff;
+}
+.table-tr:hover {
+    background: #f9f9f9;
+}
+.table-td {
+    display: table-cell;
+    height: 30px;
+    width: auto;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+.bold {
+    font-weight: 900;
 }
 </style>
