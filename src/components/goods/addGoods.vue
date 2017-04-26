@@ -156,13 +156,13 @@
                                     @on-content-change="onContentChange"></editor> -->
 
 
-                            <!--<quill-editor v-model="goodsDesc"-->
-                                        <!--ref="myQuillEditor"-->
-                                        <!--:options="editorOption"-->
-                                        <!--@blur="onEditorBlur($event)"-->
-                                        <!--@focus="onEditorFocus($event)"-->
-                                        <!--@ready="onEditorReady($event)">-->
-                              <!--</quill-editor>-->
+                            <quill-editor v-model="goodsDesc"
+                                        ref="myQuillEditor"
+                                        :options="editorOption"
+                                        @blur="onEditorBlur($event)"
+                                        @focus="onEditorFocus($event)"
+                                        @ready="onEditorReady($event)">
+                              </quill-editor>
                         </Form-item>
                     </Col>
                     <Col span='24' class='span8'>
