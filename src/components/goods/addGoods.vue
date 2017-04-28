@@ -93,10 +93,10 @@
                     <Col span="24" class='span8'>
                         <Form-item label="商品属性">
                             <Row>
-                                <Col span='24' v-for='(attrItem,index) in attrList'>
+                                <Col span='24' v-for='(attrItem,index) in attrList' :key='index'>
                                     <label class="goodsAttr">{{attrItem.attrName}}</label>
                                     <Checkbox-group v-model='attrCheck[index]'>
-                                        <Checkbox v-for='item in attrItem.attr' :label="item"></Checkbox>
+                                        <Checkbox v-for='(item,index) in attrItem.attr' :key='index' :label="item"></Checkbox>
                                     </Checkbox-group>
                                 </Col>
                             </Row>
@@ -107,7 +107,7 @@
                          <Form-item label="商品SKU">
                              <div class="table">
                                 <div class="table-header">
-                                    <div class="table-td bold" v-for='attr in attrList'>{{attr.attrName}}</div>
+                                    <div class="table-td bold" v-for='(attr,index) in attrList' :key='index'>{{attr.attrName}}</div>
                                     <div class="table-td bold">SKU编码</div>
                                     <div class="table-td bold">ERP编码</div>
                                     <div class="table-td bold">销售价格</div>
@@ -165,72 +165,119 @@
                               </quill-editor>
                         </Form-item>
                     </Col>
-                    <Col span='24' class='span8'>
-                        <Form-item label="商品图册">
-
-                            <div class="demo-upload-list" v-for="item in uploadList">
-                                <template v-if="item.status === 'finished'">
-                                    <img :src="item.url">
-                                    <div class="demo-upload-list-cover">
-                                        <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                                        <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                                </template>
-                            </div>
-                            <Upload
-                                ref="upload"
-                                :show-upload-list="false"
-                                :default-file-list="defaultList"
-                                :on-success="handleSuccess"
-                                :format="['jpg','jpeg','png']"
-                                :max-size="2048"
-                                :on-format-error="handleFormatError"
-                                :on-exceeded-size="handleMaxSize"
-                                :before-upload="handleBeforeUpload"
-                                multiple
-                                type="drag"
-                                action="//jsonplaceholder.typicode.com/posts/"
-                                style="display: inline-block;width:58px;">
-                                <div style="width: 58px;height:58px;line-height: 58px;">
-                                    <Icon type="camera" size="20"></Icon>
-                                </div>
-                            </Upload>
-                            <Modal title="查看图片" v-model="visible">
-                                <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-                            </Modal>
-                        </Form-item>
-                    </Col>
-                    <Col span='24' class='span8'>
-                        <Form-item label="添加附件">
-                            <Upload
-                                multiple
-                                action="//jsonplaceholder.typicode.com/posts/">
-                                <Button type="info" icon="ios-cloud-upload-outline">上传文件</Button>
-                            </Upload>
-                        </Form-item>
-                    </Col>
 
                 </Row>
-
-
            </Form>
-         </div>
-
-
-
+           <div class="upload">
+                <div class="imgUpload">
+                    <label class="uploadLabel" style='width:120px;text-align:right;'>商品图册</label>
+                    <div class="demo-upload-list" v-for="item in uploadList">
+                        <template v-if="item.status === 'finished'">
+                            <img :src="item.url">
+                            <div class="demo-upload-list-cover">
+                                <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                        </template>
+                    </div>
+                    <Upload
+                        ref="upload"
+                        :show-upload-list="false"
+                        :default-file-list="defaultList"
+                        :on-success="handleSuccess"
+                        :on-error='handleError'
+                        :format="['jpg','jpeg','png']"
+                        :max-size="2048"
+                        :on-format-error="handleFormatError"
+                        :on-exceeded-size="handleMaxSize"
+                        :before-upload="handleBeforeUpload"
+                        :headers='uploadHeader'
+                        multiple
+                        type="drag"
+                        :action="uploadUrl"
+                        style="display: inline-block;width:58px;">
+                        <div style="width: 58px;height:58px;line-height: 58px;">
+                            <Icon type="camera" size="20"></Icon>
+                        </div>
+                    </Upload>
+                    <Modal title="查看图片" v-model="visible">
+                        <img :src="imgUrl" v-if="visible" style="width: 100%">
+                    </Modal>
+                </div>
+           </div>
+        </div>
 
 
 
    </div>
 </template>
 <script>
-
+import api from '@/api/api'
 export default {
+    data () {
+        return {
+            formItem: {
+                code: '',
+                name : '',
+                barCode : '',
+                sellingPoint : '',
+                goodsClassify: '',
+                assistClassify : '',
+                unit : '',
+                prize : '',
+                quantify : '',
+                sort : '',
+                isRecommend : '',
+            },
+            // file : '',
+            goodsDesc: '<h2>I am Example</h2>',
+            goodsRule : {
+                code : [
+                    {required: true, message: '商品编码不能为空'}
+                ],
+                name : [
+                    {required : true,message : '商品名称不能为空'}
+                ],
+                goodsClassify : [
+                    {required : true,message : '请选择商品分类'}
+                ],
+                unit : [
+                    {required : true}
+                ]
+            },
+            uploadUrl : 'http://lookat.soonergz.com:8888/easycrm/api/common/fileUpload.do',
+            defaultList: [
+                {
+                    name : 'wallpaper_iphone7p_fortune-flows_large',
+                    url : 'http://lookat.soonergz.com:8888/res//9b0a25b3afb442e7a7ca72209922b793.jpg'
+                }
+            ],
+            imgUrl: '',
+            visible: false,
+            uploadList: [],
+            editorOption : {
+
+            },
+            attrList : [
+                {
+                    attrName : '颜色',
+                    attr : ['红色','黄色','蓝色']
+                },
+                {
+                    attrName : '材料',
+                    attr : ['布','棉']
+                }
+            ],
+            attrCheck : [],
+        }
+    },
     mounted () {
         this.uploadList = this.$refs.upload.fileList;
+        // console.log(this.uploadList);
+
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
                if (len >= 2) {
@@ -258,65 +305,6 @@ export default {
                }
         }
     },
-    data () {
-        return {
-            formItem: {
-                code: '',
-                name : '',
-                barCode : '',
-                sellingPoint : '',
-                goodsClassify: '',
-                assistClassify : '',
-                unit : '',
-                prize : '',
-                quantify : '',
-                sort : '',
-                isRecommend : '',
-            },
-            goodsDesc: '<h2>I am Example</h2>',
-            goodsRule : {
-                code : [
-                    {required: true, message: '商品编码不能为空'}
-                ],
-                name : [
-                    {required : true,message : '商品名称不能为空'}
-                ],
-                goodsClassify : [
-                    {required : true,message : '请选择商品分类'}
-                ],
-                unit : [
-                    {required : true}
-                ]
-            },
-            defaultList: [
-                {
-                    'name': 'a42bdcc1178e62b4694c830f028db5c0',
-                    'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-                },
-                {
-                    'name': 'bc7521e033abdd1e92222d733590f104',
-                    'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-                }
-            ],
-            imgName: '',
-            visible: false,
-            uploadList: [],
-            editorOption : {
-
-            },
-            attrList : [
-                {
-                    attrName : '颜色',
-                    attr : ['红色','黄色','蓝色']
-                },
-                {
-                    attrName : '材料',
-                    attr : ['布','棉']
-                }
-            ],
-            attrCheck : [],
-        }
-    },
     computed : {
         skus : function() {
             if(this.attrCheck.length == this.attrList.length) {
@@ -342,44 +330,52 @@ export default {
             if(this.skus) {
                 return this.skus.length >= 1;
             }
+        },
+        uploadHeader : function() {
+            const tokenId = this.$store.state.token;
+            return {
+                token_id : tokenId
+            }
         }
     },
     methods: {
-        handleView (name) {
-            this.imgName = name;
-            this.visible = true;
-        },
-        handleRemove (file) {
-            // 从 upload 实例删除数据
-            const fileList = this.$refs.upload.fileList;
-            this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-        },
-        handleSuccess (res, file) {
-            // 因为上传过程为实例，这里模拟添加 url
-            file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-            file.name = '7eb99afb9d5f317c912f08b5212fd69a';
-        },
-        handleFormatError (file) {
-            this.$Notice.warning({
-                title: '文件格式不正确',
-                desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
-            });
-        },
-        handleMaxSize (file) {
-            this.$Notice.warning({
-                title: '超出文件大小限制',
-                desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
-            });
-        },
-        handleBeforeUpload () {
-            const check = this.uploadList.length < 5;
-            if (!check) {
-                this.$Notice.warning({
-                    title: '最多只能上传 5 张图片。'
-                });
-            }
-            return check;
-        },
+       handleView (item) {
+           this.imgUrl = item.url;
+           this.visible = true;
+       },
+       handleRemove (file) {
+           // 从 upload 实例删除数据
+           const fileList = this.$refs.upload.fileList;
+           this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+       },
+       handleError (err,file,fileList) {
+            this.$Notice.warning(err);
+       },
+       handleSuccess (res, file,fileList) {
+           file.url = res.url;
+           file.name = res.fileName;
+       },
+       handleFormatError (file) {
+           this.$Notice.warning({
+               title: '文件格式不正确',
+               desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
+           });
+       },
+       handleMaxSize (file) {
+           this.$Notice.warning({
+               title: '超出文件大小限制',
+               desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
+           });
+       },
+       handleBeforeUpload () {
+           const check = this.uploadList.length < 5;
+           if (!check) {
+               this.$Notice.warning({
+                   title: '最多只能上传 5 张图片。'
+               });
+           }
+           return check;
+       },
         onEditorBlur(editor) {
             console.log('editor blur!', editor)
         },
@@ -494,5 +490,14 @@ export default {
 }
 .bold {
     font-weight: 900;
+}
+.upload {
+    padding-left : 20px;
+}
+.uploadLabel {
+    width: 120px;
+    display: inline-block;
+    padding: 10px 12px 10px 0;
+    vertical-align: top;
 }
 </style>

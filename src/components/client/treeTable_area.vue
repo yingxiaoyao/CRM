@@ -1,3 +1,4 @@
+
 <template>
 
 
@@ -19,7 +20,7 @@
             </div>
         </div>
         <div class="table-tr" v-if='model.children' v-show='open'>
-        	<tree-table v-for="(item , index) in model.children" :model="item" :parentModel='model' :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
+        	<tree-table v-for="(item , index) in model.children" :key='index' :model="item" :parentModel='model' :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
         </div>
 
 

@@ -2,12 +2,12 @@
     <div class="left-menu" @click='aaa'>
              <Menu :open-names="['openNames']" accordion width='180px'>
 
-                 <Submenu v-for='menu in menuList' :name="menu.id">
+                 <Submenu v-for='menu in menuList' :name="menu.id" :key='menu.id'>
                      <template slot="title">
                          <Icon v-bind:type="menu.iconType"></Icon>
                          {{ menu.name }}
                      </template>
-                     <router-link to='/' v-for='seconMenu in menu.menus'>
+                     <router-link to='/' v-for='(seconMenu,index) in menu.menus' :key='index'>
                       <Menu-item :name="seconMenu.id">
                         {{seconMenu.name}}
                       </Menu-item>
