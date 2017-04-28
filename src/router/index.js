@@ -12,7 +12,6 @@ import area from '@/components/client/area'
 import trade from '@/components/client/trade'
 import goodsList from '@/components/goods/goodsList'
 import addGoods from '@/components/goods/addGoods'
-import upload from '@/components/goods/upload'
 
 
 Vue.use(Router)
@@ -79,10 +78,6 @@ const routes = [
       path: '/aa',
       name: 'aa',
       component: Hello
-    },
-    {
-      path:'/upload',
-      component : upload
     }
 ]
 

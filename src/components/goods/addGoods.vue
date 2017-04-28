@@ -352,6 +352,7 @@ export default {
             this.$Notice.warning(err);
        },
        handleSuccess (res, file,fileList) {
+            console.log(res);
            file.url = res.url;
            file.name = res.fileName;
        },
