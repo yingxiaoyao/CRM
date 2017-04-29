@@ -84,7 +84,7 @@
                     </Col>
                     <Col span="24" class='span8'>
                         <Form-item label="库存设置">
-                            <a href="javascript" class="link">
+                            <a href="javascript:" class="link">
                                 <Icon type="compose"></Icon>
                                 库存设置
                             </a>
@@ -94,20 +94,21 @@
                         <Form-item label="商品属性">
                             <Row>
                                 <Col span='24' v-for='(attrItem,index) in attrList' :key='index'>
-                                    <label class="goodsAttr">{{attrItem.attrName}}</label>
+                                    <label class="goodsAttr">{{attrItem.name}}</label>
                                     <Checkbox-group v-model='attrCheck[index]'>
-                                        <Checkbox v-for='(item,index) in attrItem.attr' :key='index' :label="item"></Checkbox>
+                                        <Checkbox v-for='(item,index) in attrItem.productAttributeValues' :key='index' :label="item.name"></Checkbox>
                                     </Checkbox-group>
                                 </Col>
                             </Row>
-                            <Icon type="android-add-circle" class='attrAdd'></Icon>
+                            <Icon type="android-add-circle" class='attrAdd' @click.native='seleckAttr'></Icon>
+                           
                         </Form-item>
                     </Col>
                     <Col span='24' class='span8' v-show='SKUstate'>
                          <Form-item label="商品SKU">
                              <div class="table">
                                 <div class="table-header">
-                                    <div class="table-td bold" v-for='(attr,index) in attrList' :key='index'>{{attr.attrName}}</div>
+                                    <div class="table-td bold" v-for='(attr,index) in attrList' :key='index'>{{attr.name}}</div>
                                     <div class="table-td bold">SKU编码</div>
                                     <div class="table-td bold">ERP编码</div>
                                     <div class="table-td bold">销售价格</div>
@@ -150,7 +151,7 @@
                     </Col>
                     <Col span='24' class='span8'>
                         <Form-item label="商品描述">
-                            <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
+                           <!--  <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
                                     pluginsPath="/static/kindeditor/plugins/"
                                     :loadStyleMode="false"
                                     @on-content-change="onContentChange"></editor> -->
@@ -207,10 +208,36 @@
                         <img :src="imgUrl" v-if="visible" style="width: 100%">
                     </Modal>
                 </div>
+                <div class="appendixUpload">
+                    <label class="uploadLabel" style='width:120px;text-align:right;'>添加附件</label>
+                    <Upload :action="uploadUrl" class='inline-block'>
+                        <Button type="ghost" icon="ios-cloud-upload-outline">添加附件</Button>
+                    </Upload>
+                </div>
            </div>
+            <Row type="flex" justify="center" class="code-row-bg addFooter">
+                <Col span="2">
+                    <Button type="info" size="large">放入仓库</Button>
+                </Col>
+                <Col span="2">
+                    <Button type="warning" size="large">立即发布</Button>
+                </Col>
+            </Row>
         </div>
 
 
+        <Modal
+            title="对话框标题"
+            v-model="attributeModel"
+            @on-ok="attrIsOk"
+            class-name="vertical-center-modal">
+            <Checkbox-group v-model="attributeChecked">
+                <Checkbox :label="attr.name" v-for='(attr,index) in attributeAll' :key='index'></Checkbox>
+            </Checkbox-group>
+
+
+
+        </Modal>
 
    </div>
 </template>
@@ -261,22 +288,16 @@ export default {
             editorOption : {
 
             },
-            attrList : [
-                {
-                    attrName : '颜色',
-                    attr : ['红色','黄色','蓝色']
-                },
-                {
-                    attrName : '材料',
-                    attr : ['布','棉']
-                }
-            ],
+            attrList : [],
             attrCheck : [],
+            attributeModel : false,
+            attributeAll : [],
+            attributeChecked : []
         }
     },
     mounted () {
         this.uploadList = this.$refs.upload.fileList;
-        // console.log(this.uploadList);
+        // this.$refs['formItem'].resetFields();
 
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
@@ -307,6 +328,9 @@ export default {
     },
     computed : {
         skus : function() {
+            if(this.attrList.length == 0) {
+                return;
+            }
             if(this.attrCheck.length == this.attrList.length) {
                 const result = [];
                 const checkds = window.doExchange(this.attrCheck);
@@ -392,23 +416,60 @@ export default {
         },
         del () {
             
-            console.log(this.skus);
+            console.log(this.attributeModel);
+            this.attributeModel = true;
+        },
+        seleckAttr () {
+            const _this = this;
+            this.attributeModel = true;
+            this.axios(api.product + api.queryAll)
+                .then(function(res) {
+                   _this.attributeAll = res.data.datas;
+                   // console.log(_this.attributeAll);
+                })
+                .catch(function(err) {
+                    console.log(err);
+                })
+        },
+        attrIsOk () {
+            // console.log(this.attributeChecked)
+            // console.log(this.attributeAll)
+            const _this = this;
+            const attr = [];
+            let attrIds = '';
+            this.attributeChecked.forEach(function(el , i) {
+                _this.attributeAll.forEach(function(item , index) {
+                    if(item.name == el) {
+                        attr.push(item);
+                        attrIds += item.id + ',';
+                    }
+                })
+            })
+            attrIds = attrIds.slice(0,attrIds.length-1);
+            _this.axios(api.product +attrIds + api.productGetById )
+                .then(function(res){
+                    console.log(res.data.datas)
+                    _this.attrList = res.data.datas;
+                })
+                .catch(function(err) {
+                    console.log(err);
+                })
         }
     }
 }
 </script>
 
-<style scoped>
-.span8 {
+<style>
+.addGoods .span8 {
     padding-left: 20px;
 }
-.link {
+.addGoods .link {
     color: #09f;
 }
-.link:hover {
+.addGoods .link:hover {
     color : #283f82;
 }
-.demo-upload-list{
+.addGoods .demo-upload-list{
     display: inline-block;
     width: 60px;
     height: 60px;
@@ -422,11 +483,11 @@ export default {
     box-shadow: 0 1px 1px rgba(0,0,0,.2);
     margin-right: 4px;
 }
-.demo-upload-list img{
+.addGoods .demo-upload-list img{
     width: 100%;
     height: 100%;
 }
-.demo-upload-list-cover{
+.addGoods .demo-upload-list-cover{
     display: none;
     position: absolute;
     top: 0;
@@ -435,53 +496,53 @@ export default {
     right: 0;
     background: rgba(0,0,0,.6);
 }
-.demo-upload-list:hover .demo-upload-list-cover{
+.addGoods .demo-upload-list:hover .demo-upload-list-cover{
     display: block;
 }
-.demo-upload-list-cover i{
+.addGoods .demo-upload-list-cover i{
     color: #fff;
     font-size: 20px;
     cursor: pointer;
     margin: 0 2px;
 }
-.ivu-checkbox-group {
+.addGoods .ivu-checkbox-group {
     display: inline-block;
     padding-left: 20px;
 }
-.attrAdd {
+.addGoods .attrAdd {
     font-size: 24px;
     cursor: pointer;
 }
-.attrAdd:hover {
+.addGoods .attrAdd:hover {
     color: #09f;
 }
 
-.table {
+.addGoods .table {
     display: table;
     width: 100%;
     margin: 10px;
 }
-.child-table {
+.addGoods .child-table {
     display: table;
     width: 200%;
 }
-.table-header {
+.addGoods .table-header {
     display: table-header-group;
     background : #f5f7f9;
     border: 1px solid #ddd;
     /*color: #fff;*/
 }
-.table-tbody {
+.addGoods .table-tbody {
     display: table-row-group;
 }
-.table-tr {
+.addGoods .table-tr {
     display: table-row;
     background: #fff;
 }
-.table-tr:hover {
+.addGoods .table-tr:hover {
     background: #f9f9f9;
 }
-.table-td {
+.addGoods .table-td {
     display: table-cell;
     height: 30px;
     width: auto;
@@ -489,16 +550,33 @@ export default {
     text-align: center;
     border-bottom: 1px solid #ddd;
 }
-.bold {
+.addGoods .bold {
     font-weight: 900;
 }
-.upload {
+.addGoods .upload {
     padding-left : 20px;
 }
-.uploadLabel {
+.addGoods .uploadLabel {
     width: 120px;
     display: inline-block;
     padding: 10px 12px 10px 0;
     vertical-align: top;
 }
+.addGoods .appendixUpload {
+    padding-top: 15px;
+}
+.addGoods .inline-block {
+    display: inline-block;
+}
+.addGoods .addFooter {
+    padding: 15px 0;
+}
+.addGoods .ql-toolbar.ql-snow {
+    background: #f9f9f9;
+}
+.addGoods .ql-toolbar.ql-snow + .ql-container.ql-snow {
+    height: 500px;
+    background: #fff;
+}
+
 </style>

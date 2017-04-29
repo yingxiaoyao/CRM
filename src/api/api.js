@@ -14,6 +14,9 @@ export default {
 	},
 	login : '/verifyUser.do',
 	menus : '/sys/menu/fetchUserMenus.do',
+
+	//  公用
+	queryAll : 'queryAll.do',		//查询所有
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径
 	categoryGetRoots : 'queryAll.do' , 		//查询客户分类列表
@@ -49,5 +52,11 @@ export default {
 	indeustryModify : 'modify.do',				// 修改客户行业分类
 	indeustryDel : '/delete.do',				//删除指定节点 -- 之前添加删除ID  如 /12/delete.do
 
+	// 添加商品
+
+
+	// 商品属性
+	product : '/api/product/attribute/',		//商品属性 api 根路径
+	productGetById : '/queryByIds.do',			//根据多	个id查询商品属性   如 /1,2,3/queryByIds.do
 
 }
