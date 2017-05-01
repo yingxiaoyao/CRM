@@ -10,16 +10,21 @@
              <Breadcrumb-item>商品新增</Breadcrumb-item>
          </Breadcrumb>
          <div class="fileHandle">
-           <Form :model="formItem" :rules="goodsRule" :label-width="120">
+           <Form ref="formItem" :model="formItem" :rules="goodsRule" :label-width="120">
                 <Row>
-                    <Col span="8" class='span8'>
-                        <Form-item label="商品编码" prop="code">
-                            <Input type="text" v-model="formItem.code" placeholder="必填"></Input>
-                        </Form-item>
-                    </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="商品名称" prop='name'>
                             <Input type="text" v-model="formItem.name" placeholder="最多输入100个字符"></Input>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
+                        <Form-item label="商品编码" prop='code'>
+                            <Input type="text" v-model="formItem.code" placeholder="最多输入100个字符"></Input>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
+                        <Form-item label="规格型号" prop='spec'>
+                            <Input type="text" v-model="formItem.spec"></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -28,40 +33,29 @@
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="卖点" prop='sellingPoint'>
-                            <Input type="text" v-model="formItem.sellingPoint" placeholder="最多输入100个字符"></Input>
+                        <Form-item label="商品分类" prop='catalogId'>
+                           <Select v-model="formItem.catalogId" placeholder="请选择" not-found-text='当前选项没有数据'>
+                               <Option v-for='(Catalog , index) in CatalogList' :key='index' :value="Catalog.id">{{Catalog.name}}</Option>
+                           </Select>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="商品分类" prop='goodsClassify'>
-                            <Select v-model="formItem.goodsClassify" placeholder="请选择">
-                                <Option value="beijing">北京市</Option>
-                                <Option value="shanghai">上海市</Option>
-                                <Option value="shenzhen">深圳市</Option>
+                        <Form-item label="商品品牌" prop='brandId'>
+                           <Select v-model="formItem.brandId" placeholder="请选择" not-found-text='当前选项没有数据'>
+                               <Option v-for='(brand , index) in brandList' :key='index' :value="brand.id">{{brand.name}}</Option>
+                           </Select>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
+                        <Form-item label="主计量单位" prop='unitId' not-found-text='当前选项没有数据'>
+                            <Select v-model="formItem.unitId" placeholder="请选择">
+                                <Option v-for='(unit , index) in unitList' :key='index' :value="unit.id">{{unit.name}}</Option>
                             </Select>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="辅助商品分类" prop='assistClassify'>
-                            <Select v-model="formItem.assistClassify" placeholder="请选择">
-                                <Option value="beijing">北京市</Option>
-                                <Option value="shanghai">上海市</Option>
-                                <Option value="shenzhen">深圳市</Option>
-                            </Select>
-                        </Form-item>
-                    </Col>
-                    <Col span="8" class='span8'>
-                        <Form-item label="主计量单位" prop='unit'>
-                            <Select v-model="formItem.unit" placeholder="请选择">
-                                <Option value="beijing">北京市</Option>
-                                <Option value="shanghai">上海市</Option>
-                                <Option value="shenzhen">深圳市</Option>
-                            </Select>
-                        </Form-item>
-                    </Col>
-                    <Col span="8" class='span8'>
-                        <Form-item label="销售价格" prop='prize'>
-                            <Input type="text" v-model="formItem.prize"></Input>
+                        <Form-item label="销售价格" prop='price'>
+                            <Input type="text" v-model="formItem.price"></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -70,24 +64,21 @@
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="排序号" prop='sort'>
-                            <Input type="text" v-model="formItem.sort"></Input>
+                        <Form-item label="库存设置" prop='inventoryQty'>
+                            <Input type="text" v-model="formItem.inventoryQty"></Input>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
+                        <Form-item label="排序号" prop='orderNum'>
+                            <Input type="text" v-model="formItem.orderNum"></Input>
                         </Form-item>
                     </Col>
                     <Col span="24" class='span8'>
-                        <Form-item label="是否是推荐商品" prop='isRecommend'>
-                            <i-switch v-model='formItem.isRecommend'>
+                        <Form-item label="上下架" prop='status'>
+                            <i-switch v-model='formItem.isUp' @on-change="change(formItem)">    
                                 <Icon type="android-done" slot="open"></Icon>
                                 <Icon type="android-close" slot="close"></Icon>
                             </i-switch>
-                        </Form-item>
-                    </Col>
-                    <Col span="24" class='span8'>
-                        <Form-item label="库存设置">
-                            <a href="javascript:" class="link">
-                                <Icon type="compose"></Icon>
-                                库存设置
-                            </a>
                         </Form-item>
                     </Col>
                     <Col span="24" class='span8'>
@@ -95,12 +86,12 @@
                             <Row>
                                 <Col span='24' v-for='(attrItem,index) in attrList' :key='index'>
                                     <label class="goodsAttr">{{attrItem.name}}</label>
-                                    <Checkbox-group v-model='attrCheck[index]'>
+                                    <Checkbox-group v-model='attrBox[index]' @on-change='checkedAttr' @click.native='attrindex = index'>
                                         <Checkbox v-for='(item,index) in attrItem.productAttributeValues' :key='index' :label="item.name"></Checkbox>
                                     </Checkbox-group>
                                 </Col>
+                                <Icon type="android-add-circle" class='attrAdd' @click.native='seleckAttr'></Icon>
                             </Row>
-                            <Icon type="android-add-circle" class='attrAdd' @click.native='seleckAttr'></Icon>
                            
                         </Form-item>
                     </Col>
@@ -108,41 +99,50 @@
                          <Form-item label="商品SKU">
                              <div class="table">
                                 <div class="table-header">
+                                    <div class="table-td bold">主图</div>
                                     <div class="table-td bold" v-for='(attr,index) in attrList' :key='index'>{{attr.name}}</div>
                                     <div class="table-td bold">SKU编码</div>
-                                    <div class="table-td bold">ERP编码</div>
                                     <div class="table-td bold">销售价格</div>
-                                    <div class="table-td bold">起订量</div>
+                                    <div class="table-td bold">商品描述</div>
+                                    <div class="table-td bold">库存设置</div>
                                     <div class="table-td bold">上下架</div>
                                     <div class="table-td bold">操作</div>
                                 </div>
                                 <div class="table-tbody">
-                                    <div class="table-tr" v-for='(sku , index) in skus'>
-                                        <div class="table-td" style='width : 50px;' v-for='attr in sku.attrText'>{{attr}}</div>
+                                    <div class="table-tr" v-for='(sku , index) in skus' :key='index'>
+                                        <div class="table-td" style='padding:10px 0;'>
+                                            <Upload :action="uploadUrl"
+                                                :show-upload-list="false"
+                                                :on-success="skuMainImgSuccess"
+                                                :headers='uploadHeader'
+                                                @click.native = 'skuItem = sku; mainImgIndex = index'>
+                                                <div class="addImg">
+                                                    <Icon type="plus-round" size='20' v-if='skus[index].isMainImg == 0'></Icon>
+                                                    <img :src="skus[index].imageUrl" class="mainImg" v-else>
+                                                </div>
+                                            </Upload>
+                                        </div>
+                                        <div class="table-td" style='width : 50px;' v-for='attr in sku.productSkuAttributes'>{{attr.attributeValueName}}</div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].SKUCode" size="small" style='width:150px'></Input>
+                                            <Input v-model="skus[index].code" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].ERPCode" size="small" style='width:150px'></Input>
+                                            <Input v-model="skus[index].price" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].prize" size="small" style='width:150px'></Input>
+                                            <Input v-model="skus[index].description" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].count" size="small" style='width:150px'></Input>
+                                            <Input v-model="skus[index].inventoryQty" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <i-switch size="large" v-model='skus[index].isUp'>
+                                            <i-switch size="large" v-model='skus[index].isUp' @on-change='change(skus[index])'>
                                                 <span slot="open">上架</span>
                                                 <span slot="close">下架</span>
                                             </i-switch>
-                                            <a href="javascript" class="link">
-                                                <Icon type="compose"></Icon>
-                                                库存设置
-                                            </a>
                                         </div>
                                         <div class="table-td">
-                                            <Button type="text" @click='del'>删除</Button>
+                                            <Button type="text" @click='del(index)'>删除</Button>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@
                                     @on-content-change="onContentChange"></editor> -->
 
 
-                            <quill-editor v-model="goodsDesc"
+                            <quill-editor v-model="formItem.description"
                                         ref="myQuillEditor"
                                         :options="editorOption"
                                         @blur="onEditorBlur($event)"
@@ -170,7 +170,16 @@
                 </Row>
            </Form>
            <div class="upload">
-                <div class="imgUpload">
+                <div class="appendixUpload">
+                    <label class="uploadLabel" style='width:120px;text-align:right;'>商品主图</label>
+                    <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false">
+                        <div class="addMainImg">
+                            <Icon type="plus-round" size='20' v-if='!formItem.imageUrl'></Icon>
+                            <img :src="formItem.imageUrl" class="mainImg" v-else>
+                        </div>
+                    </Upload>
+                </div>
+                <div class="appendixUpload">
                     <label class="uploadLabel" style='width:120px;text-align:right;'>商品图册</label>
                     <div class="demo-upload-list" v-for="item in uploadList">
                         <template v-if="item.status === 'finished'">
@@ -210,18 +219,18 @@
                 </div>
                 <div class="appendixUpload">
                     <label class="uploadLabel" style='width:120px;text-align:right;'>添加附件</label>
-                    <Upload :action="uploadUrl" class='inline-block'>
+                    <Upload :action="uploadUrl" class='inline-block' :on-success="attachmentsSuccess" :headers='uploadHeader' :data='uploadData'>
                         <Button type="ghost" icon="ios-cloud-upload-outline">添加附件</Button>
                     </Upload>
                 </div>
            </div>
             <Row type="flex" justify="center" class="code-row-bg addFooter">
-                <Col span="2">
-                    <Button type="info" size="large">放入仓库</Button>
+                <Col span="3">
+                    <Button type="info" size="large" long @click.native='save("formItem")'>保存</Button>
                 </Col>
-                <Col span="2">
+                <!-- <Col span="2">
                     <Button type="warning" size="large">立即发布</Button>
-                </Col>
+                </Col> -->
             </Row>
         </div>
 
@@ -234,9 +243,6 @@
             <Checkbox-group v-model="attributeChecked">
                 <Checkbox :label="attr.name" v-for='(attr,index) in attributeAll' :key='index'></Checkbox>
             </Checkbox-group>
-
-
-
         </Modal>
 
    </div>
@@ -244,60 +250,40 @@
 <script>
 import api from '@/api/api'
 export default {
-    data () {
-        return {
-            formItem: {
-                code: '',
-                name : '',
-                barCode : '',
-                sellingPoint : '',
-                goodsClassify: '',
-                assistClassify : '',
-                unit : '',
-                prize : '',
-                quantify : '',
-                sort : '',
-                isRecommend : '',
-            },
-            // file : '',
-            goodsDesc: '<h2>I am Example</h2>',
-            goodsRule : {
-                code : [
-                    {required: true, message: '商品编码不能为空'}
-                ],
-                name : [
-                    {required : true,message : '商品名称不能为空'}
-                ],
-                goodsClassify : [
-                    {required : true,message : '请选择商品分类'}
-                ],
-                unit : [
-                    {required : true}
-                ]
-            },
-            uploadUrl : 'http://lookat.soonergz.com:8888/easycrm/api/common/fileUpload.do',
-            defaultList: [
-                {
-                    name : 'wallpaper_iphone7p_fortune-flows_large',
-                    url : 'http://lookat.soonergz.com:8888/res//9b0a25b3afb442e7a7ca72209922b793.jpg'
-                }
-            ],
-            imgUrl: '',
-            visible: false,
-            uploadList: [],
-            editorOption : {
-
-            },
-            attrList : [],
-            attrCheck : [],
-            attributeModel : false,
-            attributeAll : [],
-            attributeChecked : []
-        }
-    },
     mounted () {
+        const _this = this;
         this.uploadList = this.$refs.upload.fileList;
         // this.$refs['formItem'].resetFields();
+
+        // 获取商品分类
+        _this.axios(api.qroductCatalog + api.queryAll)
+            .then(function(res) {
+                _this.CatalogList = res.data.datas;
+                // console.log(res);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+
+        // 获取计量单位
+        _this.axios(api.baseUnit + api.queryAll) 
+            .then(function(res){
+                _this.unitList = res.data.datas;
+                // console.log(res);
+             })
+            .catch(function(err){
+                console.log(err);
+            })
+
+        // 获取商品品牌
+        _this.axios(api.baseBrand + api.queryAll)
+            .then(function(res){
+                _this.brandList = res.data.datas;
+                // console.log(res);
+            })
+            .catch(function(err){
+                console.log(err);
+            })
 
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
@@ -325,30 +311,117 @@ export default {
                    return doubleArrays[0];
                }
         }
+
+
+    },
+    data () {
+        return {
+            formItem: {
+                name : '',
+                code : '',
+                spec : '',
+                barCode : '',
+                inventoryQty : '',
+                catalogId: '',
+                unitId : '',
+                price : '',
+                quantify : '',
+                orderNum : '',
+                isUp : true,
+                status : 1,
+                description: '<h2>I am Example</h2>',
+                images : [],
+                attachments : [],
+                imageUrl : '',
+                brandId : '',
+                skus : ''
+            },
+            img : false,
+            goodsRule : {
+                code : [
+                    {required: true, message: '商品编码不能为空'}
+                ],
+                name : [
+                    {required : true,message : '商品名称不能为空'}
+                ],
+                catalogId : [
+                    {required : true,message : '请选择商品分类'}
+                ],
+                unitId : [
+                    {required : true,message : '请选择主计量单位'}
+                ]
+            },
+            /* 文件上传 */
+            uploadUrl : 'http://lookat.soonergz.com:8888/easycrm/api/common/fileUpload.do',
+            uploadData : {path : 'product'},
+            defaultList: [],
+            imgUrl: '',
+            visible: false,
+            uploadList: [],
+
+            mainImgIndex : '',
+            skuItem : '',
+
+            editorOption : {
+
+            },
+            attrindex : '',
+            attrBox : [],
+            attrCheck:[],
+            attrList : [],
+            attributeModel : false,
+            attributeAll : [],
+            attributeChecked : [],
+            CatalogList : [],   //商品分类
+            unitList : [],      //计量单位
+            brandList : []      //商品品牌
+        }
     },
     computed : {
-        skus : function() {
-            if(this.attrList.length == 0) {
-                return;
-            }
-            if(this.attrCheck.length == this.attrList.length) {
-                const result = [];
-                const checkds = window.doExchange(this.attrCheck);
-                checkds.forEach(function(item,index){
-                    // console.log(item);
-                    var itemArr = item.split('--');
-                    result.push({
-                        attrText : itemArr,
-                        SKUCode : '',
-                        ERPCode : '',
-                        prize : '',
-                        count : '',
-                        isUp : true,
-                    })
-                })
-                return result;
-            }
+        skus :{
+            get : function() {
+                const _this = this;
+                if(this.attrList.length == 0) {
+                    return;
+                }
 
+                if(this.attrCheck.length == this.attrList.length) {
+                    const result = [];
+                    const checkds = window.doExchange(this.attrCheck);
+                    checkds.forEach(function(item,index){
+                        const itemArr = item.split('--');
+                        const attrArr = [];
+                        itemArr.forEach(function(el , j) {
+                            _this.attrList[j].productAttributeValues.forEach(function(e , i) {
+                                if(el == e.name) {
+                                    attrArr.push({
+                                        attributeId : _this.attrList[j].id,
+                                        attributeName : _this.attrList[j].name,
+                                        attributeValueId : e.id,
+                                        attributeValueName : e.name
+                                    })
+                                }
+                            })
+                        })
+                        result.push({
+                            productSkuAttributes : attrArr,
+                            code : '',
+                            inventoryQty : '',
+                            price : '',
+                            description : '',
+                            orderNum : index + 1,
+                            isMainImg : 0,
+                            imageUrl : '',
+                            isUp : true,
+                            status : 1,
+                        })
+                    })
+                    return result;
+                }
+            },
+            set : function(newValue) {
+                
+            }
         },
         SKUstate : function() {
             if(this.skus) {
@@ -369,16 +442,29 @@ export default {
        },
        handleRemove (file) {
            // 从 upload 实例删除数据
+           const _this = this;
            const fileList = this.$refs.upload.fileList;
            this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+           this.formItem.images.forEach(function(item , index) {
+                if(item.fileName == file.name && item.url == item.url) {
+                    _this.formItem.images.splice(index,1);
+                }
+           })
        },
        handleError (err,file,fileList) {
             this.$Notice.warning(err);
        },
        handleSuccess (res, file,fileList) {
-            console.log(res);
            file.url = res.url;
            file.name = res.fileName;
+           const image = {
+                fileName : res.fileName,
+                fileType : res.fileSuffix,
+                filePath : res.filePath,
+                url : res.url,
+                orderNum : fileList.length
+           }
+           this.formItem.images.push(image);
        },
        handleFormatError (file) {
            this.$Notice.warning({
@@ -401,8 +487,44 @@ export default {
            }
            return check;
        },
+       mainImgSuccess (res , file , fileList) {
+            console.log(res);
+            this.formItem.imageUrl = res.url;
+       },
+       skuMainImgSuccess (res,file,fileList) {
+            // console.log(res);
+            // console.log(fileList);
+            if(res.status==1) {
+                this.skuItem.imageUrl = res.url;
+                this.skuItem.isMainImg = 1;
+                this.img = true;
+                const arr = this.skus;
+                arr[this.mainImgIndex] = this.skuItem;
+                this.skus = arr;
+                // this.skus[this.mainImgIndex].mainImg = res;
+                // this.$set(this.skus , this.mainImgIndex , this.skuItem);
+                // this.$set(this.skus , this.mainImgIndex , this.skuItem);
+                // this.skus.splice(this.mainImgIndex , 1 , this.skuItem);
+                console.log(this.skus);
+
+                // console.log(this.skus[this.mainImgIndex])
+            }
+       },
+       attachmentsSuccess (res,file,fileList) {
+            console.log(res);
+            const attachment = {
+                 fileName : res.fileName,
+                 fileType : res.fileSuffix,
+                 filePath : res.filePath,
+                 url : res.url,
+                 orderNum : fileList.length
+            }
+            this.formItem.attachments.push(attachment);
+            console.log(this.formItem);
+       },
         onEditorBlur(editor) {
-            console.log('editor blur!', editor)
+            // console.log('editor blur!', editor)
+            console.log(this.goodsDesc);
         },
         onEditorFocus(editor) {
             console.log('editor focus!', editor)
@@ -414,15 +536,17 @@ export default {
             console.log('editor change!', editor, html, text)
             this.content = html
         },
-        del () {
-            
-            console.log(this.attributeModel);
-            this.attributeModel = true;
+        del (index) {
+
+            // this.skus.splice(index , 1);
+            this.$delete(this.skus,index);
+            console.log(this.skus);
+            // this.attributeModel = true;
         },
         seleckAttr () {
             const _this = this;
             this.attributeModel = true;
-            this.axios(api.product + api.queryAll)
+            this.axios(api.productAttr + api.queryAll)
                 .then(function(res) {
                    _this.attributeAll = res.data.datas;
                    // console.log(_this.attributeAll);
@@ -432,8 +556,6 @@ export default {
                 })
         },
         attrIsOk () {
-            // console.log(this.attributeChecked)
-            // console.log(this.attributeAll)
             const _this = this;
             const attr = [];
             let attrIds = '';
@@ -446,14 +568,64 @@ export default {
                 })
             })
             attrIds = attrIds.slice(0,attrIds.length-1);
-            _this.axios(api.product +attrIds + api.productGetById )
+            _this.axios(api.productAttr +attrIds + api.productGetById )
                 .then(function(res){
-                    console.log(res.data.datas)
                     _this.attrList = res.data.datas;
                 })
                 .catch(function(err) {
                     console.log(err);
                 })
+        },
+        checkedAttr (data) {
+            const _this = this;
+
+            if(this.attrBox.length - 1 < this.attrindex) {
+                this.attrCheck.lenght = this.attrindex + 1;
+                this.attrBox.lenght = this.attrindex + 1;
+                this.attrBox[this.attrindex] = data;
+                this.attrBox.forEach(function(el,i) {
+                    if(i !== _this.attrindex) {
+                        _this.attrBox.splice(i,1,[]);
+                    }
+                })
+            }
+            this.attrCheck = this.attrBox;
+        },
+
+        change (data) {
+            console.log(data);
+            console.log(this.img);
+            data.status = data.isUp ? 1 : 0;
+        },
+        save (name) {
+            const _this = this;
+            if(this.skus) {
+                this.formItem.skus = this.skus;
+            }
+
+            this.$refs[name].validate((valid) => {
+                console.log(valid);
+                if (valid) {
+                    this.$Message.success('提交成功!');
+                    _this.axios({
+                            method : 'post',
+                            header : {
+                                "Content-Type" : 'application/x-www-form-urlencoded'
+                            },
+                            url :api.product + api.add,
+                            // url : '/prize',
+                            data : api.jsonData(_this.formItem)
+                        })
+                        .then(function(res) {
+                            console.log(res);
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                        })
+                } else {
+                    this.$Message.error('表单验证失败!');
+                }
+            })
         }
     }
 }
@@ -577,6 +749,46 @@ export default {
 .addGoods .ql-toolbar.ql-snow + .ql-container.ql-snow {
     height: 500px;
     background: #fff;
+}
+.addGoods .ivu-icon {
+    vertical-align: sub;
+}
+.addGoods .addMainImg {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border: 1px dashed #d7dde4;
+    display: inline-block;
+    cursor: pointer;
+    background: #fff;
+    text-align: center;
+    border-radius: 3px;
+    transition: border 0.2s ease;
+}
+.addGoods .addMainImg:hover {
+     border: 1px dashed #09f;
+}
+.addGoods .addImg {
+    width: 58px;
+    height: 58px;
+    line-height: 58px;
+    border: 1px dashed #d7dde4;
+    display: inline-block;
+    cursor: pointer;
+    background: #fff;
+    text-align: center;
+    border-radius: 3px;
+    transition: border 0.2s ease;
+}
+.addGoods .addImg:hover {
+    border: 1px dashed #09f;
+}
+.addGoods .ivu-input-wrapper-small .ivu-input-icon + .ivu-input {
+    padding-right: 0;
+}
+.addGoods .mainImg {
+    width: 100%;
+    height: 100%;
 }
 
 </style>

@@ -16,7 +16,8 @@ export default {
 	menus : '/sys/menu/fetchUserMenus.do',
 
 	//  公用
-	queryAll : 'queryAll.do',		//查询所有
+	queryAll : 'queryAll.do',		//查询所有  get
+	add : 'add.do'	,				//添加 post
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径
 	categoryGetRoots : 'queryAll.do' , 		//查询客户分类列表
@@ -51,12 +52,20 @@ export default {
 	indeustryAdd : 'add.do',					//添加客户行业分类
 	indeustryModify : 'modify.do',				// 修改客户行业分类
 	indeustryDel : '/delete.do',				//删除指定节点 -- 之前添加删除ID  如 /12/delete.do
+	//商品
+	product : '/api/product/main/',				//商品
 
-	// 添加商品
+	// 商品分类
+	qroductCatalog: '/api/product/catalog/'	,		//商品分类根路径
 
 
 	// 商品属性
-	product : '/api/product/attribute/',		//商品属性 api 根路径
-	productGetById : '/queryByIds.do',			//根据多	个id查询商品属性   如 /1,2,3/queryByIds.do
+	productAttr : '/api/product/attribute/',		//商品属性 api 根路径
+	productGetById : '/queryByIds.do',				//根据多	个id查询商品属性   如 /1,2,3/queryByIds.do
 
+	//计量单位
+	baseUnit : '/api/base/unit/',			// 单位 api 根路径
+
+	//商品品牌
+	baseBrand : 'api/base/brand/'			//商品品牌
 }

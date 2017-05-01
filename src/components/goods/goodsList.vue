@@ -53,8 +53,18 @@
 </template>
 
 <script>
-    
+    import api from '@/api/api'
 export default {
+    mounted () {
+        const _this = this;
+        _this.axios(api.qroductCatalog + api.queryAll)
+            .then(function(res){
+                console.log(res);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+    },
     data () {
         return {
             cityList: [
