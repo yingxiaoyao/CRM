@@ -681,7 +681,7 @@ export default {
                             },
                             url :api.product + api.add,
                             // url : '/prize',
-                            data : _this.formItem
+                            data : JSON.stringify(_this.formItem)
                         })
                         .then(function(res) {
                             console.log(res);
