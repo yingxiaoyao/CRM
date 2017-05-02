@@ -109,7 +109,7 @@
                                     <div class="table-td bold">操作</div>
                                 </div>
                                 <div class="table-tbody">
-                                    <div class="table-tr" v-for='(sku , index) in skus' :key='index'>
+                                    <div class="table-tr" v-for='(sku , index) in formItem.skus' :key='index'>
                                         <div class="table-td" style='padding:10px 0;'>
                                             <Upload :action="uploadUrl"
                                                 :show-upload-list="false"
@@ -117,8 +117,8 @@
                                                 :headers='uploadHeader'
                                                 @click.native = 'skuItem = sku; mainImgIndex = index'>
                                                 <div class="addImg">
-                                                    <Icon type="plus-round" size='20' v-if='skus[index].isMainImg == 0'></Icon>
-                                                    <img :src="skus[index].imageUrl" class="mainImg" v-else>
+                                                    <Icon type="plus-round" size='20' v-if='!sku.imageUrl'></Icon>
+                                                    <img :src="sku.imageUrl" class="mainImg" v-else>
                                                 </div>
                                             </Upload>
                                         </div>
@@ -160,9 +160,11 @@
                             <quill-editor v-model="formItem.description"
                                         ref="myQuillEditor"
                                         :options="editorOption"
-                                        @blur="onEditorBlur($event)"
+                                        >
+
+                                        <!-- @blur="onEditorBlur($event)"
                                         @focus="onEditorFocus($event)"
-                                        @ready="onEditorReady($event)">
+                                        @ready="onEditorReady($event)" -->
                               </quill-editor>
                         </Form-item>
                     </Col>
@@ -285,6 +287,44 @@ export default {
                 console.log(err);
             })
 
+        /*_this.attrList = [{
+
+            name : '颜色',
+            productAttributeValues : [
+                {
+                    name : '红色'
+                },
+                {
+                    name : '蓝色'
+                }
+            ]
+        }],
+        _this.attrCheck = ['红色','蓝色'];
+        _this.attrBox = ['红色','蓝色'];
+        // _this.SKUstate = true;
+        _this.formItem = {
+            name : 'adfasdf',
+            code : '102345',
+            spec : '123456',
+            barCode : '123456',
+            inventoryQty : '',
+            catalogId: '',
+            unitId : '',
+            price : '',
+            quantify : '',
+            orderNum : '',
+            isUp : true,
+            status : 1,
+            description: '<h2>I am Example</h2>',
+            images : [],
+            attachments : [],
+            imageUrl : '',
+            brandId : '',
+            skus : [
+                
+            ]
+        }*/
+
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
                if (len >= 2) {
@@ -334,7 +374,7 @@ export default {
                 attachments : [],
                 imageUrl : '',
                 brandId : '',
-                skus : ''
+                skus : []
             },
             img : false,
             goodsRule : {
@@ -365,6 +405,7 @@ export default {
             editorOption : {
 
             },
+
             attrindex : '',
             attrBox : [],
             attrCheck:[],
@@ -372,6 +413,7 @@ export default {
             attributeModel : false,
             attributeAll : [],
             attributeChecked : [],
+
             CatalogList : [],   //商品分类
             unitList : [],      //计量单位
             brandList : []      //商品品牌
@@ -416,11 +458,13 @@ export default {
                             status : 1,
                         })
                     })
+                    _this.formItem.skus = result;
                     return result;
+
                 }
             },
             set : function(newValue) {
-                
+                // this.formItem.skus = newValue;
             }
         },
         SKUstate : function() {
@@ -436,6 +480,46 @@ export default {
         }
     },
     methods: {
+        skus () {
+            const _this = this;
+            if(this.attrList.length == 0) {
+                return;
+            }
+
+            if(this.attrCheck.length == this.attrList.length) {
+                const result = [];
+                const checkds = window.doExchange(this.attrCheck);
+                checkds.forEach(function(item,index){
+                    const itemArr = item.split('--');
+                    const attrArr = [];
+                    itemArr.forEach(function(el , j) {
+                        _this.attrList[j].productAttributeValues.forEach(function(e , i) {
+                            if(el == e.name) {
+                                attrArr.push({
+                                    attributeId : _this.attrList[j].id,
+                                    attributeName : _this.attrList[j].name,
+                                    attributeValueId : e.id,
+                                    attributeValueName : e.name
+                                })
+                            }
+                        })
+                    })
+                    result.push({
+                        productSkuAttributes : attrArr,
+                        code : '',
+                        inventoryQty : '',
+                        price : '',
+                        description : '',
+                        orderNum : index + 1,
+                        imageUrl : '',
+                        isUp : true,
+                        status : 1,
+                    })
+                })
+                this.formItem.skus = result;
+                // return result;
+            }
+        },
        handleView (item) {
            this.imgUrl = item.url;
            this.visible = true;
@@ -488,26 +572,12 @@ export default {
            return check;
        },
        mainImgSuccess (res , file , fileList) {
-            console.log(res);
             this.formItem.imageUrl = res.url;
        },
        skuMainImgSuccess (res,file,fileList) {
-            // console.log(res);
-            // console.log(fileList);
             if(res.status==1) {
                 this.skuItem.imageUrl = res.url;
-                this.skuItem.isMainImg = 1;
-                this.img = true;
-                const arr = this.skus;
-                arr[this.mainImgIndex] = this.skuItem;
-                this.skus = arr;
-                // this.skus[this.mainImgIndex].mainImg = res;
-                // this.$set(this.skus , this.mainImgIndex , this.skuItem);
-                // this.$set(this.skus , this.mainImgIndex , this.skuItem);
-                // this.skus.splice(this.mainImgIndex , 1 , this.skuItem);
-                console.log(this.skus);
-
-                // console.log(this.skus[this.mainImgIndex])
+                this.formItem.skus.splice(this.mainImgIndex, 1 , this.skuItem);
             }
        },
        attachmentsSuccess (res,file,fileList) {
@@ -522,26 +592,26 @@ export default {
             this.formItem.attachments.push(attachment);
             console.log(this.formItem);
        },
-        onEditorBlur(editor) {
-            // console.log('editor blur!', editor)
-            console.log(this.goodsDesc);
-        },
-        onEditorFocus(editor) {
-            console.log('editor focus!', editor)
-        },
-        onEditorReady(editor) {
-            console.log('editor ready!', editor)
-        },
-        onEditorChange({ editor, html, text }) {
-            console.log('editor change!', editor, html, text)
-            this.content = html
-        },
+        // onEditorBlur(editor) {
+        //     // console.log('editor blur!', editor)
+        //     console.log(this.goodsDesc);
+        // },
+        // onEditorFocus(editor) {
+        //     console.log('editor focus!', editor)
+        // },
+        // onEditorReady(editor) {
+        //     console.log('editor ready!', editor)
+        // },
+        // onEditorChange({ editor, html, text }) {
+        //     console.log('editor change!', editor, html, text)
+        //     this.content = html
+        // },
         del (index) {
-
-            // this.skus.splice(index , 1);
-            this.$delete(this.skus,index);
-            console.log(this.skus);
-            // this.attributeModel = true;
+            this.formItem.skus.splice(index,1);
+        },
+        change (data) {
+            data.status = data.isUp ? 1 : 0;
+            console.log(this.formItem);
         },
         seleckAttr () {
             const _this = this;
@@ -570,6 +640,7 @@ export default {
             attrIds = attrIds.slice(0,attrIds.length-1);
             _this.axios(api.productAttr +attrIds + api.productGetById )
                 .then(function(res){
+                    console.log(res.data.datas);
                     _this.attrList = res.data.datas;
                 })
                 .catch(function(err) {
@@ -592,16 +663,11 @@ export default {
             this.attrCheck = this.attrBox;
         },
 
-        change (data) {
-            console.log(data);
-            console.log(this.img);
-            data.status = data.isUp ? 1 : 0;
-        },
         save (name) {
             const _this = this;
-            if(this.skus) {
-                this.formItem.skus = this.skus;
-            }
+            // if(this.skus) {
+            //     this.formItem.skus = this.skus;
+            // }
 
             this.$refs[name].validate((valid) => {
                 console.log(valid);
