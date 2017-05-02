@@ -673,6 +673,7 @@ export default {
                 console.log(valid);
                 if (valid) {
                     this.$Message.success('提交成功!');
+                    console.log(_this.formItem);
                     _this.axios({
                             method : 'post',
                             header : {
@@ -680,7 +681,7 @@ export default {
                             },
                             url :api.product + api.add,
                             // url : '/prize',
-                            data : api.jsonData(_this.formItem)
+                            data : _this.formItem
                         })
                         .then(function(res) {
                             console.log(res);
