@@ -5,7 +5,7 @@
             <div class="leftMenu">
                 <LeftMenu></LeftMenu>
             </div>
-            <div class="content">
+            <div class="content" id="content">
                 <div class="home-warp">
                     <router-view :time='"2017-04-08"'></router-view>
                 </div>

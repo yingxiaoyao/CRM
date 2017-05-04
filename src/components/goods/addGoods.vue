@@ -247,6 +247,14 @@
             </Checkbox-group>
         </Modal>
 
+        
+        <div class="demo-spin-col" span="8" v-if='spinShow'>
+            <Spin fix>
+                <Icon type="load-c" size=35 class="demo-spin-icon-load"></Icon>
+                <div>Loading</div>
+            </Spin>
+        </div>
+
    </div>
 </template>
 <script>
@@ -255,6 +263,10 @@ export default {
     mounted () {
         const _this = this;
         this.uploadList = this.$refs.upload.fileList;
+        this.DOM = {
+            content : document.getElementById('content')
+        };
+        console.log(this.DOM.content);
         // this.$refs['formItem'].resetFields();
 
         // 获取商品分类
@@ -281,49 +293,10 @@ export default {
         _this.axios(api.baseBrand + api.queryAll)
             .then(function(res){
                 _this.brandList = res.data.datas;
-                // console.log(res);
             })
             .catch(function(err){
                 console.log(err);
             })
-
-        /*_this.attrList = [{
-
-            name : '颜色',
-            productAttributeValues : [
-                {
-                    name : '红色'
-                },
-                {
-                    name : '蓝色'
-                }
-            ]
-        }],
-        _this.attrCheck = ['红色','蓝色'];
-        _this.attrBox = ['红色','蓝色'];
-        // _this.SKUstate = true;
-        _this.formItem = {
-            name : 'adfasdf',
-            code : '102345',
-            spec : '123456',
-            barCode : '123456',
-            inventoryQty : '',
-            catalogId: '',
-            unitId : '',
-            price : '',
-            quantify : '',
-            orderNum : '',
-            isUp : true,
-            status : 1,
-            description: '<h2>I am Example</h2>',
-            images : [],
-            attachments : [],
-            imageUrl : '',
-            brandId : '',
-            skus : [
-                
-            ]
-        }*/
 
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
@@ -356,6 +329,7 @@ export default {
     },
     data () {
         return {
+            DOM : {},
             formItem: {
                 name : '',
                 code : '',
@@ -413,10 +387,15 @@ export default {
             attributeModel : false,
             attributeAll : [],
             attributeChecked : [],
+            attributeCheckedHistory : [],
 
             CatalogList : [],   //商品分类
             unitList : [],      //计量单位
-            brandList : []      //商品品牌
+            brandList : [],      //商品品牌
+
+            spinShow : false,
+            // SKUstate : false
+            
         }
     },
     computed : {
@@ -461,6 +440,9 @@ export default {
                     _this.formItem.skus = result;
                     return result;
 
+                }else {
+                    _this.formItem.skus = [];
+                    return [];
                 }
             },
             set : function(newValue) {
@@ -480,46 +462,6 @@ export default {
         }
     },
     methods: {
-        skus () {
-            const _this = this;
-            if(this.attrList.length == 0) {
-                return;
-            }
-
-            if(this.attrCheck.length == this.attrList.length) {
-                const result = [];
-                const checkds = window.doExchange(this.attrCheck);
-                checkds.forEach(function(item,index){
-                    const itemArr = item.split('--');
-                    const attrArr = [];
-                    itemArr.forEach(function(el , j) {
-                        _this.attrList[j].productAttributeValues.forEach(function(e , i) {
-                            if(el == e.name) {
-                                attrArr.push({
-                                    attributeId : _this.attrList[j].id,
-                                    attributeName : _this.attrList[j].name,
-                                    attributeValueId : e.id,
-                                    attributeValueName : e.name
-                                })
-                            }
-                        })
-                    })
-                    result.push({
-                        productSkuAttributes : attrArr,
-                        code : '',
-                        inventoryQty : '',
-                        price : '',
-                        description : '',
-                        orderNum : index + 1,
-                        imageUrl : '',
-                        isUp : true,
-                        status : 1,
-                    })
-                })
-                this.formItem.skus = result;
-                // return result;
-            }
-        },
        handleView (item) {
            this.imgUrl = item.url;
            this.visible = true;
@@ -592,20 +534,6 @@ export default {
             this.formItem.attachments.push(attachment);
             console.log(this.formItem);
        },
-        // onEditorBlur(editor) {
-        //     // console.log('editor blur!', editor)
-        //     console.log(this.goodsDesc);
-        // },
-        // onEditorFocus(editor) {
-        //     console.log('editor focus!', editor)
-        // },
-        // onEditorReady(editor) {
-        //     console.log('editor ready!', editor)
-        // },
-        // onEditorChange({ editor, html, text }) {
-        //     console.log('editor change!', editor, html, text)
-        //     this.content = html
-        // },
         del (index) {
             this.formItem.skus.splice(index,1);
         },
@@ -614,19 +542,35 @@ export default {
             console.log(this.formItem);
         },
         seleckAttr () {
+
+            // if(this.attributeChecked.length !== 0) {
+            //     this.attributeCheckedHistory = this.attributeChecked;
+            // }
+
             const _this = this;
             this.attributeModel = true;
             this.axios(api.productAttr + api.queryAll)
                 .then(function(res) {
                    _this.attributeAll = res.data.datas;
-                   // console.log(_this.attributeAll);
                 })
                 .catch(function(err) {
                     console.log(err);
                 })
         },
         attrIsOk () {
+
+            // if(this.attributeCheckedHistory.length !== 0) {
+            //     if(this.attributeChecked.join('') == this.attributeCheckedHistory.join('')) {
+            //         console.log('值相等');
+            //         return;
+            //     }else {
+            //         console.log('aaaaa');
+            //     }
+            // }
+
             const _this = this;
+            this.attrBox = [];
+            this.attrCheck = [];
             const attr = [];
             let attrIds = '';
             this.attributeChecked.forEach(function(el , i) {
@@ -640,8 +584,8 @@ export default {
             attrIds = attrIds.slice(0,attrIds.length-1);
             _this.axios(api.productAttr +attrIds + api.productGetById )
                 .then(function(res){
-                    console.log(res.data.datas);
                     _this.attrList = res.data.datas;
+                    
                 })
                 .catch(function(err) {
                     console.log(err);
@@ -661,36 +605,48 @@ export default {
                 })
             }
             this.attrCheck = this.attrBox;
+
         },
 
         save (name) {
             const _this = this;
-            // if(this.skus) {
-            //     this.formItem.skus = this.skus;
-            // }
+            
+            console.log(api.jsonData(_this.formItem));
 
             this.$refs[name].validate((valid) => {
-                console.log(valid);
+
+                _this.spinShow = true;
+
                 if (valid) {
-                    this.$Message.success('提交成功!');
-                    console.log(_this.formItem);
+                    
+                   
                     _this.axios({
                             method : 'post',
                             header : {
                                 "Content-Type" : 'application/x-www-form-urlencoded'
                             },
                             url :api.product + api.add,
-                            // url : '/prize',
-                            data : JSON.stringify(_this.formItem)
+                            data : api.jsonData(_this.formItem)
                         })
                         .then(function(res) {
-                            console.log(res);
+                            
+                            const data = res.data;
+                            if(data.status == 1) {
+                                _this.spinShow = false;
+                            }else {
+                                this.$Message.error(data.message);
+                            }
                         })
                         .catch(function(err) {
                             console.log(err);
                         })
                 } else {
-                    this.$Message.error('表单验证失败!');
+                    _this.spinShow = false;
+                    this.$Notice.warning({
+                        title: '请按照页面提示修改信息',
+                    });
+
+                    _this.DOM.content.scrollTop = 0;
                 }
             })
         }
@@ -856,6 +812,40 @@ export default {
 .addGoods .mainImg {
     width: 100%;
     height: 100%;
+}
+
+
+.addGoods .demo-spin-icon-load{
+       animation: ani-demo-spin 1s linear infinite;
+   }
+@keyframes ani-demo-spin {
+   from { transform: rotate(0deg);}
+   50%  { transform: rotate(180deg);}
+   to   { transform: rotate(360deg);}
+}
+.addGoods .demo-spin-col{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 10;
+}
+.addGoods .ivu-spin-fix {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 8;
+    display: table;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.5);
+}
+.addGoods .ivu-spin {
+    color: #fff;
 }
 
 </style>

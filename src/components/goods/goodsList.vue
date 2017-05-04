@@ -17,7 +17,7 @@
             </Col>
             <Col span='10'>
                 <span>关键字：</span>
-                <Input v-model="value" placeholder="商品名称/编码" style="width: 200px"></Input>
+                <Input v-model="keywords" placeholder="商品名称/编码" style="width: 200px"></Input>
                 <Button>查询</Button>
             </Col>
         </Row>
@@ -57,13 +57,34 @@
 export default {
     mounted () {
         const _this = this;
-        _this.axios(api.qroductCatalog + api.queryAll)
+        const goods = [];
+        _this.axios(api.product + api.productByRequset)
             .then(function(res){
                 console.log(res);
+                const data = res.data.datas;
+                data.forEach(function(item , index){
+                    goods.push({
+                        name : {
+                            img : item.imageUrl,
+                            name : item.name , 
+                            code : item.barCode
+                        },
+                        prize : item.price,
+                        unit : item.unitId,
+                        status : item.status == 0 ? '已下架' : '上架中',
+                        classify : item.catalogId
+                    })
+                })
+                _this.data5 = goods;
+
             })
             .catch(function(err) {
                 console.log(err);
             })
+
+
+
+
     },
     data () {
         return {
@@ -94,6 +115,7 @@ export default {
                 }
             ],
             model1: '',
+            keywords : '',
             columns5 : [
                 {
                     type: 'selection',
@@ -132,10 +154,7 @@ export default {
                 },
                 {
                     title : '状态',
-                    key : 'status',
-                    render (row , column,index) {
-                        return `<div>上架: ${row.status.up}</div><div>下架: ${row.status.down}</div>`;
-                    }
+                    key : 'status'
                 },
                 {
                     title : '操作',

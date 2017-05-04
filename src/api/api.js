@@ -3,10 +3,19 @@ export default {
 	jsonData : function(data){
 		// console.log(data);
 		var jsondata = '';
+		const reg = /^\".*\"$/;
 		for(const key in data) {
 			if(data[key]) {
-				// var json = ;
-				jsondata += key + '=' + data[key] + '&';
+
+				const tm = JSON.stringify(data[key]);
+				// console.log(tm);
+
+				if(tm.match(reg)) {
+					jsondata += key + '=' + tm.substr(1,tm.length - 2) + '&';
+				}else {
+					jsondata += key + '=' + tm + '&';
+				}
+
 			}
 		}
 		const json = jsondata.substr(0,jsondata.length-1);
@@ -54,6 +63,7 @@ export default {
 	indeustryDel : '/delete.do',				//删除指定节点 -- 之前添加删除ID  如 /12/delete.do
 	//商品
 	product : '/api/product/main/',				//商品
+	productByRequset : 'queryByRequest.do',
 
 	// 商品分类
 	qroductCatalog: '/api/product/catalog/'	,		//商品分类根路径
