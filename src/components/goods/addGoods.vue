@@ -238,13 +238,20 @@
 
 
         <Modal
-            title="对话框标题"
+            title="商品属性"
             v-model="attributeModel"
             @on-ok="attrIsOk"
             class-name="vertical-center-modal">
             <Checkbox-group v-model="attributeChecked">
                 <Checkbox :label="attr.name" v-for='(attr,index) in attributeAll' :key='index'></Checkbox>
             </Checkbox-group>
+        </Modal>
+        <Modal
+            title="是否修改商品属性"
+            v-model="attributeChangeModel"
+            @on-ok='attrIsOk'
+            class-name="vertical-center-modal">
+            <span>点击确定修改商品属性，并会清空之前的数据，否则请点击取消</span>
         </Modal>
 
         
@@ -384,10 +391,11 @@ export default {
             attrBox : [],
             attrCheck:[],
             attrList : [],
-            attributeModel : false,
             attributeAll : [],
             attributeChecked : [],
             attributeCheckedHistory : [],
+            attributeModel : false,
+            attributeChangeModel : false,
 
             CatalogList : [],   //商品分类
             unitList : [],      //计量单位
@@ -543,9 +551,9 @@ export default {
         },
         seleckAttr () {
 
-            // if(this.attributeChecked.length !== 0) {
-            //     this.attributeCheckedHistory = this.attributeChecked;
-            // }
+            if(this.attributeChecked.length !== 0) {
+                this.attributeCheckedHistory = this.attributeChecked;
+            }
 
             const _this = this;
             this.attributeModel = true;
@@ -559,14 +567,16 @@ export default {
         },
         attrIsOk () {
 
-            // if(this.attributeCheckedHistory.length !== 0) {
-            //     if(this.attributeChecked.join('') == this.attributeCheckedHistory.join('')) {
-            //         console.log('值相等');
-            //         return;
-            //     }else {
-            //         console.log('aaaaa');
-            //     }
-            // }
+            if(this.attributeCheckedHistory.length !== 0) {
+                if(this.attributeChecked.join('') == this.attributeCheckedHistory.join('')) {
+                    console.log('值相同');
+                    return;
+                }else {
+                    this.attributeChangeModel = true;
+                    console.log('aaaaa');
+                    return;
+                }
+            }
 
             const _this = this;
             this.attrBox = [];
@@ -610,16 +620,11 @@ export default {
 
         save (name) {
             const _this = this;
-            
-            console.log(api.jsonData(_this.formItem));
-
             this.$refs[name].validate((valid) => {
 
                 _this.spinShow = true;
 
                 if (valid) {
-                    
-                   
                     _this.axios({
                             method : 'post',
                             header : {

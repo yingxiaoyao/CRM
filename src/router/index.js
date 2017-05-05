@@ -19,7 +19,7 @@ Vue.use(Router)
 const routes = [
     {
       path: '/',
-      name :'/',
+      name :'index',
       meta: {
           requireAuth: true,
       },
