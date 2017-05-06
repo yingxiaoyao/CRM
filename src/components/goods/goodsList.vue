@@ -42,10 +42,10 @@
         </Row>
 
         <div class="fileHandle">
-            <Table :columns="columns5" :data="data5"></Table>
+            <Table :columns="columns5" :data="goodsList"></Table>
         </div>
         <Row class="fileHandle" type="flex" justify="end">
-            <Page :total="10" show-elevator></Page>
+            <Page :total="goodsTotalCount" :pageSize='10' show-elevator show-total @on-change='toPage'></Page>
         </Row>
         <div class="fileHandle"></div>
         
@@ -58,12 +58,26 @@ export default {
     mounted () {
         const _this = this;
         const goods = [];
-        _this.axios(api.product + api.productByRequset)
-            .then(function(res){
+
+        this.DOM = {
+            content : document.getElementById('content')
+        };
+        _this.axios({
+                method : 'post',
+                header : {
+                    "Content-Type" : 'application/x-www-form-urlencoded'
+                },
+                url : api.product + api.productByRequset,
+                data : api.jsonData({pageStart : 1 , pageNums : _this.$store.state.pageNums})
+            })
+            .then(function(res) {
                 console.log(res);
-                const data = res.data.datas;
+                const data = res.data.datas.rows;
+                _this.goodsTotalCount = res.data.datas.total;
+                _this.originalGoodsList = data;
                 data.forEach(function(item , index){
                     goods.push({
+                        id : item.id,
                         name : {
                             img : item.imageUrl,
                             name : item.name , 
@@ -71,23 +85,25 @@ export default {
                         },
                         prize : item.price,
                         unit : item.unitId,
+                        qrUrl : item.qrUrl,
                         status : item.status == 0 ? '已下架' : '上架中',
-                        classify : item.catalogId
+                        classify : item.catalogId,
+                        inventoryQty : item.inventoryQty,
+                        spec : item.spec
                     })
                 })
-                _this.data5 = goods;
+                _this.goodsList = goods;
 
             })
-            .catch(function(err) {
+            .catch(function(err){
                 console.log(err);
             })
-
-
-
+       
 
     },
     data () {
         return {
+            DOM : {},
             cityList: [
                 {
                     value: 'beijing',
@@ -125,20 +141,19 @@ export default {
                 {
                     title: '商品名称',
                     key: 'name',
-                    width : 350,
+                    width : 300,
                     render (row , column , index) {
                         return  `<div class="wares">
                                     <img src='${row.name.img}'>
                                     <div class="waresInfo">
                                         <h3>${row.name.name}</h3> 
-                                        <span>${row.name.code}</span>
                                     </div>
                                 </div>`
                     }
                 },
                 {
-                    title: '所属分类',
-                    key: 'classify'
+                    title: '规格型号',
+                    key: 'spec'
                 },
                 {
                     title: '销售价格',
@@ -148,9 +163,17 @@ export default {
                         return `<span class='prize'>${row.prize}</span>`;
                     }
                 },
+                
                 {
-                    title: '单位',
-                    key: 'unit',
+                    title: '库存数量',
+                    key: 'inventoryQty',
+                },
+                {
+                    title : '商品二维码',
+                    key : 'qrUrl',
+                    render (row , column , index) {
+                        return `<img src='${row.qrUrl}' class='qrUrl'>`
+                    }
                 },
                 {
                     title : '状态',
@@ -161,62 +184,118 @@ export default {
                     key: 'action',
                     align: 'center',
                     render (row, column, index) {
-                        return `<i-button type="text" size="small" @click="show(${index})">修改</i-button> <i-button type="text" size="small" @click="remove(${index})">删除</i-button>`;
+                        return `<i-button type="text" size="small" @click="modify(${index},row)">修改</i-button> <i-button type="text" size="small" @click="remove(${index})">删除</i-button>`;
                     }
                 }
             ],
-            data5 : [
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '计算机',code : '123456'},
-                    prize: 1800,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '电子'
-                },
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '计算机',code : '123456'},
-                    prize: 2500,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '计算机'
-                },
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '电子',code : '123456'},
-                    prize: 3000,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '电子'
-                },
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '计算机',code : '123456'},
-                    prize: 2600,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '服装'
-                },
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '计算机',code : '123456'},
-                    prize: 2600,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '服装'
-                },
-                {
-                    name: {img : '/static/img/pic-login-bg.png' , name : '计算机',code : '123456'},
-                    prize: 2600,
-                    unit: '个',
-                    status : {up : 0, down : 1},
-                    classify: '服装'
-                },
-
-            ]
+            originalGoodsList : [],
+            goodsList : [],
+            goodsTotalCount : 0 ,
+            pageCount : 1
 
         }
     },
+    methods : {
+        toPage (count) {
+           
+            const _this = this;
+            const goods = [];
+            _this.pageCount = count;
+
+
+            _this.axios({
+                    method : 'post',
+                    header : {
+                        "Content-Type" : 'application/x-www-form-urlencoded'
+                    },
+                    url : api.product + api.productByRequset,
+                    data : api.jsonData({pageStart :  _this.pageCount , pageNums : _this.$store.state.pageNums})
+                })
+                .then(function(res) {
+                    console.log(res);
+                    const data = res.data.datas.rows;
+                    _this.goodsTotalCount = res.data.datas.total;
+                    data.forEach(function(item , index){
+                        goods.push({
+                            id : item.id,
+                            name : {
+                                img : item.imageUrl,
+                                name : item.name , 
+                                code : item.barCode
+                            },
+                            prize : item.price,
+                            unit : item.unitId,
+                            status : item.status == 0 ? '已下架' : '上架中',
+                            classify : item.catalogId
+                        })
+                    })
+                    _this.goodsList = goods;
+                    _this.DOM.content.scrollTop = 0;
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        },
+        remove (index) {
+            console.log(index);
+            console.log(this.originalGoodsList[index]);
+            const _this = this;
+            const id = this.originalGoodsList[index].id;
+            _this.axios(api.product + id + api.productDelete)
+                .then(function(res){
+                    console.log(res);
+                    const goods = [];
+                    _this.axios({
+                            method : 'post',
+                            header : {
+                                "Content-Type" : 'application/x-www-form-urlencoded'
+                            },
+                            url : api.product + api.productByRequset,
+                            data : api.jsonData({pageStart :  _this.pageCount , pageNums : _this.$store.state.pageNums})
+                        })
+                        .then(function(res) {
+                            console.log(res);
+                            const data = res.data.datas.rows;
+                            _this.goodsTotalCount = res.data.datas.total;
+                            data.forEach(function(item , index){
+                                goods.push({
+                                    id : item.id,
+                                    name : {
+                                        img : item.imageUrl,
+                                        name : item.name , 
+                                        code : item.barCode
+                                    },
+                                    prize : item.price,
+                                    unit : item.unitId,
+                                    status : item.status == 0 ? '已下架' : '上架中',
+                                    classify : item.catalogId
+                                })
+                            })
+                            _this.goodsList = goods;
+                            _this.DOM.content.scrollTop = 0;
+                        })
+                        .catch(function(err){
+                            console.log(err);
+                        })
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+
+        },
+        modify (index, data) {
+
+            this.$router.push({name : 'addGoods' , params : {id : this.goodsList[index].id}})
+        }
+    }
 }
 </script>
 
 <style>
+.goodsList .qrUrl {
+    width: 80px;
+    height: auto;
+}
 .ivu-select .ivu-select-dropdown {
     overflow: inherit;
 }

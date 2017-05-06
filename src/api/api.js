@@ -27,6 +27,7 @@ export default {
 	//  公用
 	queryAll : 'queryAll.do',		//查询所有  get
 	add : 'add.do'	,				//添加 post
+
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径
 	categoryGetRoots : 'queryAll.do' , 		//查询客户分类列表
@@ -63,10 +64,14 @@ export default {
 	indeustryDel : '/delete.do',				//删除指定节点 -- 之前添加删除ID  如 /12/delete.do
 	//商品
 	product : '/api/product/main/',				//商品
-	productByRequset : 'queryByRequest.do',
+	productByRequset : 'queryByRequest.do',		//post 
+	productModeify : 'modify.do',
+	productQueryById : '/queryById.do',			//根据ID查询某一个客户级别详情 -- 之前添加查询ID 如 /12/query.do
+	productDelete : '/deleteById.do',			// 删除指定节点 -- 之前添加删除ID  如 /12/deleteById.do
 
 	// 商品分类
 	qroductCatalog: '/api/product/catalog/'	,		//商品分类根路径
+
 
 
 	// 商品属性

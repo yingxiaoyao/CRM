@@ -13,7 +13,8 @@ const store = new Vuex.Store({
   // 定义状态
   	state: {
   		token: null,
-        title: ''
+        title: '',
+        pageNums : 10		//分页条数
   	},
  	// actions : api,
 	mutations : {

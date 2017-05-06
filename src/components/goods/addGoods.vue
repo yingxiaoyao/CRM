@@ -19,17 +19,17 @@
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="商品编码" prop='code'>
-                            <Input type="text" v-model="formItem.code" placeholder="最多输入100个字符"></Input>
+                            <Input type="text" v-model="formItem.code" placeholder="最多输入50个字符"></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="规格型号" prop='spec'>
-                            <Input type="text" v-model="formItem.spec"></Input>
+                            <Input type="text" v-model="formItem.spec" placeholder="最多输入100个字符"></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="商品条形码" prop='barCode'>
-                            <Input type="text" v-model="formItem.barCode"></Input>
+                            <Input type="text" v-model="formItem.barCode" placeholder="最多输入50个字符"></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -55,12 +55,7 @@
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="销售价格" prop='price'>
-                            <Input type="text" v-model="formItem.price"></Input>
-                        </Form-item>
-                    </Col>
-                    <Col span="8" class='span8'>
-                        <Form-item label="起订量" prop='quantify'>
-                            <Input type="text" v-model="formItem.quantify"></Input>
+                            <Input type="text" v-model="formItem.price" number></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -86,7 +81,7 @@
                             <Row>
                                 <Col span='24' v-for='(attrItem,index) in attrList' :key='index'>
                                     <label class="goodsAttr">{{attrItem.name}}</label>
-                                    <Checkbox-group v-model='attrBox[index]' @on-change='checkedAttr' @click.native='attrindex = index'>
+                                    <Checkbox-group v-model='attrCheck[index]' @on-change='checkedAttr' @click.native='attrindex = index'>
                                         <Checkbox v-for='(item,index) in attrItem.productAttributeValues' :key='index' :label="item.name"></Checkbox>
                                     </Checkbox-group>
                                 </Col>
@@ -249,7 +244,8 @@
         <Modal
             title="是否修改商品属性"
             v-model="attributeChangeModel"
-            @on-ok='attrIsOk'
+            @on-ok='attrChangeIsOk'
+            @on-cancel='attrChangeIsCancel'
             class-name="vertical-center-modal">
             <span>点击确定修改商品属性，并会清空之前的数据，否则请点击取消</span>
         </Modal>
@@ -273,14 +269,28 @@ export default {
         this.DOM = {
             content : document.getElementById('content')
         };
-        console.log(this.DOM.content);
-        // this.$refs['formItem'].resetFields();
+
+
+       
 
         // 获取商品分类
-        _this.axios(api.qroductCatalog + api.queryAll)
+        _this.axios({
+                method : 'get',
+                url :api.qroductCatalog + api.queryAll,
+                async : false
+            })
             .then(function(res) {
                 _this.CatalogList = res.data.datas;
                 // console.log(res);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+
+        // 获取商品属性
+        this.axios(api.productAttr + api.queryAll)
+            .then(function(res) {
+               _this.attributeAll = res.data.datas;
             })
             .catch(function(err) {
                 console.log(err);
@@ -304,6 +314,77 @@ export default {
             .catch(function(err){
                 console.log(err);
             })
+
+            //  修改
+
+            // console.log(this.$route.params)
+
+            if(this.$route.params.id) {
+                const id = this.$route.params.id;
+                _this.axios(api.product + id + api.productQueryById)
+                    .then(function(res){
+                        
+                        const data = res.data.datas;
+                        console.log(data);
+                        data.isUp = data.status == 1 ? true : false;
+                        data.skus.forEach(function(sku , index) {
+                            sku.isUp = sku.status == 1 ? true : false;
+                        })
+                        _this.formItem = {
+                            id : data.id,
+                            name : data.name,
+                            code : data.code,
+                            spec : data.spec,
+                            barCode : data.barCode,
+                            inventoryQty : data.inventoryQty,
+                            catalogId: data.catalogId,
+                            unitId : data.unitId,
+                            price : data.price,
+                            orderNum : data.orderNum,
+                            isUp : data.status == 1 ? true : false,
+                            status : data.status,
+                            description: data.description,
+                            images : data.images,
+                            attachments : data.attachments,
+                            imageUrl : data.imageUrl,
+                            brandId : data.brandId,
+                            skus : data.skus
+                        };
+
+                        console.log(data.attributes);
+
+                       if(data.skus.length >= 1) {
+                            let attrIds = '';
+                            let checkedAttr = [];
+                            data.attributes.forEach(function(attr , index) {
+                                attrIds += attr.id + ',';
+                                checkedAttr[index] = [];
+                                attr.productAttributeValues.forEach(function(item , i) {
+                                   checkedAttr[index].push(item.name);
+                                })
+                                _this.attributeChecked.push(attr.name);
+                            })
+
+                            _this.attrCheck = checkedAttr;
+                            attrIds = attrIds.slice(0,attrIds.length-1);
+                            _this.axios(api.productAttr + attrIds + api.productGetById )
+                                .then(function(res){
+                                    _this.attrList = res.data.datas; 
+                                })
+                                .catch(function(err) {
+                                    console.log(err);
+                                }) 
+                       }
+
+                        _this.isModify = true;
+                        _this.isSkuModify = true;
+                        
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    })
+            }
+
 
         window.doExchange = function(doubleArrays) {
             var len = doubleArrays.length;
@@ -337,6 +418,8 @@ export default {
     data () {
         return {
             DOM : {},
+            isModify : false,
+            isSkuModify : false,
             formItem: {
                 name : '',
                 code : '',
@@ -346,7 +429,6 @@ export default {
                 catalogId: '',
                 unitId : '',
                 price : '',
-                quantify : '',
                 orderNum : '',
                 isUp : true,
                 status : 1,
@@ -360,16 +442,29 @@ export default {
             img : false,
             goodsRule : {
                 code : [
-                    {required: true, message: '商品编码不能为空'}
+                    {required: true, message : '商品编码不能为空'} ,
+                    {type: 'string' , max : 50 ,  message : '最多输入50个字符'}
                 ],
+                barCode : [
+                    {required: true, message : '商品条形码不能为空'} ,
+                    {type: 'string' , max : 50 ,  message : '最多输入50个字符'}
+                ],
+                spec : [
+                    {required : true , message : '请输入商品的规格型号'},
+                    {type : 'string' , max : 100 ,message : '最多输入100个字符'} 
+                ], 
                 name : [
-                    {required : true,message : '商品名称不能为空'}
+                    {required : true , message : '商品名称不能为空'}
                 ],
                 catalogId : [
-                    {required : true,message : '请选择商品分类'}
+                    {required : true , message : '请选择商品分类'}
                 ],
                 unitId : [
-                    {required : true,message : '请选择主计量单位'}
+                    {required : true , message : '请选择主计量单位'}
+                ],
+                price : [
+                    {required : true , message : '请输入商品价格'},
+                    {type : 'number' , message : '请输入数字'}
                 ]
             },
             /* 文件上传 */
@@ -388,14 +483,16 @@ export default {
             },
 
             attrindex : '',
-            attrBox : [],
-            attrCheck:[],
-            attrList : [],
-            attributeAll : [],
-            attributeChecked : [],
-            attributeCheckedHistory : [],
-            attributeModel : false,
-            attributeChangeModel : false,
+            attrCheck:[],       
+            attrList : [],          //
+            attributeAll : [],   //  请求来的 所有的商品属性
+            attributeChecked : [],   // 选择的所有商品属性
+            attributeCheckedHistory : [],  //选择了商品属性 要去更改商品属性时 保存的 历史商品属性值
+            attributeModel : false,         //选择商品属性的 Model
+            attributeChangeModel : false,   //更改 商品属性 的确认 Model
+
+            // SKUstate : false,
+
 
             CatalogList : [],   //商品分类
             unitList : [],      //计量单位
@@ -414,7 +511,12 @@ export default {
                     return;
                 }
 
+
                 if(this.attrCheck.length == this.attrList.length) {
+                    if(this.isSkuModify) {
+                        this.isSkuModify = false;
+                        return this.formItem.skus;
+                    }
                     const result = [];
                     const checkds = window.doExchange(this.attrCheck);
                     checkds.forEach(function(item,index){
@@ -470,6 +572,51 @@ export default {
         }
     },
     methods: {
+        skus () {
+            const _this = this;
+            if(this.attrList.length == 0) {
+                return;
+            }
+
+            if(this.attrCheck.length == this.attrList.length) {
+                const result = [];
+                const checkds = window.doExchange(this.attrCheck);
+                checkds.forEach(function(item,index){
+                    const itemArr = item.split('--');
+                    const attrArr = [];
+                    itemArr.forEach(function(el , j) {
+                        _this.attrList[j].productAttributeValues.forEach(function(e , i) {
+                            if(el == e.name) {
+                                attrArr.push({
+                                    attributeId : _this.attrList[j].id,
+                                    attributeName : _this.attrList[j].name,
+                                    attributeValueId : e.id,
+                                    attributeValueName : e.name
+                                })
+                            }
+                        })
+                    })
+                    result.push({
+                        productSkuAttributes : attrArr,
+                        code : '',
+                        inventoryQty : '',
+                        price : '',
+                        description : '',
+                        orderNum : index + 1,
+                        isMainImg : 0,
+                        imageUrl : '',
+                        isUp : true,
+                        status : 1,
+                    })
+                })
+                _this.formItem.skus = result;
+                return result;
+
+            }else {
+                _this.formItem.skus = [];
+                return [];
+            }
+        },
        handleView (item) {
            this.imgUrl = item.url;
            this.visible = true;
@@ -547,23 +694,15 @@ export default {
         },
         change (data) {
             data.status = data.isUp ? 1 : 0;
+            console.log(this.skus);
             console.log(this.formItem);
         },
         seleckAttr () {
-
             if(this.attributeChecked.length !== 0) {
                 this.attributeCheckedHistory = this.attributeChecked;
             }
-
-            const _this = this;
             this.attributeModel = true;
-            this.axios(api.productAttr + api.queryAll)
-                .then(function(res) {
-                   _this.attributeAll = res.data.datas;
-                })
-                .catch(function(err) {
-                    console.log(err);
-                })
+            
         },
         attrIsOk () {
 
@@ -573,13 +712,12 @@ export default {
                     return;
                 }else {
                     this.attributeChangeModel = true;
-                    console.log('aaaaa');
+                    
                     return;
                 }
             }
 
             const _this = this;
-            this.attrBox = [];
             this.attrCheck = [];
             const attr = [];
             let attrIds = '';
@@ -601,50 +739,102 @@ export default {
                     console.log(err);
                 })
         },
+        attrChangeIsOk () {
+            const _this = this;
+            this.attrCheck = [];
+            const attr = [];
+            let attrIds = '';
+            this.attributeChecked.forEach(function(el , i) {
+                _this.attributeAll.forEach(function(item , index) {
+                    if(item.name == el) {
+                        attr.push(item);
+                        attrIds += item.id + ',';
+                    }
+                })
+            })
+            attrIds = attrIds.slice(0,attrIds.length-1);
+            _this.axios(api.productAttr +attrIds + api.productGetById )
+                .then(function(res){
+                    _this.attrList = res.data.datas;
+                    
+                })
+                .catch(function(err) {
+                    console.log(err);
+                })
+        },
+        attrChangeIsCancel () {
+            this.attributeChecked = this.attributeCheckedHistory;
+        },
         checkedAttr (data) {
+
             const _this = this;
 
-            if(this.attrBox.length - 1 < this.attrindex) {
+            if(this.attrCheck.length - 1 < this.attrindex) {
                 this.attrCheck.lenght = this.attrindex + 1;
-                this.attrBox.lenght = this.attrindex + 1;
-                this.attrBox[this.attrindex] = data;
-                this.attrBox.forEach(function(el,i) {
+                this.attrCheck[this.attrindex] = data;
+                this.attrCheck.forEach(function(el,i) {
                     if(i !== _this.attrindex) {
-                        _this.attrBox.splice(i,1,[]);
+                        _this.attrCheck.splice(i,1,[]);
                     }
                 })
             }
-            this.attrCheck = this.attrBox;
 
+            
         },
 
         save (name) {
             const _this = this;
+            console.log(api.jsonData(this.formItem));
+            console.log(this.formItem);
             this.$refs[name].validate((valid) => {
 
                 _this.spinShow = true;
-
                 if (valid) {
-                    _this.axios({
+
+                    if(!this.isModify) {
+                        _this.axios({
+                                method : 'post',
+                                header : {
+                                    "Content-Type" : 'application/x-www-form-urlencoded'
+                                },
+                                url :api.product + api.add,
+                                data : api.jsonData(_this.formItem)
+                            })
+                            .then(function(res) {
+                                
+                                const data = res.data;
+                                if(data.status == 1) {
+                                    _this.spinShow = false;
+                                    _this.$router.push('/goodsList');
+                                }else {
+                                    _this.$Message.error(data.message);
+                                }
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            })
+                    }else {
+                        _this.axios({
                             method : 'post',
                             header : {
                                 "Content-Type" : 'application/x-www-form-urlencoded'
                             },
-                            url :api.product + api.add,
+                            url :api.product + api.productModeify,
                             data : api.jsonData(_this.formItem)
                         })
-                        .then(function(res) {
-                            
+                        .then(function(res){
                             const data = res.data;
                             if(data.status == 1) {
                                 _this.spinShow = false;
+                                _this.$router.push('/goodsList');
                             }else {
-                                this.$Message.error(data.message);
+                                _this.$Message.error(data.message);
                             }
                         })
-                        .catch(function(err) {
+                        .catch(function(err){
                             console.log(err);
                         })
+                    }
                 } else {
                     _this.spinShow = false;
                     this.$Notice.warning({
