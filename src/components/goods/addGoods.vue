@@ -33,10 +33,8 @@
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="商品分类" prop='catalogId'>
-                           <Select v-model="formItem.catalogId" placeholder="请选择" not-found-text='当前选项没有数据'>
-                               <Option v-for='(Catalog , index) in CatalogList' :key='index' :value="Catalog.id">{{Catalog.name}}</Option>
-                           </Select>
+                        <Form-item label="商品分类" prop='catalog'>
+                           <Cascader :data="CatalogList" v-model='formItem.catalog' trigger='hover'></Cascader>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -110,6 +108,7 @@
                                                 :show-upload-list="false"
                                                 :on-success="skuMainImgSuccess"
                                                 :headers='uploadHeader'
+                                                :data='uploadData'
                                                 @click.native = 'skuItem = sku; mainImgIndex = index'>
                                                 <div class="addImg">
                                                     <Icon type="plus-round" size='20' v-if='!sku.imageUrl'></Icon>
@@ -178,22 +177,21 @@
                 </div>
                 <div class="appendixUpload">
                     <label class="uploadLabel" style='width:120px;text-align:right;'>商品图册</label>
-                    <div class="demo-upload-list" v-for="item in uploadList">
-                        <template v-if="item.status === 'finished'">
+                    <div class="demo-upload-list" v-for="item in formItem.images">
+                        <!-- <template v-if="item.status === 'finished'"> -->
                             <img :src="item.url">
                             <div class="demo-upload-list-cover">
                                 <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
                                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
                             </div>
-                        </template>
-                        <template v-else>
-                            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                        </template>
+                        <!-- </template> -->
+                        <!-- <template v-else> -->
+                            <!-- <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress> -->
+                        <!-- </template> -->
                     </div>
                     <Upload
                         ref="upload"
                         :show-upload-list="false"
-                        :default-file-list="defaultList"
                         :on-success="handleSuccess"
                         :on-error='handleError'
                         :format="['jpg','jpeg','png']"
@@ -216,9 +214,12 @@
                 </div>
                 <div class="appendixUpload">
                     <label class="uploadLabel" style='width:120px;text-align:right;'>添加附件</label>
-                    <Upload :action="uploadUrl" class='inline-block' :on-success="attachmentsSuccess" :headers='uploadHeader' :data='uploadData'>
+                    <Upload :action="uploadUrl" class='inline-block' 
+                        :on-success="attachmentsSuccess" :headers='uploadHeader' :data='uploadData'
+                        :default-file-list="defaultList">
                         <Button type="ghost" icon="ios-cloud-upload-outline">添加附件</Button>
                     </Upload>
+
                 </div>
            </div>
             <Row type="flex" justify="center" class="code-row-bg addFooter">
@@ -269,8 +270,6 @@ export default {
         this.DOM = {
             content : document.getElementById('content')
         };
-
-
        
 
         // 获取商品分类
@@ -281,7 +280,7 @@ export default {
             })
             .then(function(res) {
                 _this.CatalogList = res.data.datas;
-                // console.log(res);
+                console.log(res);
             })
             .catch(function(err) {
                 console.log(err);
@@ -315,9 +314,8 @@ export default {
                 console.log(err);
             })
 
-            //  修改
 
-            // console.log(this.$route.params)
+            //  修改
 
             if(this.$route.params.id) {
                 const id = this.$route.params.id;
@@ -351,7 +349,11 @@ export default {
                             skus : data.skus
                         };
 
-                        console.log(data.attributes);
+                        console.log(data.catalogAncestorIds);
+                        const catalog = data.catalogAncestorIds.split(',');
+                        catalog.push(data.catalogId);
+                        console.log(catalog);
+                        _this.formItem.catalog = catalog;
 
                        if(data.skus.length >= 1) {
                             let attrIds = '';
@@ -375,6 +377,14 @@ export default {
                                     console.log(err);
                                 }) 
                        }
+
+                       data.attachments.forEach(function(img , index) {
+                            // _this.defaultList[index] = [];
+                            _this.defaultList.push({
+                                name : img.fileName,
+                                url : img.url,
+                            });
+                       })
 
                         _this.isModify = true;
                         _this.isSkuModify = true;
@@ -427,6 +437,7 @@ export default {
                 barCode : '',
                 inventoryQty : '',
                 catalogId: '',
+                catalog: [],
                 unitId : '',
                 price : '',
                 orderNum : '',
@@ -456,7 +467,7 @@ export default {
                 name : [
                     {required : true , message : '商品名称不能为空'}
                 ],
-                catalogId : [
+                catalog : [
                     {required : true , message : '请选择商品分类'}
                 ],
                 unitId : [
@@ -572,51 +583,6 @@ export default {
         }
     },
     methods: {
-        skus () {
-            const _this = this;
-            if(this.attrList.length == 0) {
-                return;
-            }
-
-            if(this.attrCheck.length == this.attrList.length) {
-                const result = [];
-                const checkds = window.doExchange(this.attrCheck);
-                checkds.forEach(function(item,index){
-                    const itemArr = item.split('--');
-                    const attrArr = [];
-                    itemArr.forEach(function(el , j) {
-                        _this.attrList[j].productAttributeValues.forEach(function(e , i) {
-                            if(el == e.name) {
-                                attrArr.push({
-                                    attributeId : _this.attrList[j].id,
-                                    attributeName : _this.attrList[j].name,
-                                    attributeValueId : e.id,
-                                    attributeValueName : e.name
-                                })
-                            }
-                        })
-                    })
-                    result.push({
-                        productSkuAttributes : attrArr,
-                        code : '',
-                        inventoryQty : '',
-                        price : '',
-                        description : '',
-                        orderNum : index + 1,
-                        isMainImg : 0,
-                        imageUrl : '',
-                        isUp : true,
-                        status : 1,
-                    })
-                })
-                _this.formItem.skus = result;
-                return result;
-
-            }else {
-                _this.formItem.skus = [];
-                return [];
-            }
-        },
        handleView (item) {
            this.imgUrl = item.url;
            this.visible = true;
@@ -672,9 +638,10 @@ export default {
             this.formItem.imageUrl = res.url;
        },
        skuMainImgSuccess (res,file,fileList) {
+            console.log(res);
             if(res.status==1) {
                 this.skuItem.imageUrl = res.url;
-                this.formItem.skus.splice(this.mainImgIndex, 1 , this.skuItem);
+                this.formItem.skus[this.mainImgIndex] = this.skuItem;
             }
        },
        attachmentsSuccess (res,file,fileList) {
@@ -957,6 +924,7 @@ export default {
 }
 .addGoods .inline-block {
     display: inline-block;
+    width: 300px;
 }
 .addGoods .addFooter {
     padding: 15px 0;
