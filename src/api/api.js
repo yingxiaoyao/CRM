@@ -11,9 +11,12 @@ export default {
 				// console.log(tm);
 
 				if(tm.match(reg)) {
-					jsondata += key + '=' + tm.substr(1,tm.length - 2) + '&';
+					const atm = tm.substr(1,tm.length - 2);
+					atm = encodeURIComponent(atm);
+
+					jsondata += key + '=' + atm + '&';
 				}else {
-					jsondata += key + '=' + tm + '&';
+					jsondata += key + '=' + encodeURIComponent(tm) + '&';
 				}
 
 			}
