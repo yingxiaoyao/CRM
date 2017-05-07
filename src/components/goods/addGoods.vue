@@ -271,7 +271,7 @@ export default {
             content : document.getElementById('content')
         };
        
-
+        document.getElementById('content').scrollTop = 0;
         // 获取商品分类
         _this.axios({
                 method : 'get',
@@ -349,10 +349,8 @@ export default {
                             skus : data.skus
                         };
 
-                        console.log(data.catalogAncestorIds);
                         const catalog = data.catalogAncestorIds.split(',');
                         catalog.push(data.catalogId);
-                        console.log(catalog);
                         _this.formItem.catalog = catalog;
 
                        if(data.skus.length >= 1) {
@@ -751,12 +749,11 @@ export default {
 
         save (name) {
             const _this = this;
-            console.log(api.jsonData(this.formItem));
-            console.log(this.formItem);
             this.$refs[name].validate((valid) => {
 
                 _this.spinShow = true;
                 if (valid) {
+                    _this.formItem.catalogId = _this.formItem.catalog[_this.formItem.catalog.length-1];
 
                     if(!this.isModify) {
                         _this.axios({
