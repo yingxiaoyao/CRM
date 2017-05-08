@@ -1,6 +1,7 @@
 <template>
     <div class="left-menu" @click='aaa'>
-             <Menu :open-names="['openNames']" accordion width='180px'>
+
+           <!--   <Menu :open-names="['openNames']" accordion width='180px'>
 
                  <Submenu v-for='menu in menuList' :name="menu.id" :key='menu.id'>
                      <template slot="title">
@@ -49,9 +50,17 @@
                         <Menu-item name="2-4">仓库设置</Menu-item>
                       </router-link>
                   </Submenu>
-             </Menu>
+             </Menu> -->
 
 
+             <ul class="left-menu-ul">
+                 <li class="left-menu-first">
+                     <a href="javascript:" class="left-menu-index">
+                         <Icon size='18' type="ios-paper" style='margin-right: 10px;'></Icon>
+                         <span class="left-menu-title">订单</span>
+                     </a>
+                 </li>
+             </ul>
       <div class="logo">
         <h1>智谷科技</h1>
       </div>
@@ -95,7 +104,7 @@ export default {
     /* overflow-y: auto; */
     background: #fff;
     padding-bottom: 50px;
-    width: 180px;
+    width: 150px;
     overflow: hidden;
   }
   .left-menu .logo {
@@ -112,7 +121,45 @@ export default {
     /* padding-right: 16px; */
     box-sizing: content-box;
   }
-  .ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+
+
+.left-menu .left-menu-ul {
+    padding: 10px 0;
+}
+.left-menu-first {
+    font-size: 14px;
+}
+.left-menu .left-menu-ul li:hover {
+   background: #03b8cc;
+}
+.left-menu .left-menu-ul li:hover a {
+    color: #fff;
+}
+.left-menu .left-menu-index {
+    display: block;
+    line-height: 40px;
+    padding: 0 28px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*.ivu-menu-vertical .ivu-menu-item:hover,.ivu-menu-vertical .ivu-menu-submenu-title:hover {
     background : #eee;
     color: inherit;
   }
@@ -140,5 +187,5 @@ export default {
   }
   .senc-menu .menu-group ul li {
     padding: 5px 0;
-  }
+  }*/
 </style>
