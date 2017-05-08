@@ -11,7 +11,7 @@ export default {
 				// console.log(tm);
 
 				if(tm.match(reg)) {
-					const atm = tm.substr(1,tm.length - 2);
+					var atm = tm.substr(1,tm.length - 2);
 					atm = encodeURIComponent(atm);
 
 					jsondata += key + '=' + atm + '&';
