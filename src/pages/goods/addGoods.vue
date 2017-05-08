@@ -145,7 +145,7 @@
                     </Col>
                     <Col span='24' class='span8'>
                         <Form-item label="商品描述">
-                           <!--  <editor id="editor_id" height="500px" width="100%" :content="formItem.editorText"
+                            <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.description"
                                     pluginsPath="/static/kindeditor/plugins/"
                                     :loadStyleMode="false"
                                     @on-content-change="onContentChange"></editor> -->
@@ -160,6 +160,7 @@
                                         @focus="onEditorFocus($event)"
                                         @ready="onEditorReady($event)" -->
                               </quill-editor>
+                                <div type="text/plain" id="account--editor"></div>
                         </Form-item>
                     </Col>
 
@@ -581,6 +582,11 @@ export default {
         }
     },
     methods: {
+        // 富文本
+        onContentChange  (val) {
+            this.formItem.description = val;
+            console.log(this.formItem.description);
+        },
        handleView (item) {
            this.imgUrl = item.url;
            this.visible = true;

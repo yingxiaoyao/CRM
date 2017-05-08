@@ -68,7 +68,7 @@ export default {
                     "Content-Type" : 'application/x-www-form-urlencoded'
                 },
                 url : api.product + api.productByRequset,
-                data : api.jsonData({pageStart : 1 , pageNums : _this.$store.state.pageNums})
+                data : api.jsonData({pageStart : _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
             })
             .then(function(res) {
                 console.log(res);
@@ -106,28 +106,12 @@ export default {
             DOM : {},
             cityList: [
                 {
-                    value: 'beijing',
-                    label: '北京市'
+                    value: '1',
+                    label: '上架中'
                 },
                 {
-                    value: 'shanghai',
-                    label: '上海市'
-                },
-                {
-                    value: 'shenzhen',
-                    label: '深圳市'
-                },
-                {
-                    value: 'hangzhou',
-                    label: '杭州市'
-                },
-                {
-                    value: 'nanjing',
-                    label: '南京市'
-                },
-                {
-                    value: 'chongqing',
-                    label: '重庆市'
+                    value: '0',
+                    label: '已下架'
                 }
             ],
             model1: '',
@@ -191,7 +175,7 @@ export default {
             originalGoodsList : [],
             goodsList : [],
             goodsTotalCount : 0 ,
-            pageCount : 1
+            // pageCount : 1
 
         }
     },
@@ -200,8 +184,8 @@ export default {
            
             const _this = this;
             const goods = [];
-            _this.pageCount = count;
-
+            // _this.pageCount = count;
+            _this.$store.commit('goodsListPage',count);
 
             _this.axios({
                     method : 'post',
@@ -209,7 +193,7 @@ export default {
                         "Content-Type" : 'application/x-www-form-urlencoded'
                     },
                     url : api.product + api.productByRequset,
-                    data : api.jsonData({pageStart :  _this.pageCount , pageNums : _this.$store.state.pageNums})
+                    data : api.jsonData({pageStart :  _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
                 })
                 .then(function(res) {
                     console.log(res);
@@ -225,8 +209,11 @@ export default {
                             },
                             prize : item.price,
                             unit : item.unitId,
+                            qrUrl : item.qrUrl,
                             status : item.status == 0 ? '已下架' : '上架中',
-                            classify : item.catalogId
+                            classify : item.catalogId,
+                            inventoryQty : item.inventoryQty,
+                            spec : item.spec
                         })
                     })
                     _this.goodsList = goods;
@@ -235,6 +222,7 @@ export default {
                 .catch(function(err){
                     console.log(err);
                 })
+
         },
         remove (index) {
             console.log(index);
@@ -267,8 +255,11 @@ export default {
                                     },
                                     prize : item.price,
                                     unit : item.unitId,
+                                    qrUrl : item.qrUrl,
                                     status : item.status == 0 ? '已下架' : '上架中',
-                                    classify : item.catalogId
+                                    classify : item.catalogId,
+                                    inventoryQty : item.inventoryQty,
+                                    spec : item.spec
                                 })
                             })
                             _this.goodsList = goods;
@@ -284,7 +275,6 @@ export default {
 
         },
         modify (index, data) {
-
             this.$router.push({name : 'addGoods' , params : {id : this.goodsList[index].id}})
         }
     }

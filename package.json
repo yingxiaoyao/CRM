@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.16.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "iview": "^2.0.0-rc.9",
     "vue": "^2.2.2",
