@@ -441,7 +441,7 @@ export default {
                 price : '',
                 orderNum : '',
                 isUp : true,
-                status : 1,
+                status : '1',
                 description: '<h2>I am Example</h2>',
                 images : [],
                 attachments : [],
@@ -664,9 +664,9 @@ export default {
             this.formItem.skus.splice(index,1);
         },
         change (data) {
-            data.status = data.isUp ? 1 : 0;
-            console.log(this.skus);
-            console.log(this.formItem);
+            data.status = data.isUp ? '1' : '0';
+            // console.log(this.skus);
+            // console.log(this.formItem);
         },
         seleckAttr () {
             if(this.attributeChecked.length !== 0) {
@@ -784,6 +784,7 @@ export default {
                                 console.log(err);
                             })
                     }else {
+                        console.log(_this.formItem);
                         _this.axios({
                             method : 'post',
                             header : {

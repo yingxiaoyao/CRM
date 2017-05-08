@@ -6,9 +6,8 @@
         </Breadcrumb>
         <Row class="fileHandle">
             <Col span='7'>
-                <span>类别：</span><Select v-model="model1" style="width:200px">
-                    <Option v-for="item in cityList" :value="item.value" :key="item">{{ item.label }}</Option>
-                </Select>
+                <span>类别：</span>
+                <Cascader :data="CatalogList" v-model='catalog' trigger='hover'></Cascader>
             </Col>
             <Col span='7'>
                 <span>状态：</span><Select v-model="model1" style="width:200px">
@@ -62,6 +61,21 @@ export default {
         this.DOM = {
             content : document.getElementById('content')
         };
+
+        // 获取商品分类
+        _this.axios({
+                method : 'get',
+                url :api.qroductCatalog + api.queryAll,
+                async : false
+            })
+            .then(function(res) {
+                _this.CatalogList = res.data.datas;
+                console.log(res);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+
         _this.axios({
                 method : 'post',
                 header : {
@@ -104,6 +118,8 @@ export default {
     data () {
         return {
             DOM : {},
+            CatalogList : [],
+            catalog : [],
             cityList: [
                 {
                     value: '1',
