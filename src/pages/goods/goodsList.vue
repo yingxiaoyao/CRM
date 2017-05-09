@@ -7,17 +7,19 @@
         <Row class="fileHandle">
             <Col span='7'>
                 <span>类别：</span>
-                <Cascader :data="CatalogList" v-model='catalog' trigger='hover'></Cascader>
+                <Cascader class='catalogCascader' change-on-select :data="CatalogList" v-model='catalog' trigger='hover'></Cascader>
+                <Button @click.native='catalogSearch'>查询</Button>
             </Col>
             <Col span='7'>
-                <span>状态：</span><Select v-model="model1" style="width:200px">
-                    <Option v-for="item in cityList" :value="item.value" :key="item">{{ item.label }}</Option>
+                <span>状态：</span><Select v-model="status" style="width:200px">
+                    <Option v-for="item in statusList" :value="item.value" :key="item">{{ item.label }}</Option>
                 </Select>
+                <Button @click.native='statusSearch'>查询</Button>
             </Col>
             <Col span='10'>
                 <span>关键字：</span>
                 <Input v-model="keywords" placeholder="商品名称/编码" style="width: 200px"></Input>
-                <Button>查询</Button>
+                <Button  @click.native='keyCodeSearch'>查询</Button>
             </Col>
         </Row>
         <Row type="flex" justify="end" class="fileHandle">
@@ -59,18 +61,18 @@ export default {
         const goods = [];
 
         this.DOM = {
-            content : document.getElementById('content')
+            content : document.getElementById('content'),
+
         };
 
         // 获取商品分类
         _this.axios({
                 method : 'get',
-                url :api.qroductCatalog + api.queryAll,
-                async : false
+                url :api.qroductCatalog + api.queryAll
             })
             .then(function(res) {
                 _this.CatalogList = res.data.datas;
-                console.log(res);
+                // console.log(res);
             })
             .catch(function(err) {
                 console.log(err);
@@ -85,7 +87,6 @@ export default {
                 data : api.jsonData({pageStart : _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
             })
             .then(function(res) {
-                console.log(res);
                 const data = res.data.datas.rows;
                 _this.goodsTotalCount = res.data.datas.total;
                 _this.originalGoodsList = data;
@@ -120,7 +121,7 @@ export default {
             DOM : {},
             CatalogList : [],
             catalog : [],
-            cityList: [
+            statusList: [
                 {
                     value: '1',
                     label: '上架中'
@@ -130,7 +131,7 @@ export default {
                     label: '已下架'
                 }
             ],
-            model1: '',
+            status: '',
             keywords : '',
             columns5 : [
                 {
@@ -192,10 +193,67 @@ export default {
             goodsList : [],
             goodsTotalCount : 0 ,
             // pageCount : 1
-
+            data : {
+                pageStart :  _this.$store.state.goodsListPage , 
+                pageNums : _this.$store.state.pageNums
+            }
         }
     },
     methods : {
+        catalogSearch () {
+            
+            const _this = this;
+            const catalogId = this.catalog[this.catalog.length - 1];
+
+
+            _this.$store.commit('goodsListPage',1);
+            this.axios({
+                method : 'post',
+                url :api.product + api.productByRequset,
+                data : api.jsonData({catalogId : catalogId , pageStart :  _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
+            })
+                .then(function(res) {
+                    console.log(res);
+                    const data = res.data.datas.rows;
+                    if(res.data.status == 1) {
+                        console.log('dengyu 1 ')
+                        _this.goodsTotalCount = res.data.datas.total;
+                        _this.originalGoodsList = data;
+                        if(data.length == 0 ){
+                            _this.goodsList = [];
+                            return;
+                        }
+                        let goods = [];
+                        data.forEach(function(item , index){
+                            goods.push({
+                                id : item.id,
+                                name : {
+                                    img : item.imageUrl,
+                                    name : item.name , 
+                                    code : item.barCode
+                                },
+                                prize : item.price,
+                                unit : item.unitId,
+                                qrUrl : item.qrUrl,
+                                status : item.status == 0 ? '已下架' : '上架中',
+                                classify : item.catalogId,
+                                inventoryQty : item.inventoryQty,
+                                spec : item.spec
+                            })
+                        })
+                        _this.goodsList = goods;
+                    }
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        },
+        statusSearch () {
+            console.log(this.status);
+        },
+        keyCodeSearch () {
+            console.log(this.keywords);
+        },
         toPage (count) {
            
             const _this = this;
@@ -292,7 +350,8 @@ export default {
         },
         modify (index, data) {
             this.$router.push({name : 'addGoods' , params : {id : this.goodsList[index].id}})
-        }
+        },
+       
     }
 }
 </script>
@@ -340,5 +399,9 @@ export default {
 .wares .waresInfo h3 {
     font-weight: 500;
     margin: 10px 0;
+}
+.catalogCascader {
+    width: 200px;
+    display: inline-block;
 }
 </style>
