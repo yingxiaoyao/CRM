@@ -59,7 +59,7 @@ export default {
   .content {
     flex-grow: 1;
     padding: 20px 30px 0 10px;
-    overflow-y :auto;
+    overflow-y :scroll;
   }
     .home-warp {
         position: relative;

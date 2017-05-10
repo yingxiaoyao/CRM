@@ -1,7 +1,7 @@
 <template>
     <div class="left-menu" @click='aaa'>
 
-           <!--   <Menu :open-names="['openNames']" accordion width='180px'>
+             <Menu :open-names="['openNames']" accordion width='180px'>
 
                  <Submenu v-for='menu in menuList' :name="menu.id" :key='menu.id'>
                      <template slot="title">
@@ -50,17 +50,17 @@
                         <Menu-item name="2-4">仓库设置</Menu-item>
                       </router-link>
                   </Submenu>
-             </Menu> -->
+             </Menu>
 
 
-             <ul class="left-menu-ul">
+             <!-- <ul class="left-menu-ul">
                  <li class="left-menu-first">
                      <a href="javascript:" class="left-menu-index">
                          <Icon size='18' type="ios-paper" style='margin-right: 10px;'></Icon>
                          <span class="left-menu-title">订单</span>
                      </a>
                  </li>
-             </ul>
+             </ul> -->
       <div class="logo">
         <h1>智谷科技</h1>
       </div>

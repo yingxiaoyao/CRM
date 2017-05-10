@@ -23,7 +23,7 @@
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
-                        <Form-item label="规格型号" prop='spec'>
+                        <Form-item label="型号/规格" prop='spec'>
                             <Input type="text" v-model="formItem.spec" placeholder="最多输入100个字符"></Input>
                         </Form-item>
                     </Col>
@@ -143,6 +143,17 @@
                              </div>
                          </Form-item>
                     </Col>
+                      <Col span='24' class='span8' style='margin-bottom:20px;'>
+                        <div class="appendixUpload">
+                            <label class="uploadLabel" style='width:120px;text-align:right;'>商品主图</label>
+                            <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false">
+                                <div class="addMainImg">
+                                    <Icon type="plus-round" size='20' v-if='!formItem.imageUrl'></Icon>
+                                    <img :src="formItem.imageUrl" class="mainImg" v-else>
+                                </div>
+                            </Upload>
+                        </div>
+                      </Col>                
                     <Col span='24' class='span8'>
                         <Form-item label="商品描述">
                             <!-- <editor id="editor_id" height="500px" width="100%" :content="formItem.description"
@@ -168,16 +179,7 @@
            </Form>
            <div class="upload">
                 <div class="appendixUpload">
-                    <label class="uploadLabel" style='width:120px;text-align:right;'>商品主图</label>
-                    <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false">
-                        <div class="addMainImg">
-                            <Icon type="plus-round" size='20' v-if='!formItem.imageUrl'></Icon>
-                            <img :src="formItem.imageUrl" class="mainImg" v-else>
-                        </div>
-                    </Upload>
-                </div>
-                <div class="appendixUpload">
-                    <label class="uploadLabel" style='width:120px;text-align:right;'>商品图册</label>
+                    <label class="uploadLabel" style='width:120px;text-align:right;'>相关图片</label>
                     <div class="demo-upload-list" v-for="item in formItem.images">
                         <!-- <template v-if="item.status === 'finished'"> -->
                             <img :src="item.url">
@@ -214,7 +216,7 @@
                     </Modal>
                 </div>
                 <div class="appendixUpload">
-                    <label class="uploadLabel" style='width:120px;text-align:right;'>添加附件</label>
+                    <label class="uploadLabel" style='width:120px;text-align:right;'>相关文件</label>
                     <Upload :action="uploadUrl" class='inline-block' 
                         :on-success="attachmentsSuccess" :headers='uploadHeader' :data='uploadData'
                         :default-file-list="defaultList">
@@ -225,7 +227,7 @@
            </div>
             <Row type="flex" justify="center" class="code-row-bg addFooter">
                 <Col span="3">
-                    <Button type="info" size="large" long @click.native='save("formItem")'>保存</Button>
+                    <Button type="info" size="large" long @click.native='save("formItem")'>立即发布</Button>
                 </Col>
                 <!-- <Col span="2">
                     <Button type="warning" size="large">立即发布</Button>
@@ -455,12 +457,10 @@ export default {
                     {required: true, message : '商品编码不能为空'} ,
                     {type: 'string' , max : 50 ,  message : '最多输入50个字符'}
                 ],
-                barCode : [
-                    {required: true, message : '商品条形码不能为空'} ,
+                barCode : [,
                     {type: 'string' , max : 50 ,  message : '最多输入50个字符'}
                 ],
                 spec : [
-                    {required : true , message : '请输入商品的规格型号'},
                     {type : 'string' , max : 100 ,message : '最多输入100个字符'} 
                 ], 
                 name : [
@@ -473,8 +473,7 @@ export default {
                     {required : true , message : '请选择主计量单位'}
                 ],
                 price : [
-                    {required : true , message : '请输入商品价格'},
-                    {type : 'number' , message : '请输入数字'}
+                    // {type : 'number' , message : '请输入数字'}
                 ]
             },
             /* 文件上传 */
@@ -692,6 +691,9 @@ export default {
             this.attrCheck = [];
             const attr = [];
             let attrIds = '';
+            if(this.attributeChecked.length == 0) {
+                this.attrList = [];
+            }
             this.attributeChecked.forEach(function(el , i) {
                 _this.attributeAll.forEach(function(item , index) {
                     if(item.name == el) {
@@ -715,6 +717,9 @@ export default {
             this.attrCheck = [];
             const attr = [];
             let attrIds = '';
+            if(this.attributeChecked.length == 0) {
+                this.attrList = [];
+            }
             this.attributeChecked.forEach(function(el , i) {
                 _this.attributeAll.forEach(function(item , index) {
                     if(item.name == el) {

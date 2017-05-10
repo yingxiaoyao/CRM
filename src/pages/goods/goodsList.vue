@@ -7,19 +7,20 @@
         <Row class="fileHandle">
             <Col span='7'>
                 <span>类别：</span>
-                <Cascader class='catalogCascader' change-on-select :data="CatalogList" v-model='catalog' trigger='hover'></Cascader>
-                <Button @click.native='catalogSearch'>查询</Button>
+                <Cascader class='catalogCascader' change-on-select :data="CatalogList" v-model='catalog' trigger='hover'
+                @keyup.native='enter($event)'></Cascader>
+                <Button @click.native='query'>查询</Button>
             </Col>
             <Col span='7'>
-                <span>状态：</span><Select v-model="status" style="width:200px">
+                <span>状态：</span><Select v-model="data.status" style="width:200px" @keyup.native='enter($event)'>
                     <Option v-for="item in statusList" :value="item.value" :key="item">{{ item.label }}</Option>
                 </Select>
-                <Button @click.native='statusSearch'>查询</Button>
+                <Button @click.native='query'>查询</Button>
             </Col>
             <Col span='10'>
                 <span>关键字：</span>
-                <Input v-model="keywords" placeholder="商品名称/编码" style="width: 200px"></Input>
-                <Button  @click.native='keyCodeSearch'>查询</Button>
+                <Input v-model="data.name" placeholder="商品名称/编码" style="width: 200px" @keyup.native='enter($event)'></Input>
+                <Button  @click.native='query'>查询</Button>
             </Col>
         </Row>
         <Row type="flex" justify="end" class="fileHandle">
@@ -88,6 +89,7 @@ export default {
             })
             .then(function(res) {
                 const data = res.data.datas.rows;
+                console.log(res);
                 _this.goodsTotalCount = res.data.datas.total;
                 _this.originalGoodsList = data;
                 data.forEach(function(item , index){
@@ -98,10 +100,10 @@ export default {
                             name : item.name , 
                             code : item.barCode
                         },
-                        prize : item.price,
+                        prize : item.price ? item.price : '协商',
                         unit : item.unitId,
                         qrUrl : item.qrUrl,
-                        status : item.status == 0 ? '已下架' : '上架中',
+                        status : item.status == 0 ? '下架' : '上架',
                         classify : item.catalogId,
                         inventoryQty : item.inventoryQty,
                         spec : item.spec
@@ -123,20 +125,23 @@ export default {
             catalog : [],
             statusList: [
                 {
+                    value: '3',
+                    label: '无'
+                },
+                {
                     value: '1',
-                    label: '上架中'
+                    label: '上架'
                 },
                 {
                     value: '0',
-                    label: '已下架'
+                    label: '下架'
                 }
             ],
-            status: '',
-            keywords : '',
             columns5 : [
                 {
-                    type: 'selection',
-                    width: 60,
+                    type: '排序号',
+                    key : 'sort',
+                    width: 40,
                     align: 'center'
                 },
                 {
@@ -194,29 +199,40 @@ export default {
             goodsTotalCount : 0 ,
             // pageCount : 1
             data : {
-                pageStart :  _this.$store.state.goodsListPage , 
-                pageNums : _this.$store.state.pageNums
+                catalogId : '',
+                status : '',
+                name : '',
+                pageStart :  this.$store.state.goodsListPage , 
+                pageNums : this.$store.state.pageNums
             }
         }
     },
     methods : {
-        catalogSearch () {
+        query () {
             
             const _this = this;
-            const catalogId = this.catalog[this.catalog.length - 1];
+            let catalogId;
+            if(this.catalog.length > 0) {
+                catalogId = this.catalog[this.catalog.length - 1];
+            }else {
+                catalogId = '';
+            }
+            if (this.data.status == 3) {
+                this.data.status = '';
+            }
 
 
             _this.$store.commit('goodsListPage',1);
+            this.data.catalogId = catalogId;
+
             this.axios({
                 method : 'post',
                 url :api.product + api.productByRequset,
-                data : api.jsonData({catalogId : catalogId , pageStart :  _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
+                data : api.jsonData(this.data)
             })
                 .then(function(res) {
-                    console.log(res);
                     const data = res.data.datas.rows;
                     if(res.data.status == 1) {
-                        console.log('dengyu 1 ')
                         _this.goodsTotalCount = res.data.datas.total;
                         _this.originalGoodsList = data;
                         if(data.length == 0 ){
@@ -232,10 +248,10 @@ export default {
                                     name : item.name , 
                                     code : item.barCode
                                 },
-                                prize : item.price,
+                                prize : item.price ? item.price : '协商',
                                 unit : item.unitId,
                                 qrUrl : item.qrUrl,
-                                status : item.status == 0 ? '已下架' : '上架中',
+                                status : item.status == 0 ? '下架' : '上架',
                                 classify : item.catalogId,
                                 inventoryQty : item.inventoryQty,
                                 spec : item.spec
@@ -248,11 +264,11 @@ export default {
                     console.log(err);
                 })
         },
-        statusSearch () {
-            console.log(this.status);
-        },
-        keyCodeSearch () {
-            console.log(this.keywords);
+        enter (event) {
+            console.log(event.keyCode);
+            if(event.keyCode == 13) {
+                this.query();
+            }
         },
         toPage (count) {
            
@@ -260,6 +276,10 @@ export default {
             const goods = [];
             // _this.pageCount = count;
             _this.$store.commit('goodsListPage',count);
+            this.data = {
+                pageStart :  _this.$store.state.goodsListPage , 
+                pageNums : _this.$store.state.pageNums
+            }
 
             _this.axios({
                     method : 'post',
@@ -281,10 +301,10 @@ export default {
                                 name : item.name , 
                                 code : item.barCode
                             },
-                            prize : item.price,
+                            prize : item.price ? item.price : '协商',
                             unit : item.unitId,
                             qrUrl : item.qrUrl,
-                            status : item.status == 0 ? '已下架' : '上架中',
+                            status : item.status == 0 ? '下架' : '上架',
                             classify : item.catalogId,
                             inventoryQty : item.inventoryQty,
                             spec : item.spec
@@ -299,53 +319,59 @@ export default {
 
         },
         remove (index) {
-            console.log(index);
-            console.log(this.originalGoodsList[index]);
-            const _this = this;
-            const id = this.originalGoodsList[index].id;
-            _this.axios(api.product + id + api.productDelete)
-                .then(function(res){
-                    console.log(res);
-                    const goods = [];
-                    _this.axios({
-                            method : 'post',
-                            header : {
-                                "Content-Type" : 'application/x-www-form-urlencoded'
-                            },
-                            url : api.product + api.productByRequset,
-                            data : api.jsonData({pageStart :  _this.pageCount , pageNums : _this.$store.state.pageNums})
-                        })
-                        .then(function(res) {
+            this.$Modal.confirm({
+                content: '确定要删除吗？',
+                onOk  : () => {
+
+                    console.log(index);
+                    console.log(this.originalGoodsList[index]);
+                    const _this = this;
+                    const id = this.originalGoodsList[index].id;
+                    _this.axios(api.product + id + api.productDelete)
+                        .then(function(res){
                             console.log(res);
-                            const data = res.data.datas.rows;
-                            _this.goodsTotalCount = res.data.datas.total;
-                            data.forEach(function(item , index){
-                                goods.push({
-                                    id : item.id,
-                                    name : {
-                                        img : item.imageUrl,
-                                        name : item.name , 
-                                        code : item.barCode
+                            const goods = [];
+                            _this.axios({
+                                    method : 'post',
+                                    header : {
+                                        "Content-Type" : 'application/x-www-form-urlencoded'
                                     },
-                                    prize : item.price,
-                                    unit : item.unitId,
-                                    qrUrl : item.qrUrl,
-                                    status : item.status == 0 ? '已下架' : '上架中',
-                                    classify : item.catalogId,
-                                    inventoryQty : item.inventoryQty,
-                                    spec : item.spec
+                                    url : api.product + api.productByRequset,
+                                    data : api.jsonData({pageStart :  _this.pageCount , pageNums : _this.$store.state.pageNums})
                                 })
-                            })
-                            _this.goodsList = goods;
-                            _this.DOM.content.scrollTop = 0;
+                                .then(function(res) {
+                                    console.log(res);
+                                    const data = res.data.datas.rows;
+                                    _this.goodsTotalCount = res.data.datas.total;
+                                    data.forEach(function(item , index){
+                                        goods.push({
+                                            id : item.id,
+                                            name : {
+                                                img : item.imageUrl,
+                                                name : item.name , 
+                                                code : item.barCode
+                                            },
+                                            prize : item.price ? item.price : '协商',
+                                            unit : item.unitId,
+                                            qrUrl : item.qrUrl,
+                                            status : item.status == 0 ? '下架' : '上架',
+                                            classify : item.catalogId,
+                                            inventoryQty : item.inventoryQty,
+                                            spec : item.spec
+                                        })
+                                    })
+                                    _this.goodsList = goods;
+                                    _this.DOM.content.scrollTop = 0;
+                                })
+                                .catch(function(err){
+                                    console.log(err);
+                                })
                         })
                         .catch(function(err){
                             console.log(err);
                         })
-                })
-                .catch(function(err){
-                    console.log(err);
-                })
+                }
+            });
 
         },
         modify (index, data) {
@@ -379,9 +405,9 @@ export default {
 .prize {
     color: red;
 }
-.prize:before {
+/*.prize:before {
     content : '￥';
-}
+}*/
 .wares {
     display: flex;
     padding: 10px 0;
