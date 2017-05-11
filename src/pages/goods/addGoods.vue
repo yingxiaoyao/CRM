@@ -162,16 +162,16 @@
                                     @on-content-change="onContentChange"></editor> -->
 
 
-                            <quill-editor v-model="formItem.description"
+                            <!-- <quill-editor v-model="formItem.description"
                                         ref="myQuillEditor"
                                         :options="editorOption"
                                         >
-
-                                        <!-- @blur="onEditorBlur($event)"
+                            
+                                        @blur="onEditorBlur($event)"
                                         @focus="onEditorFocus($event)"
-                                        @ready="onEditorReady($event)" -->
-                              </quill-editor>
-                                <div type="text/plain" id="account--editor"></div>
+                                        @ready="onEditorReady($event)"
+                              </quill-editor> -->
+                                <ue></ue>
                         </Form-item>
                     </Col>
 
@@ -266,7 +266,11 @@
 </template>
 <script>
 import api from '@/api/api'
+import ue from '@/components/UE'
 export default {
+    components : {
+        ue : ue
+    },
     mounted () {
         const _this = this;
         this.uploadList = this.$refs.upload.fileList;
@@ -826,6 +830,9 @@ export default {
 </script>
 
 <style>
+.addGoods .ivu-form-item-content {
+    line-height: 20px;
+}
 .addGoods .span8 {
     padding-left: 20px;
 }

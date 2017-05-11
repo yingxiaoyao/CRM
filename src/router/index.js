@@ -12,6 +12,7 @@ import area from '@/pages/client/area'
 import trade from '@/pages/client/trade'
 import goodsList from '@/pages/goods/goodsList'
 import addGoods from '@/pages/goods/addGoods'
+import UE from '@/components/UE'
 
 
 Vue.use(Router)
@@ -78,6 +79,11 @@ const routes = [
       path: '/aa',
       name: 'aa',
       component: Hello
+    },
+    {
+      path : '/editor',
+      name : 'editor',
+      component : UE
     }
 ]
 
