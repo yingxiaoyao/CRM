@@ -4,23 +4,25 @@
             <Breadcrumb-item>商品信息</Breadcrumb-item>
             <Breadcrumb-item>商品列表</Breadcrumb-item>
         </Breadcrumb>
-        <Row class="fileHandle">
+        <Row class="fileHandle" type='flex' justify='center'>
             <Col span='7'>
                 <span>类别：</span>
                 <Cascader class='catalogCascader' change-on-select :data="CatalogList" v-model='catalog' trigger='hover'
                 @keyup.native='enter($event)'></Cascader>
-                <Button @click.native='query'>查询</Button>
             </Col>
             <Col span='7'>
                 <span>状态：</span><Select v-model="data.status" style="width:200px" @keyup.native='enter($event)'>
                     <Option v-for="item in statusList" :value="item.value" :key="item">{{ item.label }}</Option>
                 </Select>
-                <Button @click.native='query'>查询</Button>
             </Col>
-            <Col span='10'>
+            <Col span='7'>
                 <span>关键字：</span>
                 <Input v-model="data.name" placeholder="商品名称/编码" style="width: 200px" @keyup.native='enter($event)'></Input>
-                <Button  @click.native='query'>查询</Button>
+                <Row class="fileHandle" type='flex' justify='end'>
+                    <Col span='9'>
+                        <Button type="warning" icon="ios-search" long @click.native='query'>查询</Button>
+                    </Col>
+                </Row>
             </Col>
         </Row>
         <Row type="flex" justify="end" class="fileHandle">
