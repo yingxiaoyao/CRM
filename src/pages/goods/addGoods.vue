@@ -171,7 +171,7 @@
                                         @focus="onEditorFocus($event)"
                                         @ready="onEditorReady($event)"
                               </quill-editor> -->
-                                <ue></ue>
+                              <script id='editor' type="text/plain"></script>
                         </Form-item>
                     </Col>
 
@@ -266,18 +266,19 @@
 </template>
 <script>
 import api from '@/api/api'
-import ue from '@/components/UE'
+// import ue from '@/components/UE'
+import '../../assets/UE/ueditor.config.js'
+import '../../assets/UE/ueditor.all.js'
+import '../../assets/UE/lang/zh-cn/zh-cn.js'
+import '../../assets/UE/ueditor.parse.js'
 export default {
-    components : {
-        ue : ue
-    },
     mounted () {
         const _this = this;
         this.uploadList = this.$refs.upload.fileList;
         this.DOM = {
             content : document.getElementById('content')
         };
-       
+       this.editor = UE.getEditor('editor');
         document.getElementById('content').scrollTop = 0;
         // 获取商品分类
         _this.axios({
@@ -355,6 +356,10 @@ export default {
                             brandId : data.brandId,
                             skus : data.skus
                         };
+
+                        if(data.description) {
+                            _this.editor.setContent(data.description);
+                        }
 
                         const catalog = data.catalogAncestorIds.split(',');
                         catalog.push(data.catalogId);
@@ -491,9 +496,7 @@ export default {
             mainImgIndex : '',
             skuItem : '',
 
-            editorOption : {
-
-            },
+            editor : null,
 
             attrindex : '',
             attrCheck:[],       
@@ -504,8 +507,6 @@ export default {
             attributeModel : false,         //选择商品属性的 Model
             attributeChangeModel : false,   //更改 商品属性 的确认 Model
 
-            // SKUstate : false,
-
 
             CatalogList : [],   //商品分类
             unitList : [],      //计量单位
@@ -515,6 +516,9 @@ export default {
             // SKUstate : false
             
         }
+    },
+    destroyed () {
+      this.editor.destroy();
     },
     computed : {
         skus :{
@@ -768,7 +772,10 @@ export default {
 
                 _this.spinShow = true;
                 if (valid) {
+                    _this.formItem.description = _this.editor.getContent();
                     _this.formItem.catalogId = _this.formItem.catalog[_this.formItem.catalog.length-1];
+
+                    console.log(_this.formItem);
 
                     if(!this.isModify) {
                         _this.axios({
