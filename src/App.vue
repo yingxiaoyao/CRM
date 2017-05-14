@@ -18,7 +18,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   min-width: 1280px;
-  min-height: 500px;
+  min-height: 550px;
 }
 body,html {
     height: 100%;

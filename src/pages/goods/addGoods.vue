@@ -268,7 +268,7 @@
 import api from '@/api/api'
 // import ue from '@/components/UE'
 import '../../assets/UE/ueditor.config.js'
-import '../../assets/UE/ueditor.all.js'
+import '../../assets/UE/ueditor.all.min.js'
 import '../../assets/UE/lang/zh-cn/zh-cn.js'
 import '../../assets/UE/ueditor.parse.js'
 export default {
@@ -283,8 +283,7 @@ export default {
         // 获取商品分类
         _this.axios({
                 method : 'get',
-                url :api.qroductCatalog + api.queryAll,
-                async : false
+                url :api.qroductCatalog + api.queryAll
             })
             .then(function(res) {
                 _this.CatalogList = res.data.datas;
