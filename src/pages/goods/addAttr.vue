@@ -147,27 +147,33 @@ export default {
                 this.$Message.warning('属');
             }*/
             const _this = this;
-            if(this.isModify) {
-                if(this.data.values[index].id) {
-                    _this.axios(api.productAttr + this.data.values[index].id + api.productAttrValue)
-                        .then(function(res) {
-                            console.log(res);
-                            if(res.data.status == 1) {
-                                _this.data.values.splice(index,1);
-                            }else {
-                                _this.$Message.error(res.data.message);
-                            }
-                        })
-                        .catch(function(err){
-                            console.log(err);
-                        })
-                }else {
-                    this.data.values.splice(index,1);
+
+            this.$Modal.confirm({
+                title: '确认框',
+                content: '<p>确定要删除商品属性值吗</p>',
+                onOk: () => {
+                    if(this.isModify) {
+                        if(this.data.values[index].id) {
+                            _this.axios(api.productAttr + this.data.values[index].id + api.productAttrValue)
+                                .then(function(res) {
+                                    console.log(res);
+                                    if(res.data.status == 1) {
+                                        _this.data.values.splice(index,1);
+                                    }else {
+                                        _this.$Message.error(res.data.message);
+                                    }
+                                })
+                                .catch(function(err){
+                                    console.log(err);
+                                })
+                        }else {
+                            this.data.values.splice(index,1);
+                        }
+                    }else {
+                        this.data.values.splice(index,1);
+                    }
                 }
-            }else {
-                this.data.values.splice(index,1);
-            }
-            console.log(this.data.values);
+            });
         },
         save () {
             const _this = this;

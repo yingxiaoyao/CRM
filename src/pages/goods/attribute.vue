@@ -148,9 +148,6 @@ export default {
                         .catch(function(err){
                             console.log(err);
                         })
-                },
-                onCancel: () => {
-                    this.$Message.info('点击了取消');
                 }
             });
 
