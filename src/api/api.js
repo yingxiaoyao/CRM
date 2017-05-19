@@ -30,6 +30,9 @@ export default {
 	//  公用
 	queryAll : 'queryAll.do',		//查询所有  get
 	add : 'add.do'	,				//添加 post
+	queryById : '/queryById.do',	//根据 Id 查询  前面添加 /:id/queryById.do
+	modify : 'modify.do',			// post  修改
+	delete : '/delete.do',			// GET /:id/delete.do
 
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径
@@ -79,7 +82,13 @@ export default {
 
 	// 商品属性
 	productAttr : '/api/product/attribute/',		//商品属性 api 根路径
+	productGetAll : '/queryByRequest.do',			//查询全部或者根据关键字查询	name ; pageStart ; pageNums;
 	productGetById : '/queryByIds.do',				//根据多	个id查询商品属性   如 /1,2,3/queryByIds.do
+	productAttrValue : '/deleteValue.do',			// 删除属性值			
+	
+
+
+	
 
 	//计量单位
 	baseUnit : '/api/base/unit/',			// 单位 api 根路径

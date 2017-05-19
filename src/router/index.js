@@ -12,6 +12,8 @@ import area from '@/pages/client/area'
 import trade from '@/pages/client/trade'
 import goodsList from '@/pages/goods/goodsList'
 import addGoods from '@/pages/goods/addGoods'
+import goodsAttr from '@/pages/goods/attribute'
+import addGoodsAttr from '@/pages/goods/addAttr'
 import UE from '@/components/UE'
 
 
@@ -64,6 +66,16 @@ const routes = [
             path : '/goodsList/add',
             name : 'addGoods',
             component : addGoods
+          },
+          {
+            path :'/productAttribute',
+            name : 'goodsAttr',
+            component : goodsAttr
+          },
+          {
+            path :'/productAttribute/add',
+            name : 'addGoodsAttr',
+            component : addGoodsAttr
           }
           
         

@@ -15,7 +15,8 @@ const store = new Vuex.Store({
   		token: null,
         title: '',
         pageNums : 10,		//分页条数
-        goodsListPage : 1
+        goodsListPage : 1,	//商品列表 页码
+        goodsAttrPage : 1,
   	},
  	// actions : api,
 	mutations : {
@@ -30,8 +31,11 @@ const store = new Vuex.Store({
 		title : (state, data) => {
 		    state.title = data;
 		},
-		goodsListPage : (state,page) => {
+		goodsListPage : (state, page ) => {
 			state.goodsListPage = page;
+		},
+		goodsAttrPage : (state , page ) => {
+			state.goodsAttrPage = page;
 		}
 	}
 })

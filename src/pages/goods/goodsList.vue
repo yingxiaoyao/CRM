@@ -225,6 +225,7 @@ export default {
 
 
             _this.$store.commit('goodsListPage',1);
+            this.data.pageStart = 1;
             this.data.catalogId = catalogId;
 
             this.axios({
@@ -278,10 +279,9 @@ export default {
             const goods = [];
             // _this.pageCount = count;
             _this.$store.commit('goodsListPage',count);
-            this.data = {
-                pageStart :  _this.$store.state.goodsListPage , 
-                pageNums : _this.$store.state.pageNums
-            }
+
+            
+            this.data.pageStart = count;
 
             _this.axios({
                     method : 'post',
@@ -289,7 +289,7 @@ export default {
                         "Content-Type" : 'application/x-www-form-urlencoded'
                     },
                     url : api.product + api.productByRequset,
-                    data : api.jsonData({pageStart :  _this.$store.state.goodsListPage , pageNums : _this.$store.state.pageNums})
+                    data : api.jsonData(this.data)
                 })
                 .then(function(res) {
                     console.log(res);
