@@ -63,7 +63,7 @@
         
          <Row type="flex" justify="center" class="code-row-bg addFooter" style='margin-top : 40px;'>
             <Col span="3">
-                <Button type="warning" size="large" long @click.native='save("formItem")'>保存并新增</Button>
+                <Button type="warning" size="large" long @click.native='save("formItem")'>保存</Button>
             </Col>
         </Row>
 

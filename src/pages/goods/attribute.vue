@@ -136,11 +136,11 @@ export default {
                 title: '确认框',
                 content: '<p>确定要删除商品属性吗</p>',
                 onOk: () => {
-                    _this.axios(api.productAttr + index + api.delete)
+                    _this.axios(api.productAttr + data.id + api.delete)
                         .then(function(res){
                             console.log(res);
                             if(res.data.status == 1) {
-                                _this.data.splicd(index , 1);
+                                _this.attrList.splice(index , 1);
                             }else {
                                 _this.$Message.error(res.data.message);
                             }
