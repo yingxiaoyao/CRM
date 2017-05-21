@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import UserModule from './modules/usermodule'
+import pageModule from './modules/page'
 
 
 Vue.use(Vuex)
@@ -8,7 +9,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	// 定义模块
 	modules : {
-		user : UserModule
+		user : UserModule,
+		page : pageModule
 	},
   // 定义状态
   	state: {
@@ -16,7 +18,8 @@ const store = new Vuex.Store({
         title: '',
         pageNums : 10,		//分页条数
         goodsListPage : 1,	//商品列表 页码
-        goodsAttrPage : 1,
+        goodsAttrPage : 1,	// 商品属性 页码
+
   	},
  	// actions : api,
 	mutations : {

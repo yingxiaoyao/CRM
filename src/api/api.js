@@ -29,10 +29,14 @@ export default {
 
 	//  公用
 	queryAll : 'queryAll.do',		//查询所有  get
+	queryAllPost : '/queryByRequest.do',	// 查询所有 post
 	add : 'add.do'	,				//添加 post
 	queryById : '/queryById.do',	//根据 Id 查询  前面添加 /:id/queryById.do
 	modify : 'modify.do',			// post  修改
 	delete : '/delete.do',			// GET /:id/delete.do
+
+	/* 客户列表 */
+	customer : '/api/cooperation/customer',		// 客户列表
 
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径
