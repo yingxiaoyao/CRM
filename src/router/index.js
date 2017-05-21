@@ -6,6 +6,8 @@ import Login from '@/pages/login/login'
 import Hello from '@/pages/Hello'
 import Index from '@/pages/index'
 import Welcome from '@/pages/welcome/welcome'
+import customerList from '@/pages/client/customerList'
+import addCustomer from '@/pages/client/addCustomer'
 import clientClassify from '@/pages/client/clientClassify'
 import clientRank from '@/pages/client/clientRank'
 import area from '@/pages/client/area'
@@ -34,6 +36,16 @@ const routes = [
         {
           path : '/hello' ,
           component : Hello
+        },
+        {
+          path : '/customerList',
+          name : 'customerList',
+          component : customerList
+        }, 
+        {
+          path : '/addCustomer',
+          name : 'addCustomer',
+          component : addCustomer
         },
         {
           path : '/clientClassify',
