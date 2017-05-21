@@ -17,19 +17,8 @@ const store = new Vuex.Store({
   		token: null,
         title: '',
         pageNums : 10,		//分页条数
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-        goodsListPage : 1
-=======
         goodsListPage : 1,	//商品列表 页码
         goodsAttrPage : 1,	// 商品属性 页码
-
->>>>>>> Stashed changes
-=======
-        goodsListPage : 1,	//商品列表 页码
-        goodsAttrPage : 1,	// 商品属性 页码
-
->>>>>>> fc0891f1a93849a41bd8a2847901419f182cc709
   	},
  	// actions : api,
 	mutations : {
