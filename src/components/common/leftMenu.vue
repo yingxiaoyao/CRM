@@ -1,58 +1,5 @@
 <template>
     <div class="left-menu">
-
-            <!--  <Menu :open-names="['openNames']" accordion width='180px'>
-            
-                <Submenu v-for='menu in menuList' :name="menu.id" :key='menu.id'>
-                    <template slot="title">
-                        <Icon v-bind:type="menu.iconType"></Icon>
-                        {{ menu.name }}
-                    </template>
-                    <router-link to='/' v-for='(seconMenu,index) in menu.menus' :key='index'>
-                     <Menu-item :name="seconMenu.id">
-                       {{seconMenu.name}}
-                     </Menu-item>
-                    </router-link>
-                </Submenu>
-                <Submenu name="1">
-                     <template slot="title">
-                         <Icon type="ios-people"></Icon>
-                         用户管理
-                     </template>
-                     <router-link to='/clientClassify'>
-                       <Menu-item name="1-1">客户分类</Menu-item>
-                     </router-link>
-                     <router-link to='/clinetRank'>
-                       <Menu-item name="1-2">客户级别</Menu-item>
-                     </router-link>
-                     <router-link to='/area'>
-                       <Menu-item name="1-3">区域设置</Menu-item>
-                     </router-link>
-                     <router-link to='/trade'>
-                       <Menu-item name="1-4">行业设置</Menu-item>
-                     </router-link>
-                 </Submenu>
-                 <Submenu name="2">
-                     <template slot="title">
-                         <Icon type="ios-people"></Icon>
-                         商品信息
-                     </template>
-                     <router-link to='/goodsList'>
-                       <Menu-item name="2-1">商品列表</Menu-item>
-                     </router-link>
-                     <router-link to='/'>
-                       <Menu-item name="2-2">商品属性</Menu-item>
-                     </router-link>
-                     <router-link to='/'>
-                       <Menu-item name="2-3">库存量设置</Menu-item>
-                     </router-link>
-                     <router-link to='/'>
-                       <Menu-item name="2-4">仓库设置</Menu-item>
-                     </router-link>
-                 </Submenu>
-            </Menu> -->
-
-
          <ul class="left-menu-ul">
              <li class="left-menu-first" v-for='(menu , index) in menuList' 
              :class='{ "active" : active == menu.name ,"show-second-menu" : showName == menu.name}' 
@@ -67,12 +14,12 @@
                          <ul class="second-menu-item" v-for='secondMenu in menu.menus' v-if='secondMenu.menus.length > 0'>
                             <span class="second-menu-title">{{ secondMenu.name }}</span>
                             <li v-for='item in secondMenu.menus' @click.stop='active = menu.name;showName = ""'>
-                                <router-link :to="item.url ? item.url : 'index'">{{ item.name }}</router-link>
+                                <router-link :to="item.newurl ? item.newurl : 'index'">{{ item.name }}</router-link>
                             </li>
                          </ul>
                         <ul class="second-menu-item second-menu-item-colum" v-else>
                             <li @click.stop='active = menu.name;showName = ""'>
-                                <router-link :to="secondMenu.url ? secondMenu.url : 'index'">{{ secondMenu.name }}</router-link>
+                                <router-link :to="secondMenu.newurl ? secondMenu.newurl : 'index'">{{ secondMenu.name }}</router-link>
                             </li>
                         </ul>
                     </div>
@@ -95,46 +42,8 @@ export default {
      var _this = this;
      this.axios(api.menus)
         .then(function(res){
-            console.log(res);
             _this.menuList = res.data.datas;
             _this.openNames = res.data.datas[0].id;
-            const user = {
-                name : '用户管理',
-                menus : [
-                    {
-                        name : '客户分类',
-                        menus : [],
-                        url : '/clientClassify'
-                    },
-                    {
-                        name : '客户级别',
-                        menus : [],
-                        url : '/clinetRank'
-                    },
-                    {
-                        name : '区域设置',
-                        menus : [],
-                        url : '/area'
-                    },
-                    {
-                        name : '行业设置',
-                        menus : [],
-                        url : '/trade'
-                    }
-                ]
-            }
-            const goods = {
-                name : '商品信息',
-                menus : [
-                    {
-                        name : '商品分类',
-                        menus : [],
-                        url : '/goodsList'
-                    }
-                ]
-            }
-            _this.menuList.push(user);
-            _this.menuList.push(goods);
         })
         .catch(function (error) {
             console.log(error);
