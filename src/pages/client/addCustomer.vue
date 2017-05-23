@@ -2,7 +2,11 @@
     <div class="addCustomer">
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
-            <Breadcrumb-item>客户管理</Breadcrumb-item>
+            <Breadcrumb-item>
+                <router-link to='/customerList'>
+                    客户列表
+                </router-link>
+            </Breadcrumb-item>
             <Breadcrumb-item>添加客戶</Breadcrumb-item>
         </Breadcrumb>
         
@@ -10,7 +14,7 @@
            <Row>
                <Col span="24" class='span8'>
                    <Form-item label="客户名称" prop="name">
-                       <Input v-model="customer.name" placeholder="请输入姓名" disabled style='width : 200px;'></Input>
+                       <Input v-model="customer.name" placeholder="请选择客户" disabled style='width : 200px;'></Input>
                        <Button type="warning" @click='select'>请选择</Button>
                    </Form-item>
                </Col>
@@ -47,8 +51,8 @@
            </Upload>
        </div>
            <Row type="flex" justify="center" class="code-row-bg addFooter">
-               <Button type="info" @click="handleSubmit('customer')">保存</Button>
-               <Button type="info" @click="handleReset('customer')" style="margin-left: 8px">提交审核</Button>
+               <Button type="info" @click="save">保存</Button>
+               <Button type="info" @click="submitAudit" style="margin-left: 8px">提交审核</Button>
            </Row>
 
 
@@ -56,6 +60,7 @@
            v-model="customerListModel"
            title="选择客户"
            width='800'
+           @on-ok='selectOk'
           >
           <Row>
               <Col span='24'>
@@ -67,7 +72,35 @@
               </Col>
           </Row>
           <div class="fileHandle">
-                <Table :columns="tableModle" :data="customerList"></Table>
+                <!-- <div class="table">
+                    <div class="table-header">
+                        <div class="table-td">请选择</div>
+                        <div class="table-td">客户名称</div>
+                        <div class="table-td">联系人</div>
+                        <div class="table-td">电话</div>
+                        <div class="table-td">地址</div>
+                    </div>
+                    <div class="table-tbody">
+                        <div class="table-tr" v-for='(item,index) in customerList' :key='index'>
+                            <div class="table-td">
+                                <Checkbox label="香蕉"></Checkbox>
+                            </div>
+                            <div class="table-td">
+                                {{item.name}}
+                            </div>
+                            <div class="table-td">
+                                {{item.contact}}
+                            </div>
+                            <div class="table-td">
+                                {{item.telephone}}
+                            </div>
+                            <div class="table-td">
+                                {{item.address}}
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <Table :columns="tableModle" :data="customerList" highlight-row @on-current-change='customerSelect'></Table>
           </div>
             <Row class="fileHandle" type="flex" justify="end">
                <Page :total="total" :pageSize='10' show-elevator show-total @on-change='toPage'></Page>
@@ -87,13 +120,57 @@ export default {
         this.DOM = {
             content : document.getElementById('content'),
         };
-        
+        this.$store.commit('addCustomerListPage',1);
+        this.axios({
+            method : 'post',
+            url : api.baseCorp + api.queryAllPost,
+            data : api.jsonData(this.data)
+        })
+            .then(function(res){
+                console.log(res);
+                _this.customerList = res.data.datas.rows;
+                _this.total = res.data.datas.total;
+            })
+            .catch(function(err){
+                console.log(err);
+            })
+
+
+
+        if(this.$route.params.id) {
+             const id = this.$route.params.id;
+             this.isModify = true;
+             this.axios(api.cooperation + id + api.queryById)
+                .then(function(res){
+                    const data = res.data.datas;
+                    _this.customer.id = data.id;
+                    _this.customer.name = data.customerCorpName;
+                    _this.customer.people = data.applyUserName;
+                    // _this.customer.phone = this.selectCust.telephone;
+                    // _this.customer.addr = this.selectCust.address;
+                    _this.customer.customerId = data.customerCorpId;
+                    _this.customer.applyReason = data.applyReason;
+                    _this.customer.attachmentName = data.attachmentName;
+                    _this.customer.attachmentUrl = data.attachmentUrl;
+                    if(data.attachmentName && data.attachmentUrl) {
+                        _this.defaultList.push({
+                            name : data.attachmentName,
+                            url : data.attachmentUrl,
+                        });
+                        _this.uploadList = _this.defaultList;
+                    }
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        }
 
         
     },
     data () {
         return {
             DOM : {},
+            isModify : false,
             customer: {
                 customerId: '',
                 name : '',
@@ -118,37 +195,26 @@ export default {
 
             name : '',
             tableModle : [
-                {
-                    type: 'selection',
-                    width: 60,
-                    align: 'center'
-                },
+               
                 {
                     title: '客户名称',
-                    key: 'customerCorpName'
+                    key: 'name'
                 },
                 {
                     title: '联系人',
-                    key: 'applyUserName'
+                    key: 'contact'
                 },
                 {
                     title: '电话',
-                    key: 'applyTime'
+                    key: 'telephone'
                 },
                 {
                     title: '地址',
-                    key: 'applyName'
-                },
-                {
-                    title : '操作',
-                    key: 'action',
-                    align: 'center',
-                    render (row, column, index) {
-                        return `<i-button type="text" size="small" @click="modify(row)">查看</i-button>`;
-                    }
+                    key: 'address'
                 }
 
             ],
+            selectCust : '',
             customerList : [],
             total : 30,
         }
@@ -159,6 +225,13 @@ export default {
             return {
                 token_id : tokenId
             }
+        },
+        data :function(){
+            return {
+                name : this.name,
+                pageStart : this.$store.state.page.addCustomerListPage,
+                pageNums : this.$store.state.pageNums,
+            };
         }
     },
     methods: {
@@ -166,7 +239,6 @@ export default {
             this.customerListModel = true;
         },
         attachmentsSuccess (res,file,fileList) {
-             console.log(res);
              const attachment = {
                   fileName : res.fileName,
                   fileType : res.fileSuffix,
@@ -189,7 +261,6 @@ export default {
         },
         handleRemoveUpload (file,fileList) {
             this.uploadList = fileList;
-            console.log(this.uploadList);
         },
         handleSubmit (name) {
             this.$refs[name].validate((valid) => {
@@ -203,14 +274,86 @@ export default {
         handleReset (name) {
             this.$refs[name].resetFields();
         },
+        customerSelect (data) {
+            console.log(data);
+            this.selectCust = data;
+        },
+        selectOk () {
+            this.customer.name = this.selectCust.name;
+            this.customer.people = this.selectCust.contact;
+            this.customer.phone = this.selectCust.telephone;
+            this.customer.addr = this.selectCust.address;
+            this.customer.customerId = this.selectCust.id;
+        },
         toPage (count) {
-            console.log(count);
+            const _this = this;
+            this.$store.commit('addCustomerListPage',count);
+
+            this.axios({
+                method : 'post',
+                url : api.baseCorp + api.queryAllPost,
+                data : api.jsonData(this.data)
+            })
+                .then(function(res){
+                    console.log(res);
+                    _this.customerList = res.data.datas.rows;
+                    _this.total = res.data.datas.total;
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        },
+        save () {
+            const _this = this;
+            console.log(this.customer);
+            if(this.isModify) {
+                this.axios({
+                    method : 'post',
+                    url : api.customer + api.modify,
+                    data : api.jsonData(this.customer)
+                })
+                    .then(function(res){
+                        console.log(res);
+                        _this.$router.push('customerList');
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                    })
+            }else {
+                this.axios({
+                    method : 'post',
+                    url : api.customer + api.add,
+                    data : api.jsonData(this.customer)
+                })
+                    .then(function(res){
+                        _this.$router.push('customerList');
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                    })
+            }
+        },
+        submitAudit () {
+            const _this = this;
+            this.axios({
+                method : 'post',
+                url : api.customer + api.customerSubmitAudit,
+                data : api.jsonData(this.customer)
+            })
+                .then(function(res){
+                    console.log(res);
+                     _this.$router.push('customerList');
+
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
         }
     }
 }
 </script>
 
-<style scoped>
+<style>
     .addCustomer .appendixUpload label {
         width: 80px;
         text-align: right;
@@ -221,5 +364,17 @@ export default {
     .addCustomer .appendixUpload .inline-block {
         display: inline-block;
         width : 500px;
+    }
+    .addCustomer .ivu-table table {
+        width: 100%;
+    }
+    .addCustomer .table-td {
+        display: table-cell;
+        height: 30px;
+        width: auto;
+        vertical-align: middle;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 20px;
     }
 </style>

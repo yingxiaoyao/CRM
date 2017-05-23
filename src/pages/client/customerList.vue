@@ -108,7 +108,10 @@ export default {
                     key: 'action',
                     align: 'center',
                     render (row, column, index) {
-                        return `<i-button type="text" size="small" @click="modify(row)">查看</i-button>`;
+                        if(row.applyStatus == 0){
+                            return `<i-button type="text" size="small" @click="modify(row)">编辑</i-button>`
+                        }
+                        return `<i-button type="text" size="small" @click="show(row)">查看</i-button>`;
                     }
                 }
 
@@ -148,11 +151,12 @@ export default {
                     console.log(err);
                 })
         },
-        modify (index,data) {
-            console.log(index);
+        modify (data) {
+            console.log(data);
+            this.$router.push({name:'addCustomer',params:{id:data.id}})
         },
-        remove (index,data) {
-            console.log(index);
+        show(data){
+            console.log(data);
         }
     }
 }
