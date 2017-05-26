@@ -302,7 +302,8 @@ export default {
         },
         save () {
             const _this = this;
-            console.log(this.customer);
+            // console.log(this.customer);
+
             if(this.isModify) {
                 this.axios({
                     method : 'post',
@@ -332,6 +333,7 @@ export default {
         },
         submitAudit () {
             const _this = this;
+            // console.log(this.customer);
             this.axios({
                 method : 'post',
                 url : api.customer + api.customerSubmitAudit,

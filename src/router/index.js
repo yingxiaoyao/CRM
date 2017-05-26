@@ -58,7 +58,7 @@ const routes = [
           component : audit
         }, 
         {
-          path : '/addCustomer',
+          path : '/applyCustomerList',
           name : 'addCustomer',
           component : addCustomer
         },
