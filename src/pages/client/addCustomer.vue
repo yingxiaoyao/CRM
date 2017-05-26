@@ -334,7 +334,7 @@ export default {
                 })
                     .then(function(res){
                         console.log(res);
-                        _this.$router.push('customerList');
+                        _this.$router.push('/applyCustomerList');
                     })
                     .catch(function(err){
                         console.log(err);
@@ -346,7 +346,7 @@ export default {
                     data : api.jsonData(this.customer)
                 })
                     .then(function(res){
-                        _this.$router.push('customerList');
+                        _this.$router.push('/applyCustomerList');
                     })
                     .catch(function(err){
                         console.log(err);
@@ -363,7 +363,7 @@ export default {
             })
                 .then(function(res){
                     console.log(res);
-                     _this.$router.push('customerList');
+                     _this.$router.push('/applyCustomerList');
 
                 })
                 .catch(function(err){
