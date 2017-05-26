@@ -10,7 +10,7 @@
                <span>客户名称：</span>
                <Input placeholder="商品名称/编码" style="width: 230px" v-model='name'></Input>
                     
-               <Button type="warning"  >查询</Button>
+               <Button type="warning"  @click='query'>查询</Button>
             
             </Col>
         </Row>
@@ -143,6 +143,29 @@ export default {
             })
                 .then(function(res){
                     console.log(res);
+                    _this.total = res.data.datas.total;
+                    _this.customerList = res.data.datas.rows;
+                    _this.DOM.content.scrollTop = 0;
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        },
+        query () {
+            const _this = this;
+            _this.$store.commit('auditCustomer',1);
+            if(!this.data.name) {
+                this.$Message.warning('请输入查询条件');
+                return;
+            }
+
+            _this.axios({
+                method : 'post',
+                url :api.customer + api.queryAllPost,
+                data : api.jsonData(this.data)
+            })
+                .then(function(res){
+                    // console.log(res);
                     _this.total = res.data.datas.total;
                     _this.customerList = res.data.datas.rows;
                     _this.DOM.content.scrollTop = 0;
