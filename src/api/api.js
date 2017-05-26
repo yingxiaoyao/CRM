@@ -35,6 +35,7 @@ export default {
 	queryById : '/queryById.do',	//根据 Id 查询  前面添加 /:id/queryById.do
 	modify : 'modify.do',			// post  修改
 	delete : '/delete.do',			// GET /:id/delete.do
+	audit : 'audit.do',				//  post 审核
 
 	/*公司合作*/
 	cooperation : '/api/cooperation/main/',		// 公司合作方

@@ -108,10 +108,10 @@ export default {
                     key: 'action',
                     align: 'center',
                     render (row, column, index) {
-                        if(row.applyStatus == 0){
-                            return `<i-button type="text" size="small" @click="modify(row)">编辑</i-button>`
+                        if(row.applyStatus == 1){
+                            return `<i-button type="text" size="small" @click="audit(row)">审核</i-button>`;
                         }
-                        return `<i-button type="text" size="small" @click="show(row)">查看</i-button>`;
+                        return `<i-button type="text" size="small" @click="show(row)">查看</i-button>`
                     }
                 }
 
@@ -151,12 +151,12 @@ export default {
                     console.log(err);
                 })
         },
-        modify (data) {
-            console.log(data);
-            this.$router.push({name:'addCustomer',params:{id:data.id}})
+        audit (data) {
+            // console.log(data);
+            this.$router.push({path : '/audit/' + data.id})
         },
         show(data){
-            console.log(data);
+            // console.log(data);
             this.$router.push({name:'showCustomer',params:{id:data.id}})
         }
     }

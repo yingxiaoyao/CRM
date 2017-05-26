@@ -8,6 +8,9 @@ import Index from '@/pages/index'
 import Welcome from '@/pages/welcome/welcome'
 import customerList from '@/pages/client/customerList'
 import addCustomer from '@/pages/client/addCustomer'
+import auditCustomerList from '@/pages/client/auditCustomerList'
+import audit from '@/pages/client/audit'
+import showCustomer from '@/pages/client/showCustomer'
 import clientClassify from '@/pages/client/clientClassify'
 import clientRank from '@/pages/client/clientRank'
 import area from '@/pages/client/area'
@@ -45,9 +48,24 @@ const routes = [
           component : customerList
         }, 
         {
+          path : '/auditCustomer',
+          name : 'auditCustomer',
+          component : auditCustomerList
+        },
+        {
+          path : '/audit/:id',
+          name : 'audit',
+          component : audit
+        }, 
+        {
           path : '/addCustomer',
           name : 'addCustomer',
           component : addCustomer
+        },
+        {
+          path : '/showCustomer',
+          name : 'showCustomer',
+          component : showCustomer
         },
         {
           path : '/clientClassify',

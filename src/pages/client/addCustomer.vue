@@ -46,7 +46,7 @@
            <label class="uploadLabel" style='width:80px;text-align:right;'>相关文件</label>
            <Upload :action="uploadUrl" class='inline-block' 
                :on-success="attachmentsSuccess" :headers='uploadHeader' :data='uploadData'
-               :default-file-list="defaultList" :on-remove='handleRemoveUpload' :before-upload="handleBeforeUpload">
+               :default-file-list="defaultList" :on-remove='handleRemoveUpload' >
                <Button type="ghost" icon="ios-cloud-upload-outline">添加附件</Button>
            </Upload>
        </div>
@@ -145,9 +145,9 @@ export default {
                     const data = res.data.datas;
                     _this.customer.id = data.id;
                     _this.customer.name = data.customerCorpName;
-                    _this.customer.people = data.applyUserName;
-                    // _this.customer.phone = this.selectCust.telephone;
-                    // _this.customer.addr = this.selectCust.address;
+                    _this.customer.people = data.contact;
+                    _this.customer.phone = data.telephone;
+                    _this.customer.addr = data.address;
                     _this.customer.customerId = data.customerCorpId;
                     _this.customer.applyReason = data.applyReason;
                     _this.customer.attachmentName = data.attachmentName;
@@ -239,18 +239,15 @@ export default {
             this.customerListModel = true;
         },
         attachmentsSuccess (res,file,fileList) {
-             const attachment = {
-                  fileName : res.fileName,
-                  fileType : res.fileSuffix,
-                  filePath : res.filePath,
-                  url : res.url,
-                  orderNum : fileList.length
+             console.log(fileList);
+             if(fileList.length > 1) {
+                fileList.splice( 0 , 1);
              }
              this.customer.attachmentName = res.fileName;
              this.customer.attachmentUrl = res.url;
              this.uploadList = fileList;
         },
-        handleBeforeUpload () {
+        /*handleBeforeUpload () {
             const check = this.uploadList.length < 1;
             if (!check) {
                 this.$Notice.warning({
@@ -258,7 +255,7 @@ export default {
                 });
             }
             return check;
-        },
+        },*/
         handleRemoveUpload (file,fileList) {
             this.uploadList = fileList;
         },
