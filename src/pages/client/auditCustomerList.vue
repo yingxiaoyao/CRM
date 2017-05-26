@@ -125,7 +125,7 @@ export default {
         data :function(){
             return {
                 name : this.name,
-                pageStart : this.$store.state.page.customerPage,
+                pageStart : this.$store.state.page.auditCustomer,
                 pageNums : this.$store.state.pageNums,
             };
 
@@ -134,7 +134,7 @@ export default {
     methods: {
         toPage (count) {
             const _this = this;
-            _this.$store.commit('customerPage',count);
+            _this.$store.commit('auditCustomer',count);
 
             _this.axios({
                 method : 'post',
