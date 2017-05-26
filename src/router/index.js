@@ -43,7 +43,7 @@ const routes = [
           component : Hello
         },
         {
-          path : '/customerList',
+          path : '/applyCustomerList',
           name : 'customerList',
           component : customerList
         }, 
@@ -58,7 +58,7 @@ const routes = [
           component : audit
         }, 
         {
-          path : '/applyCustomerList',
+          path : '/addCustomer',
           name : 'addCustomer',
           component : addCustomer
         },
