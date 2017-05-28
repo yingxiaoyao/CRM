@@ -9,54 +9,81 @@
             </Breadcrumb-item>
             <Breadcrumb-item>申请明细</Breadcrumb-item>
         </Breadcrumb>
+    <Form :model="audit"  label-position="left" :label-width="100">
+        
         <Row>
             <Col span='8'>
-                <label>客户名称 ：<span v-if='customer.customerCorpName'>{{customer.customerCorpName}}</span><span v-else>--</span>  </label>
+                <Form-item label="客户名称:">
+                    <span v-if='customer.customerCorpName'>{{customer.customerCorpName}}</span><span v-else>--</span> 
+                </Form-item>
             </Col> 
             <Col span='9'>
-                <label class="state">申请状态 ：<span v-if='customer.applyStatusDispName'>{{customer.applyStatusDispName}}</span><span v-else>--</span> </label>
+                <Form-item label="申请状态:">
+                    <span style="font-size:18px;" v-if='customer.applyStatusDispName'>{{customer.applyStatusDispName}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>联系人 ：<span v-if='customer.contact'>{{customer.contact}}</span><span v-else>--</span> </label>
+                <Form-item label="联系人:">
+                    <span v-if='customer.contact'>{{customer.contact}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>电话 ：<span v-if='customer.telephone'>{{customer.telephone}}</span><span v-else>--</span> </label>
+                <Form-item label="电话:">
+                    <span v-if='customer.telephone'>{{customer.telephone}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
             <Col span='16'>
-                <label>地址 ：<span v-if='customer.address'>{{customer.address}}</span><span v-else>--</span></label>
+                 <Form-item label="地址:">
+                    <span v-if='customer.address'>{{customer.address}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
         </Row>
         <Row>
             <Col span='8'>
-                <label>申请人 ：<span v-if='customer.applyUserName'>{{customer.applyUserName}}</span><span v-else>--</span> </label>
+                <Form-item label="申请人:">
+                    <span v-if='customer.applyUserName'>{{customer.applyUserName}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>申请日期 ：<span v-if='customer.applyTime'>{{customer.applyTime}}</span><span v-else>--</span> </label>
+                 <Form-item label="申请日期:">
+                    <span v-if='customer.applyTime'>{{customer.applyTime}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
             <Col span='24'>
-                <label>申请理由 ：<span v-if='customer.applyReason'>{{customer.applyReason}}</span><span v-else>--</span> </label>
+                <Form-item label="申请理由:">
+                    <span v-if='customer.applyReason'>{{customer.applyReason}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
         </Row>
         <Row>
             <Col span='8'>
-                <label>审核人 ：<span v-if='customer.auditUserName'>{{customer.auditUserName}}</span><span v-else>--</span></label>
+                <Form-item label="审核人:">
+                    <span v-if='customer.auditUserName'>{{customer.auditUserName}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>审核日期 ：<span v-if='customer.auditTime'>{{customer.auditTime}}</span><span v-else>--</span> </label>
+                <Form-item label="a审核日期:">
+                    <span v-if='customer.auditTime'>{{customer.auditTime}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='24'>
-                <label>审核内容 ：<span v-if='customer.auditContent'> {{customer.auditContent}}</span><span v-else>--</span></label>
+                <Form-item label="审核内容:">
+                    <span v-if='customer.auditContent'> {{customer.auditContent}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
             <Col span='24'>
-                <label>附件：
+                <Form-item label="附件:">
                     <img v-if='customer.isImg == 1' :src="customer.attachmentUrl" style="width:200px;height : auto;" @click='showImg'>
                     <a v-else style="color:#09f;" :href="customer.attachmentUrl" title='点击下载'>{{customer.attachmentName}}</a>
-                </label>
-            </Col>
-            <Col span='16' style='text-align:center;margin-top:20px;'>
-               <Button type="warning" @click.native='back'>返回</Button>
+                </Form-item>
             </Col>
         </Row>
+        <Row>
+            <Col span='3' offset="8" style='margin-top:20px;margin-bottom : 20px;'>
+               <Button long type="warning" @click.native='back'>返回</Button>
+            </Col>
+        </Row>
+    </Form>
 
         <Modal title="查看图片" v-model="visible">
             <img :src="imgUrl" v-if="visible" style="width: 100%">
@@ -98,7 +125,8 @@ export default {
         return {
            customer : {},
            imgUrl : '',
-           visible : false
+           visible : false,
+           audit : {}
         }
     },
     computed : {
@@ -117,14 +145,21 @@ export default {
 </script>
 
 <style scoped>
-    label {
+    .ivu-form-item {
+        margin: 0;
+        margin-top: 10px;
+
+    }
+    .ivu-form .ivu-form-item-label {
+        font-size: 16px;
+        color: #666;
+    }
+    .ivu-form-item-content {
         font-size: 18px;
-        margin-top: 20px;
-        display: block;
         color: #333;
     }
-    label.state {
-        font-size: 19px;
-        font-weight: 900;
+
+    .addFooter {
+        margin-top: 20px;
     }
 </style>

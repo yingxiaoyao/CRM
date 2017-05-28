@@ -3,53 +3,64 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>
-                <router-link to='/customerList'>
+                <router-link to='/applyCustomerList'>
                     客户列表
                 </router-link>
             </Breadcrumb-item>
             <Breadcrumb-item>申请明细</Breadcrumb-item>
         </Breadcrumb>
-    <Form :model="audit" :label-width="80">
-        <Row>
+    <Form :model="audit"  label-position="left" :label-width="100">
+        <Row class='clientInfo'>
             <Col span='8'>
-            <!-- <Form-item label="客户名称:"> -->
-                <label>
-                    客户名称：
+                <Form-item label="客户名称:">
                     <span v-if='customer.customerCorpName'>{{customer.customerCorpName}}</span><span v-else>--</span> 
-                </label>
-            <!-- </Form-item> -->
+                </Form-item>
             </Col> 
             <Col span='9'>
-                <label class="state">申请状态 ：<span v-if='customer.applyStatusDispName'>{{customer.applyStatusDispName}}</span><span v-else>--</span> </label>
+                <Form-item label="申请状态:">
+                    <span style="font-size:18px;" v-if='customer.applyStatusDispName'>{{customer.applyStatusDispName}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>联系人 ：<span v-if='customer.contact'>{{customer.contact}}</span><span v-else>--</span> </label>
+                <Form-item label="联系人:">
+                    <span v-if='customer.contact'>{{customer.contact}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>电话 ：<span v-if='customer.telephone'>{{customer.telephone}}</span><span v-else>--</span> </label>
+                <Form-item label="电话:">
+                    <span v-if='customer.telephone'>{{customer.telephone}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
             <Col span='16'>
-                <label>地址 ：<span v-if='customer.address'>{{customer.address}}</span><span v-else>--</span></label>
+                <Form-item label="地址:">
+                    <span v-if='customer.address'>{{customer.address}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
         </Row>
         <Row>
             <Col span='8'>
-                <label>申请人 ：<span v-if='customer.applyUserName'>{{customer.applyUserName}}</span><span v-else>--</span> </label>
+                <Form-item label="申请人:">
+                    <span v-if='customer.applyUserName'>{{customer.applyUserName}}</span><span v-else>--</span>
+                </Form-item>
             </Col> 
             <Col span='8'>
-                <label>申请日期 ：<span v-if='customer.applyTime'>{{customer.applyTime}}</span><span v-else>--</span> </label>
+                <Form-item label="申请日期:">
+                    <span v-if='customer.applyTime'>{{customer.applyTime}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
             <Col span='24'>
-                <label>申请理由 ：<span v-if='customer.applyReason'>{{customer.applyReason}}</span><span v-else>--</span> </label>
+                <Form-item label="申请理由:">
+                    <span v-if='customer.applyReason'>{{customer.applyReason}}</span><span v-else>--</span>
+                </Form-item>
             </Col>
-        </Row>
-        <Row>
             <Col span='24'>
-                <label>附件：
+                <Form-item label="附件:">
                     <img v-if='customer.isImg == 1' :src="customer.attachmentUrl" style="width:200px;height : auto;" @click='showImg'>
                     <a v-else style="color:#09f;" :href="customer.attachmentUrl" title='点击下载'>{{customer.attachmentName}}</a>
-                </label>
+                </Form-item>
             </Col>
+        </Row>
+        <Row class='auditInfo'>
             <Col span='16'>
                 <Form-item label="审核理由">
                     <Input v-model="audit.auditContent" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入..."></Input>
@@ -57,7 +68,7 @@
             </Col>
         </Row>
     </Form>
-    <Row type="flex" justify="center" class="code-row-bg addFooter">
+    <Row type="flex" justify="center" class="addFooter">
         <Button type="info" @click="auditSave(true)">同意</Button>
         <Button type="info" @click="auditSave(false)" style="margin-left: 8px">不同意</Button>
     </Row>
@@ -144,14 +155,21 @@ export default {
 </script>
 
 <style scoped>
-    label {
+    .ivu-form-item {
+        margin: 0;
+        margin-top: 10px;
+
+    }
+    .ivu-form .ivu-form-item-label {
+        font-size: 16px;
+        color: #666;
+    }
+    .ivu-form-item-content {
         font-size: 18px;
-        margin-top: 20px;
-        display: block;
         color: #333;
     }
-    label.state {
-        font-size: 19px;
-        font-weight: 900;
+
+    .addFooter {
+        margin-top: 20px;
     }
 </style>

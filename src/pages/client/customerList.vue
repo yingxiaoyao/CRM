@@ -176,11 +176,11 @@ export default {
         },
         modify (data) {
             console.log(data);
-            this.$router.push({name:'addCustomer',params:{id:data.id}})
+            this.$router.push({path : '/addCustomer' , query : {id : data.id}});
         },
         show(data){
-            console.log(data);
-            this.$router.push({name:'showCustomer',params:{id:data.id}})
+            // console.log(data);
+            this.$router.push('/showCustomer/' + data.id)
         }
     }
 }

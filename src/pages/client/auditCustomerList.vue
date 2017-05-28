@@ -180,7 +180,7 @@ export default {
         },
         show(data){
             // console.log(data);
-            this.$router.push({name:'showCustomer',params:{id:data.id}})
+            this.$router.push('/showCustomer/' + data.id);
         }
     }
 }

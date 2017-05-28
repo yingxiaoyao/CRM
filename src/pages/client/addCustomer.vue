@@ -3,7 +3,7 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>
-                <router-link to='/customerList'>
+                <router-link to='/applyCustomerList'>
                     客户列表
                 </router-link>
             </Breadcrumb-item>
@@ -134,11 +134,9 @@ export default {
             .catch(function(err){
                 console.log(err);
             })
-
-
-
-        if(this.$route.params.id) {
-             const id = this.$route.params.id;
+            
+        if(this.$route.query.id) {
+             const id = this.$route.query.id;
              this.isModify = true;
              this.axios(api.cooperation + id + api.queryById)
                 .then(function(res){
@@ -333,8 +331,12 @@ export default {
                     data : api.jsonData(this.customer)
                 })
                     .then(function(res){
-                        console.log(res);
-                        _this.$router.push('/applyCustomerList');
+                        // console.log(res);
+                        if(res.data.status == 1) {
+                            _this.$router.push('/applyCustomerList');
+                        }else {
+                             _this.$Message.error(res.data.message);
+                        }
                     })
                     .catch(function(err){
                         console.log(err);
@@ -346,7 +348,11 @@ export default {
                     data : api.jsonData(this.customer)
                 })
                     .then(function(res){
-                        _this.$router.push('/applyCustomerList');
+                        if(res.data.status == 1) {
+                            _this.$router.push('/applyCustomerList');
+                        }else {
+                             _this.$Message.error(res.data.message);
+                        }
                     })
                     .catch(function(err){
                         console.log(err);
@@ -362,8 +368,11 @@ export default {
                 data : api.jsonData(this.customer)
             })
                 .then(function(res){
-                    console.log(res);
-                     _this.$router.push('/applyCustomerList');
+                    if(res.data.status == 1) {
+                        _this.$router.push('/applyCustomerList');
+                    }else {
+                         _this.$Message.error(res.data.message);
+                    }
 
                 })
                 .catch(function(err){

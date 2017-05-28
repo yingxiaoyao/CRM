@@ -63,7 +63,7 @@ const routes = [
           component : addCustomer
         },
         {
-          path : '/showCustomer',
+          path : '/showCustomer/:id',
           name : 'showCustomer',
           component : showCustomer
         },
