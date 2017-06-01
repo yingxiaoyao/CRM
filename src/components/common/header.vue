@@ -21,7 +21,7 @@
                                     <Icon type="android-list"></Icon>
                                     <span>账号信息</span>
                                 </li>
-                                <li>
+                                <li @click='logout'>
                                     <Icon type="log-out"></Icon>
                                     <span>退出</span>
                                 </li>
@@ -44,6 +44,7 @@
     </div>
 </template>
 <script>
+import api from '@/api/api'
     export default {
         name : 'header',
         data () {
@@ -53,12 +54,29 @@
         },
         computed : {
             userInfo () {
-                // console.log(this.$store.state.user.user);
-                // console.log(this.$store.state.user.user);
                 return this.$store.state.user.user;
             },
             corp () {
                 return this.$store.state.user.corp;
+            }
+        },
+        methods : {
+            logout () {
+                const _this = this;
+                const corp = window.localStorage.getItem('corp');
+                _this.$store.commit('logout');
+                this.axios({
+                    method : 'get',
+                    url : api.logout
+                })
+                    .then(function(res) {
+                        console.log(res);
+                        if(res.data.status == 1) {
+                            window.location.href = '/' + corp.keyId + '/login';
+                        }else {
+                            _this.$Message.error(res.data.message);
+                        }
+                    })
             }
         }
     }

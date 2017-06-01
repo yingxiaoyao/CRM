@@ -28,7 +28,11 @@ const store = new Vuex.Store({
 		},
 		logout : (state) => {
 		    localStorage.removeItem('token');
-		    state.token = null
+		    localStorage.removeItem('corp');
+		    localStorage.removeItem('user');
+		    state.token = null;
+		    state.user.user = {};
+		    state.user.corp = {};
 		},
 		title : (state, data) => {
 		    state.title = data;

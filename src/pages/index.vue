@@ -1,6 +1,6 @@
 <template>
 	<div class="index">
-		<Header></Header>
+		<appHeader></appHeader>
         <div class="warpper">
             <div class="leftMenu">
                 <LeftMenu></LeftMenu>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/header'
+import appHeader from '@/components/common/header'
 import LeftMenu from '@/components/common/leftMenu'
 import IconA from '@/components/common/icon'
 
@@ -23,7 +23,7 @@ import IconA from '@/components/common/icon'
 export default {
   name: 'index',
   components : {
-  	Header,
+  	appHeader,
     LeftMenu,
     IconA
     // Welcome

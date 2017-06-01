@@ -25,6 +25,7 @@ export default {
 		return json;
 	},
 	login : '/verifyUser.do',
+	logout : '/api/sys/logout.do',
 	menus : '/sys/menu/fetchUserMenus.do',
 
 	//  公用

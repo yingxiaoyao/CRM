@@ -19,6 +19,7 @@ import goodsList from '@/pages/goods/goodsList'
 import addGoods from '@/pages/goods/addGoods'
 import goodsAttr from '@/pages/goods/attribute'
 import addGoodsAttr from '@/pages/goods/addAttr'
+import productCategory from '@/pages/goods/productCategory'
 import UE from '@/components/UE'
 
 
@@ -96,6 +97,11 @@ const routes = [
             path : '/goodsList/add',
             name : 'addGoods',
             component : addGoods
+          },
+          {
+            path : '/productCategory',
+            name : 'productCategory',
+            component : productCategory
           },
           {
             path :'/productAttribute',

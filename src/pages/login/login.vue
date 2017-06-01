@@ -74,7 +74,6 @@ export default {
                                 var data = res.data;
                                 console.log(data);
                                 if(data.status == 1) {
-                                    console.log(data);
                                     _this.$store.commit('login', data.datas.token_id);
                                     _this.$store.commit('saveUser',data.datas.user);
                                     _this.$store.commit('saveCorp',data.datas.corp);
@@ -86,10 +85,9 @@ export default {
                                 } else if(data.status == 0) {
                                     _this.$message.error('该用户不存在!');
                                 }
-                                // console.log(res);
                             })
-                            .catch(function (res) {
-                                console.log(res);
+                            .catch(function (err) {
+                                console.log(err);
                             }); 
                         
                     } else {
