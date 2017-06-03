@@ -86,8 +86,8 @@ export default {
                                     _this.$message.error('该用户不存在!');
                                 }
                             })
-                            .catch(function (err) {
-                                console.log(err);
+                            .catch(function (error) {
+                                console.log(error);
                             }); 
                         
                     } else {

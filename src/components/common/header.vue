@@ -63,8 +63,7 @@ import api from '@/api/api'
         methods : {
             logout () {
                 const _this = this;
-                const corp = window.localStorage.getItem('corp');
-                _this.$store.commit('logout');
+                const corp =JSON.parse(window.localStorage.getItem('corp'));
                 this.axios({
                     method : 'get',
                     url : api.logout
@@ -72,7 +71,9 @@ import api from '@/api/api'
                     .then(function(res) {
                         console.log(res);
                         if(res.data.status == 1) {
-                            window.location.href = '/' + corp.keyId + '/login';
+                            _this.$store.commit('logout');
+                            var url = '/' + corp.keyId + '/login';
+                            _this.$router.push('/' + corp.keyId + '/login');
                         }else {
                             _this.$Message.error(res.data.message);
                         }

@@ -22,16 +22,13 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td align_left">客户分类</div>
-                    <div class="table-td">操作</div>
-                </div>
-                <div class="table-tbody">
-                    <div class="table-tr" v-for='(classify , index) in data'>
-                        <treeTable-product :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></treeTable-product>
-                    </div>
+                    <div class="table-td align_left" style="width:40%">客户分类</div>
+                    <div class="table-td" style='width:30%'>编码</div>
+                    <div class="table-td" style="width : 30%">操作</div>
                 </div>
             </div>
         </div>
+        <treeTable-product  v-for='(classify , index) in data' :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></treeTable-product>
                      
 
         <Modal
@@ -51,11 +48,16 @@
                 <Form-item label="分类名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="分类名称"></Input>
                 </Form-item>
-                <!-- <Form-item label="EPR编码" prop="EPR">
-                    <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
-                </Form-item> -->
-                <Form-item label="描述" prop="description">
-                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
+                <Form-item label="图片" prop="imageUrl">
+                    <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false" :before-upload="handleBeforeUpload">
+                        <div class="addMainImg" v-if='!isUpload'>
+                            <Icon type="plus-round" size='20' v-if='!compileForm.imageUrl'></Icon>
+                            <img :src="compileForm.imageUrl" class="mainImg" v-else>
+                        </div>
+                        <div v-else>
+                            <Spin fix>上传中...</Spin>
+                        </div>
+                    </Upload>
                 </Form-item>
             </Form>
         </Modal>
@@ -72,7 +74,9 @@ export default {
     },
     mounted () {
         const _this = this;
-        this.axios(api.category + api.categoryGetRoots)
+        // this.axios(api.category + api.categoryGetRoots)
+
+        this.axios(api.qroductCatalog + api.queryAll)
             .then(function(res) {
                 _this.data = res.data.datas;
                 console.log(res);
@@ -89,7 +93,7 @@ export default {
                     parentId : '',
                     name: '',
                     code: '',
-                    description : ''
+                    imageUrl : ''
                 },
                 ruleValidate: {
                     name: [
@@ -99,14 +103,34 @@ export default {
                         { required: true, message: '分类编码不能为空', trigger: 'blur' }
                     ]
                 },
+                isUpload : false,
+                uploadUrl : 'http://lookat.soonergz.com:8888/easycrm/api/common/fileUpload.do',
+                uploadData : {path : 'product'},
+                defaultList: [],
+                imgUrl: '',
                 parentName : '无',
                 prevClass : null ,
                  
             }
         },
+        computed : {
+            uploadHeader : function() {
+                const tokenId = this.$store.state.token;
+                return {
+                    token_id : tokenId
+                }
+            }
+        },
         methods: {
             show (index) {
                 this.clientClassifyModel = true;
+            },
+            handleBeforeUpload () {
+                this.isUpload = true;
+            },
+            mainImgSuccess (res,file,fileList) {
+                this.isUpload = false;
+                this.compileForm.imageUrl = res.url;
             },
             confirm () {
                 const _this = this;
@@ -115,8 +139,7 @@ export default {
                     header : {
                         "Content-Type" : 'application/x-www-form-urlencoded'
                     },
-                    url :api.category + api.categoryPostAddRoot,
-                    // url : '/prize',
+                    url :api.qroductCatalog + api.addRoot,
                     data : api.jsonData(_this.compileForm)
                 })
                 .then(function(res) {
@@ -125,28 +148,24 @@ export default {
                         _this.data.push(res.data.datas);
                         _this.compileForm.name = '';
                         _this.compileForm.parentId = '';
-                        _this.compileForm.EPR = '';
                         _this.compileForm.code = '';
-                        _this.compileForm.description = '';
+                        _this.compileForm.imageUrl = '';
                         _this.$Message.success('添加成功');
                     }
                 })
             },
             addRoot () {
-                // this.enterType = 1;
                 this.parentName = '无';
                 this.clientClassifyModel = true;
                 console.log(this.data);
             },
             moveUp (data) {
-                // console.log(data);
             },
             cancel () {
                 // this.delModel = false;
                 this.clientClassifyModel = false;
                 this.compileForm.name = '';
                 this.compileForm.parentId = '';
-                // this.compileForm.EPR = '';
                 this.compileForm.code = '';
                 this.compileForm.description = '';
             }
@@ -174,7 +193,6 @@ export default {
         align-items: center;
     }
     .prevClassName .title {
-        /*display: inline-block;*/
         width: 80px;
         text-align: right;
         vertical-align: middle;
@@ -186,7 +204,6 @@ export default {
         box-sizing: content-box;
     }
     .prevName {
-        /*float: none;*/
         display: inline-block;
         width: 100%;
     }
@@ -194,17 +211,12 @@ export default {
     .table {
         display: table;
         width: 100%;
-        margin: 10px;
-    }
-    .child-table {
-        display: table;
-        width: 200%;
+        margin: 0;
     }
     .table-header {
         display: table-header-group;
         background : #f5f7f9;
         border: 1px solid #ddd;
-        /*color: #fff;*/
     }
     .table-tbody {
         display: table-row-group;
@@ -219,14 +231,11 @@ export default {
     .table-td {
         display: table-cell;
         height: 30px;
-        width: 50%;
+        width: auto;
         vertical-align: middle;
         text-align: center;
         border-bottom: 1px solid #ddd;
     }
-    /*.table-td {
-        width: 200%;
-    }*/
     .align_left {
         text-align: left;
         padding-left: 30px;
@@ -239,5 +248,25 @@ export default {
         padding: 0 5px;
         font-size: 16px;
         left: -20px;
+    }
+
+    .addMainImg {
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border: 1px dashed #d7dde4;
+        display: inline-block;
+        cursor: pointer;
+        background: #fff;
+        text-align: center;
+        border-radius: 3px;
+        transition: border 0.2s ease;
+    }
+    .addMainImg:hover {
+         border: 1px dashed #09f;
+    }
+    .addMainImg img {
+        width: 100%;
+        height: 100%;
     }
 </style>

@@ -43,7 +43,7 @@ export default {
      this.axios(api.menus)
         .then(function(res){
             _this.menuList = res.data.datas;
-            _this.openNames = res.data.datas[0].id;
+            // _this.openNames = res.data.datas[0].id;
         })
         .catch(function (error) {
             console.log(error);

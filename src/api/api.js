@@ -32,11 +32,15 @@ export default {
 	queryAll : 'queryAll.do',		//查询所有  get
 	queryAllPost : 'queryByRequest.do',	// 查询所有 post
 	add : 'add.do'	,				//添加 post
-
+	addRoot : 'addRoot.do',			//添加一级分类
 	queryById : '/queryById.do',	//根据 Id 查询  前面添加 /:id/queryById.do
 	modify : 'modify.do',			// post  修改
 	delete : '/delete.do',			// GET /:id/delete.do
 	audit : 'audit.do',				//  post 审核
+	moveUp : '/moveUp.do', 			//将特定节点上移-- 之前添加上移ID  如 /12/moveUp.do
+	moveDown : '/moveDown.do', 		//将特定节点下移-- 之前添加上移ID  如 /12/moveDown.do
+
+
 
 	/*公司合作*/
 	cooperation : '/api/cooperation/main/',		// 公司合作方

@@ -1,16 +1,18 @@
 <template>
 
-
 <div class="child-table">
-    <div class="table-tbody">
+    <!-- <div class="table-tbody"> -->
         <div class="table-tr">
-            <div class="table-td align_left" :style="{paddingLeft : model.level * 30 + 'px'}">
+            <div class="table-td align_left" :style="{paddingLeft : model.level * 30 + 'px',width : '40%'}">
                 <div class="classityTeite"  @click="toggle">
-                    <Icon :type="open ? 'minus-round' : 'plus-round'" class='isOpenicon' v-if='model.children'></Icon>
-                    {{model.name}}
+                    <Icon :type="open ? 'minus-round' : 'plus-round'" class='isOpenicon' v-if='model.children' style='line-height: 33px;'></Icon>
+                    <img v-if='model.imageUrl' :src="model.imageUrl" alt="">{{model.name}}
                 </div>
             </div>
-            <div class="table-td">
+            <div class="table-td" style="width:30%">
+                {{model.code}}
+            </div>
+            <div class="table-td" style="width:30%;">
                 <Button type="text" v-on:click='add'  v-if='model.level!==5'>添加子类</Button>
                 <Button type="text" v-on:click='toEdit'>编辑</Button>
                 <Button type="text" v-on:click='moveUp'>上移</Button>
@@ -18,14 +20,9 @@
                 <Button type="text" v-on:click='isDel'>删除</Button>
             </div>
         </div>
-        <div class="table-tr" v-if='model.children' v-show='open'>
-        	<tree-table v-for="(item , index) in model.children" :key='index' :model="item" :parentModel='model' :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
-        </div>
-
-
+    <!-- </div> -->
         <Modal v-model="delModel" width="360">
             <p slot="header" style="color:#f60;text-align:center;">
-                <!-- <Icon type="information-circled"></Icon> -->
                 <span>删除确认</span>
             </p>
             <div style="text-align:center">
@@ -54,15 +51,23 @@
                 <Form-item label="分类名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="分类名称"></Input>
                 </Form-item>
-                <!-- <Form-item label="EPR编码" prop="EPR">
-                    <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
-                </Form-item> -->
-                <Form-item label="描述" prop="description">
-                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
+                <Form-item label="图片" prop="imageUrl">
+                    <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false" :before-upload="handleBeforeUpload">
+                        <div class="addMainImg" v-if='!isUpload'>
+                            <Icon type="plus-round" size='20' v-if='!compileForm.imageUrl'></Icon>
+                            <img :src="compileForm.imageUrl" class="mainImg" v-else>
+                        </div>
+                        <div v-else>
+                            <Spin fix>上传中...</Spin>
+                        </div>
+                    </Upload>
                 </Form-item>
             </Form>
         </Modal>
-    </div>
+        
+        <div  v-if='model.children' v-show='open'>
+        	<tree-table v-for="(item , index) in model.children" :key='index' :model="item" :parentModel='model' :index='index' v-on:del='del' v-on:addChild='addChild' v-on:edit='edit' v-on:moveUp='moveUp' v-on:moveDown='moveDown'></tree-table>
+        </div>
 </div>
 
 </template>
@@ -73,6 +78,7 @@ export default {
 	props: ['model','index', 'parentModel'],
  	data() {
 	 	return {
+	 		data : this.model,
 	 		open : false,
 		 	// isFolder: this.model.child && this.model.child.length > 0,
 		 	moveDownCount : 0,
@@ -85,7 +91,7 @@ export default {
                 name: '',
                 // EPR: '',
                 code: '',
-                description : ''
+                imageUrl : ''
             },
             ruleValidate: {
                 name: [
@@ -95,19 +101,36 @@ export default {
                     { required: true, message: '分类编码不能为空', trigger: 'blur' }
                 ]
             },
+            isUpload : false,
+            uploadUrl : 'http://lookat.soonergz.com:8888/easycrm/api/common/fileUpload.do',
+            uploadData : {path : 'product'},
+            defaultList: [],
+            imgUrl: '',
             parentName : '无',  //父级分类名称
             isEdit : false
             
 		}
 	},
 	computed: {
-		// this.routerName = this.$router.currentRoute.name;
+		uploadHeader : function() {
+		    const tokenId = this.$store.state.token;
+		    return {
+		        token_id : tokenId
+		    }
+		}
 	},
 	methods: {
 	 	toggle () {
 			if (this.model.children) {
 				this.open = !this.open
 		 	}
+		},
+		handleBeforeUpload () {
+		    this.isUpload = true;
+		},
+		mainImgSuccess (res,file,fileList) {
+		    this.isUpload = false;
+		    this.compileForm.imageUrl = res.url;
 		},
 		add () {
 			this.parentName = this.model.name;
@@ -122,7 +145,7 @@ export default {
 				    header : {
 				        "Content-Type" : 'application/x-www-form-urlencoded'
 				    },
-				    url :api.category + api.cetegoryAdd,
+				    url :api.qroductCatalog + api.add,
 				    data : api.jsonData(_this.compileForm)
 				})
 				.then(function(res) {
@@ -137,7 +160,7 @@ export default {
 					    _this.compileForm.name = '';
 					    _this.compileForm.parentId = '';
 					    _this.compileForm.code = '';
-					    _this.compileForm.description = '';
+					    _this.compileForm.imageUrl = '';
 				    }
 				})
 			}else {
@@ -148,16 +171,17 @@ export default {
 				    header : {
 				        "Content-Type" : 'application/x-www-form-urlencoded'
 				    },
-				    url :api.category + api.cetegoryModify,
+				    url :api.qroductCatalog + api.modify,
 				    data : api.jsonData(editInfo)
 				})
 				.then(function(res) {
 				    console.log(res);
 				    _this.model = res.data.datas;
+				    _this.data = res.data.datas;
 				    _this.compileForm.name = '';
 				    _this.compileForm.parentId = '';
 				    _this.compileForm.code = '';
-				    _this.compileForm.description = '';
+				    _this.compileForm.imageUrl = '';
 				})
 				this.isEdit = false;
 			}
@@ -166,17 +190,16 @@ export default {
 
 			const _this = this;
 
-			_this.axios(api.category + _this.model.id + api.categoryGetById)
+			_this.axios(api.qroductCatalog + _this.model.id + api.queryById)
 				.then(function(res) {
 					var data = res.data.datas;
-					console.log(data);
 
 					if(res.data.status == 1) {
 						_this.clientClassifyModel = true;
 						_this.compileForm.name = data.name;
 						_this.compileForm.parentId = data.parentId;
 						_this.compileForm.code = data.code;
-						_this.compileForm.description = data.description;
+						_this.compileForm.imageUrl = data.imageUrl;
 						_this.isEdit = true;
 					}
 				})
@@ -192,7 +215,7 @@ export default {
 				return;
 			}
 			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveUp)
+			_this.axios(api.qroductCatalog + _this.model.id + api.moveUp)
 				.then(function(res) {
 					// console.log(res);
 					if(res.data.status == 1) {
@@ -228,7 +251,7 @@ export default {
 				_this.$emit('moveDown',data);
 				return;
 			}
-			_this.axios(api.category + _this.model.id + api.cetegoryMoveDown)
+			_this.axios(api.qroductCatalog + _this.model.id + api.moveDown)
 				.then(function(res){
 					if(res.data.status == 1) {
 						if(_this.model.level !== 1) {
@@ -251,6 +274,8 @@ export default {
 							// _this.$emit('moveDown',_this.model);
 						}
 						_this.$Message.success('下移成功');
+					}else {
+						_this.$Message.error(res.data.message);
 					}
 				})
 
@@ -262,7 +287,7 @@ export default {
 			}
 
 			const _this = this;
-			_this.axios(api.category + _this.model.id + api.cetegoryDelete)
+			_this.axios(api.qroductCatalog + _this.model.id + api.delete)
 				.then(function(res) {
 					console.log(res);
 					if(res.data.status == 1) {
@@ -295,55 +320,42 @@ export default {
 			this.compileForm.parentId = '';
 			// this.compileForm.EPR = '';
 			this.compileForm.code = '';
-			this.compileForm.description = '';
+			this.compileForm.imageUrl = '';
 		}
 	}
 }
 </script>
 
-<style>
-	.table {
-	    display: table;
-	    width: 100%;
-	    margin: 10px;
-	}
+<style scoped>
 	.child-table {
-	    display: table;
-	    width: 200%;
-	}
-	.table-header {
-	    display: table-header-group;
-	    background : #f5f7f9;
-	    border: 1px solid #ddd;
-	    /*color: #fff;*/
-	}
-	.table-tbody {
-	    display: table-row-group;
+	    display: block;
+	    width: 100%;
 	}
 	.table-tr {
-	    display: table-row;
-	    background: #fff;
-	}
-	.table-tr:hover {
-	    background: #f9f9f9;
+		display: flex;
+		justify-content: center;
 	}
 	.table-td {
 	    display: table-cell;
-	    height: 30px;
-	    width: 50%;
+	    height: 35px;
+	    width: auto;
 	    vertical-align: middle;
 	    text-align: center;
 	    border-bottom: 1px solid #ddd;
+	    line-height: 35px;
 	}
-	/*.table-td {
-	    width: 200%;
-	}*/
 	.align_left {
 	    text-align: left;
 	    padding-left: 30px;
 	}
 	.classityTeite {
 	    position: relative;
+	}
+	.classityTeite img {
+		width : 20px;
+		height: auto;
+		vertical-align: middle;
+		margin-right: 5px;
 	}
 	.isOpenicon {
 	    position: absolute;
@@ -369,8 +381,26 @@ export default {
 	    box-sizing: content-box;
 	}
 	.prevName {
-	    /*float: none;*/
 	    display: inline-block;
 	    width: 100%;
+	}
+	.addMainImg {
+	    width: 80px;
+	    height: 80px;
+	    line-height: 80px;
+	    border: 1px dashed #d7dde4;
+	    display: inline-block;
+	    cursor: pointer;
+	    background: #fff;
+	    text-align: center;
+	    border-radius: 3px;
+	    transition: border 0.2s ease;
+	}
+	.addMainImg:hover {
+	     border: 1px dashed #09f;
+	}
+	.addMainImg img {
+	    width: 100%;
+	    height: 100%;
 	}
 </style>

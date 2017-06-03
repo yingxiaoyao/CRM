@@ -28,6 +28,9 @@ axios.interceptors.request.use(
 // http response 拦截器 
 axios.interceptors.response.use(
     response => {
+        if(response.data.status == 9) {
+            window.location = 'http://lookat.soonergz.com:8888/crm/index.html';
+        }
         return response;
     },
     error => {
