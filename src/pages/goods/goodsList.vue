@@ -65,7 +65,6 @@ export default {
 
         this.DOM = {
             content : document.getElementById('content'),
-
         };
 
         // 获取商品分类
@@ -74,6 +73,7 @@ export default {
                 url :api.qroductCatalog + api.queryAll
             })
             .then(function(res) {
+                console.log(res);
                 _this.CatalogList = res.data.datas;
                 // console.log(res);
             })
@@ -150,13 +150,26 @@ export default {
                     title: '商品名称',
                     key: 'name',
                     width : 300,
-                    render (row , column , index) {
-                        return  `<div class="wares">
-                                    <img src='${row.name.img}'>
-                                    <div class="waresInfo">
-                                        <h3>${row.name.name}</h3> 
-                                    </div>
-                                </div>`
+                    render (h, params) {
+                        return h('div',{
+                            attrs : {
+                                class : 'wares'
+                            }
+                        },[
+                            h('img',{
+                                attrs : {
+                                    src : params.row.name.img
+                                }
+                            }),
+                            h('div',{
+                                attrs : {
+                                    class : 'waresInfo'
+                                }
+                            },[
+                                h('h3',params.row.name.name)
+                            ])
+                               
+                        ])
                     }
                 },
                 {
@@ -167,8 +180,9 @@ export default {
                     title: '销售价格',
                     key: 'prize',
                     sortable: true,
-                    render (row, column, index) {
-                        return `<span class='prize'>${row.prize}</span>`;
+                    render (h, params) {
+                        // return `<span class='prize'>${row.prize}</span>`;
+                        return h('span',params.row.prize);
                     }
                 },
                 
@@ -179,8 +193,13 @@ export default {
                 {
                     title : '商品二维码',
                     key : 'qrUrl',
-                    render (row , column , index) {
-                        return `<img src='${row.qrUrl}' class='qrUrl'>`
+                    render (h, params) {
+                        return h('img',{
+                            attrs : {
+                                src : params.row.qrUrl,
+                                class : 'qrUrl'
+                            }
+                        })
                     }
                 },
                 {
@@ -191,8 +210,32 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (row, column, index) {
-                        return `<i-button type="text" size="small" @click="modify(${index},row)">修改</i-button> <i-button type="text" size="small" @click="remove(${index})">删除</i-button>`;
+                    render (h, params) {
+                        /*return `<i-button type="text" size="small" @click="modify(${index},row)">修改</i-button> <i-button type="text" size="small" @click="remove(${index})">删除</i-button>`;*/
+                        return h('div',[
+                            h('Button',{
+                                props : {
+                                    type : 'text',
+                                    size : 'small'
+                                },
+                                on : {
+                                    click : () => {
+                                        this.modify(params.index,params.row);
+                                    }
+                                }
+                            },'修改'),
+                            h('Button',{
+                                props : {
+                                    type : 'text',
+                                    size : 'small'
+                                },
+                                on: {
+                                    click : () => {
+                                        this.remove(params.index);
+                                    }
+                                }
+                            },'删除')
+                        ])
                     }
                 }
             ],

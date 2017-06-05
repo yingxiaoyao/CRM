@@ -107,11 +107,32 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (row, column, index) {
-                        if(row.applyStatus == 0){
-                            return `<i-button type="text" size="small" @click="modify(row)">编辑</i-button>`
+                    render (h, params) {
+                        if(params.row.applyStatus == 0){
+
+                            return h('Button',{
+                                props : {
+                                    type : 'text',
+                                    size : 'small'
+                                },
+                                on : {
+                                    click : () => {
+                                        this.modify(params.row);
+                                    }
+                                }
+                            },'编辑');
                         }
-                        return `<i-button type="text" size="small" @click="show(row)">查看</i-button>`;
+                        return h('Button',{
+                            props : {
+                                type : 'text',
+                                size : 'small'
+                            },
+                            on : {
+                                click : () => {
+                                    this.show(params.row);
+                                }
+                            }
+                        },'查看');
                     }
                 }
 
