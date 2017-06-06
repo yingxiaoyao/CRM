@@ -2,8 +2,8 @@
     <div class="prodectCategory">
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
-            <Breadcrumb-item>客户管理</Breadcrumb-item>
-            <Breadcrumb-item>客户分类</Breadcrumb-item>
+            <Breadcrumb-item>商品信息</Breadcrumb-item>
+            <Breadcrumb-item>商品分类</Breadcrumb-item>
         </Breadcrumb>
         <Row type="flex" justify="end" class="fileHandle">
             <div class="buttonM">
@@ -28,7 +28,9 @@
                 </div>
             </div>
         </div>
-        <treeTable-product  v-for='(classify , index) in data ' :key='index' :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></treeTable-product>
+        <div>
+            <treeTableProduct  v-for='(classify , index) in data ' :key='index' :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></treeTableProduct>
+        </div>
                      
 
         <Modal

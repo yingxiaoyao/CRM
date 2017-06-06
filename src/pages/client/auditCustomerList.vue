@@ -3,7 +3,7 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>客户管理</Breadcrumb-item>
-            <Breadcrumb-item>客户列表</Breadcrumb-item>
+            <Breadcrumb-item>客户审核</Breadcrumb-item>
         </Breadcrumb>
         <Row class="fileHandle">
             <Col span='8'>
@@ -107,11 +107,31 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (row, column, index) {
-                        if(row.applyStatus == 1){
-                            return `<i-button type="text" size="small" @click="audit(row)">审核</i-button>`;
+                    render: (h, params) => {
+                        if(params.row.applyStatus == 1){
+                            return h('Button',{
+                                props : {
+                                    type : 'text',
+                                    size : 'small'
+                                },
+                                on : {
+                                    click : () => {
+                                        this.audit(params.row);
+                                    }
+                                }
+                            },'审核');
                         }
-                        return `<i-button type="text" size="small" @click="show(row)">查看</i-button>`
+                        return h('Button',{
+                            props : {
+                                type : 'text',
+                                size : 'small'
+                            },
+                            on : {
+                                click : () => {
+                                    this.show(params.row);
+                                }
+                            }
+                        },'查看')
                     }
                 }
 

@@ -82,8 +82,59 @@ export default {
                         title : '操作',
                         key: 'action',
                         align: 'center',
-                        render (row, column, index) {
-                            return `<i-button type="text" size="small" @click="modify(${index},row)">编辑</i-button> <i-button type="text" size="small" @click="remove(${index},row)">删除</i-button>`;
+                        render : (h,params) => {
+                            // return `<i-button type="text" size="small" @click="modify(${index},row)">编辑</i-button> <i-button type="text" size="small" @click="remove(${index},row)">删除</i-button>`;
+                            return h('div',[
+                                h('Button',{
+                                    props: {
+                                        type : 'text',
+                                        size : 'small'
+                                    },
+                                    on : {
+                                        click : () => {
+                                            this.modify(params.index , params.row);
+                                        }
+                                    }
+                                },'编辑'),
+                                h('Button',{
+                                    props: {
+                                        type : 'text',
+                                        size : 'small'
+                                    },
+                                    on : {
+                                        click : () => {
+                                            this.remove(params.index , params.row);
+                                        }
+                                    }
+                                },'删除'),
+                            ])
+                            /*return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.modify(params.index , params.row)
+                                            }
+                                        }
+                                    }, '编辑'),
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.remove(params.index,params.row)
+                                            }
+                                        }
+                                    }, '删除')
+                                ]);*/
                         }
                     }
             ],
