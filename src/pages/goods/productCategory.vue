@@ -28,7 +28,9 @@
                 </div>
             </div>
         </div>
-        <tree-table-product  v-for='(classify , index) in data ' :key='index' :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></tree-table-product>
+        <div>
+            <treeTableProduct  v-for='(classify , index) in data ' :key='index' :model='classify' :parentModel='data'  :index='index' @moveUp='moveUp'></treeTableProduct>
+        </div>
                      
 
         <Modal
