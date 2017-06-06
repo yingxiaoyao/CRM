@@ -210,7 +210,7 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (h, params) {
+                    render : (h, params) => {
                         /*return `<i-button type="text" size="small" @click="modify(${index},row)">修改</i-button> <i-button type="text" size="small" @click="remove(${index})">删除</i-button>`;*/
                         return h('div',[
                             h('Button',{

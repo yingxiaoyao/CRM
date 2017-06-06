@@ -107,7 +107,7 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (h, params) {
+                    render: (h, params) => {
                         if(params.row.applyStatus == 1){
                             return h('Button',{
                                 props : {

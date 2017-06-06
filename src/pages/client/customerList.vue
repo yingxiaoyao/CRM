@@ -3,7 +3,7 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>客户管理</Breadcrumb-item>
-            <Breadcrumb-item>客户列表</Breadcrumb-item>
+            <Breadcrumb-item>客户申请</Breadcrumb-item>
         </Breadcrumb>
         <Row class="fileHandle">
             <Col span='8'>
@@ -107,7 +107,7 @@ export default {
                     title : '操作',
                     key: 'action',
                     align: 'center',
-                    render (h, params) {
+                    render: (h, params) => {
                         if(params.row.applyStatus == 0){
 
                             return h('Button',{
