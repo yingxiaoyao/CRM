@@ -336,7 +336,7 @@ export default {
 		justify-content: center;
 	}
 	.table-td {
-	    display: table-cell;
+	    display: block;
 	    height: 35px;
 	    width: auto;
 	    vertical-align: middle;
