@@ -113,4 +113,5 @@ export default {
 
 	// 客户 供应商名单
 	baseCorp : '/api/base/corp/',			// 客户供应商名单
+	baseCorpBykeyWords : 'queryByKeyword.do',			// 根据关键词查找客户
 }

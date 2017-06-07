@@ -41,11 +41,11 @@
             @on-cancel="cancel">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
-                <Form-item label="编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="编码"></Input>
-                </Form-item>
                 <Form-item label="名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="名称"></Input>
+                </Form-item>
+                <Form-item label="编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="编码"></Input>
                 </Form-item>
                 <Form-item label="描述" prop="description">
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>

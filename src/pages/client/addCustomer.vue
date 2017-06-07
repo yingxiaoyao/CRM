@@ -14,8 +14,8 @@
            <Row>
                <Col span="24" class='span8'>
                    <Form-item label="客户名称" prop="name">
-                       <Input v-model="customer.name" placeholder="请选择客户" disabled style='width : 200px;'></Input>
-                       <Button type="warning" @click='select'>请选择</Button>
+                       <Input v-model="customer.name" placeholder="请输入客户名称" style='width : 200px;'></Input>
+                       <Button type="warning" @click='queryClient'>查找</Button> <!-- 选择页面 @click='select' -->
                    </Form-item>
                </Col>
                <Col span="8" class='span8'>
@@ -35,7 +35,7 @@
                    </Form-item>
                </Col>
                <Col span="16" class='span8'>
-                   <Form-item label="申请理由" prop="applyReason">
+                   <Form-item label="添加理由" prop="applyReason">
                        <Input v-model="customer.applyReason" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入..."></Input>
                    </Form-item>
                </Col>
@@ -51,8 +51,8 @@
            </Upload>
        </div>
            <Row type="flex" justify="center" class="code-row-bg addFooter">
-               <Button type="info" @click="save">保存</Button>
-               <Button type="info" @click="submitAudit" style="margin-left: 8px">提交审核</Button>
+               <!-- <Button type="info" @click="save">保存</Button> -->
+               <Button type="info" @click="submitAudit" style="margin-left: 8px">添加</Button>
            </Row>
 
 
@@ -233,6 +233,35 @@ export default {
         }
     },
     methods: {
+        queryClient () {
+            const _this = this;
+            if(this.customer.name) {
+                const name = {
+                    name : this.customer.name
+                }
+                this.axios({
+                    method : 'post',
+                    url : api.baseCorp + api.baseCorpBykeyWords,
+                    data : api.jsonData(name)
+                })
+                    .then(function(res) {
+                        if(res.data.status == 1) {
+                            _this.customer.name = res.data.datas.name;
+                            _this.customer.people = res.data.datas.contact;
+                            _this.customer.phone = res.data.datas.telephone;
+                            _this.customer.addr = res.data.datas.address;
+                            _this.customer.customerId = res.data.datas.id;
+                        }else {
+                             _this.$Message.warning(res.data.message);
+                        }
+                    })
+                    .catch(function(err){
+                        console.log(err);
+                    })
+            }else {
+                this.$Message.error('请输入客户名称');
+            }
+        },
         select () {
             this.customerListModel = true;
         },

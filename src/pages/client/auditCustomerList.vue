@@ -17,7 +17,7 @@
         <Row type="flex" justify="end" class="fileHandle">
             <div class="buttonM">
                 <router-link to='/addCustomer'>
-                   <Button type="warning">新增</Button>
+                   <Button type="warning">添加</Button>
                </router-link>
             </div>
             <div class="buttonM">

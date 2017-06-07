@@ -45,11 +45,11 @@
                     <div class="title">上级分类</div>
                     <div class="prevName">{{ parentName }}</div>
                 </div>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
-                </Form-item>
                 <Form-item label="分类名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                </Form-item>
+                <Form-item label="分类编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
                 </Form-item>
                 <!-- <Form-item label="EPR编码" prop="EPR">
                     <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>

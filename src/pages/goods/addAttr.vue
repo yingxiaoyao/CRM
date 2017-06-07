@@ -13,7 +13,7 @@
              
             <Row class="fileHandle" type='flex' justify='center'>
                 <Col span='7'>
-                    <Form-item label="属性名称：" prop="name">
+                    <Form-item label="属性：" prop="name">
                         <Input v-model="data.name" style="width: 200px" placeholder="必填"></Input>
                     </Form-item>
                 </Col>
@@ -32,7 +32,7 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td">属性值名称</div>
+                    <div class="table-td">属性值</div>
                     <div class="table-td">属性值编码</div>
                     <div class="table-td">属性值描述</div>
                     <div class="table-td">排序</div>
@@ -62,6 +62,7 @@
          </div>
         
          <Row type="flex" justify="center" class="code-row-bg addFooter" style='margin-top : 40px;'>
+            <div><strong style="line-height: 36px; margin-right: 10px;">说明：属性如”颜色”，属性值如“白色”、“红色”等</strong></div>
             <Col span="3">
                 <Button type="warning" size="large" long @click.native='save("formItem")'>保存</Button>
             </Col>

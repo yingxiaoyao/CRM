@@ -2,11 +2,11 @@
    <div class="goodsList">
        <Breadcrumb>
             <Breadcrumb-item>商品信息</Breadcrumb-item>
-            <Breadcrumb-item>商品列表</Breadcrumb-item>
+            <Breadcrumb-item>全部商品</Breadcrumb-item>
         </Breadcrumb>
         <Row class="fileHandle" type='flex' justify='center'>
             <Col span='7'>
-                <span>类别：</span>
+                <span>品类：</span>
                 <Cascader class='catalogCascader' change-on-select :data="CatalogList" v-model='catalog' trigger='hover'
                 @keyup.native='enter($event)'></Cascader>
             </Col>
@@ -16,7 +16,7 @@
                 </Select>
             </Col>
             <Col span='7'>
-                <span>关键字：</span>
+                <span>商品名称：</span>
                 <Input v-model="data.name" placeholder="商品名称/编码" style="width: 200px" @keyup.native='enter($event)'></Input>
                 <Row class="fileHandle" type='flex' justify='end'>
                     <Col span='9'>
@@ -140,12 +140,6 @@ export default {
                 }
             ],
             columns5 : [
-                {
-                    type: '排序号',
-                    key : 'sort',
-                    width: 40,
-                    align: 'center'
-                },
                 {
                     title: '商品名称',
                     key: 'name',
