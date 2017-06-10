@@ -10,7 +10,7 @@
                 <span>关键字：</span>
                 <Input placeholder="商品名称/编码" style="width: 230px" v-model='name'></Input>
                      
-                <Button type="warning"  >查询</Button>
+                <Button type="warning"  @click.native='query'>查询</Button>
              
              </Col>
          </Row>
@@ -83,7 +83,6 @@ export default {
                         key: 'action',
                         align: 'center',
                         render : (h,params) => {
-                            // return `<i-button type="text" size="small" @click="modify(${index},row)">编辑</i-button> <i-button type="text" size="small" @click="remove(${index},row)">删除</i-button>`;
                             return h('div',[
                                 h('Button',{
                                     props: {
@@ -108,33 +107,6 @@ export default {
                                     }
                                 },'删除'),
                             ])
-                            /*return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: () => {
-                                                this.modify(params.index , params.row)
-                                            }
-                                        }
-                                    }, '编辑'),
-                                    h('Button', {
-                                        props: {
-                                            type: 'error',
-                                            size: 'small'
-                                        },
-                                        on: {
-                                            click: () => {
-                                                this.remove(params.index,params.row)
-                                            }
-                                        }
-                                    }, '删除')
-                                ]);*/
                         }
                     }
             ],
@@ -145,7 +117,6 @@ export default {
     },
     computed : {
         data :function(){
-            
             return {
                 name : this.name,
                 pageStart : this.$store.state.goodsAttrPage,
@@ -172,6 +143,23 @@ export default {
 
                     _this.attrList = data.rows;
                     _this.DOM.content.scrollTop = 0;
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+        },
+        query () {
+            const _this = this;
+            _this.$store.commit('goodsAttrPage',1);
+            _this.axios({
+                method : 'post',
+                url :api.productAttr + api.productGetAll,
+                data : api.jsonData(this.data)
+            })
+                .then(function(res){
+                    // console.log(res);
+                    _this.totalCount = res.data.datas.total;
+                    _this.attrList = res.data.datas.rows;
                 })
                 .catch(function(err){
                     console.log(err);

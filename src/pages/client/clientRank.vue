@@ -36,9 +36,7 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
-            @on-ok="confirm"
-            @on-cancel="cancel">
+            title="新增分类">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <Form-item label="名称" prop="name">
@@ -51,6 +49,10 @@
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
                 </Form-item>
             </Form>
+            <div class="modelFooter" slot='footer'>
+                <Button type="text" @click='cancel'>取消</Button>
+                <Button type="info" @click="confirm('compileForm')">确定</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -84,13 +86,19 @@ export default {
                     description : ''
                 },
                 ruleValidate: {
-                    name: [
-                        { required: true, message: '分类名称不能为空', trigger: 'blur' }
-                    ],
-                    code: [
-                        { required: true, message: '分类编码不能为空', trigger: 'blur' }
-                    ]
-                },
+                       name: [
+                           { required: true, message: '分类名称不能为空', trigger: 'blur' },
+                           { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
+                       ],
+                       code: [
+                           { required: true, message: '分类编码不能为空', trigger: 'blur' },
+                           { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                       ],
+                       description : [
+                           { required: true, message: '分类描述不能为空', trigger: 'blur' },
+                           { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
+                       ]
+                   },
                 isEdit : false,
                 prevClass : null ,
                 editIndex : ''
@@ -101,50 +109,56 @@ export default {
             show (index) {
                 this.clientClassifyModel = true;
             },
-            confirm () {
+            confirm (name) {
                 const _this = this;
+                this.$refs[name].validate((valid) => {
+                    if(valid) {
+                        if(!this.isEdit) {
+                            _this.axios({
+                                method : 'post',
+                                header : {
+                                    "Content-Type" : 'application/x-www-form-urlencoded'
+                                },
+                                url :api.clientLevel + api.clientLevelAdd,
+                                data : api.jsonData(_this.compileForm)
+                            })
+                            .then(function(res) {
+                                console.log(res);
+                                if(res.data.status == 1) {
+                                    _this.data.push(res.data.datas);
+                                    _this.clientClassifyModel = false;
+                                    _this.compileForm.name = '';
+                                    _this.compileForm.code = '';
+                                    _this.compileForm.description = '';
+                                    _this.$Message.success('添加成功');
+                                }
+                            })
+                        }else {
 
-                if(!this.isEdit) {
-                    _this.axios({
-                        method : 'post',
-                        header : {
-                            "Content-Type" : 'application/x-www-form-urlencoded'
-                        },
-                        url :api.clientLevel + api.clientLevelAdd,
-                        data : api.jsonData(_this.compileForm)
-                    })
-                    .then(function(res) {
-                        console.log(res);
-                        if(res.data.status == 1) {
-                            _this.data.push(res.data.datas);
-                            _this.compileForm.name = '';
-                            _this.compileForm.code = '';
-                            _this.compileForm.description = '';
-                            _this.$Message.success('添加成功');
+                            const editInfo = _this.compileForm;
+                            editInfo.id = this.data[this.editIndex].id;
+                            console.log( api.clientLevel + api.clientLevelModify);
+                            console.log( api.jsonData(editInfo));
+                            _this.axios({
+                                method : 'post',
+                                header : {
+                                    "Content-Type" : 'application/x-www-form-urlencoded'
+                                },
+                                url :api.clientLevel + api.clientLevelModify,
+                                data : api.jsonData(editInfo)
+                            })
+                            .then(function(res) {
+                                _this.data[_this.editIndex] = res.data.datas;
+                                _this.clientClassifyModel = false;
+                                _this.compileForm.name = '';
+                                _this.compileForm.code = '';
+                                _this.compileForm.description = '';
+                                _this.isEdit =false;
+                            })
                         }
-                    })
-                }else {
-
-                    const editInfo = _this.compileForm;
-                    editInfo.id = this.data[this.editIndex].id;
-                    console.log( api.clientLevel + api.clientLevelModify);
-                    console.log( api.jsonData(editInfo));
-                    _this.axios({
-                        method : 'post',
-                        header : {
-                            "Content-Type" : 'application/x-www-form-urlencoded'
-                        },
-                        url :api.clientLevel + api.clientLevelModify,
-                        data : api.jsonData(editInfo)
-                    })
-                    .then(function(res) {
-                        _this.data[_this.editIndex] = res.data.datas;
-                        _this.compileForm.name = '';
-                        _this.compileForm.code = '';
-                        _this.compileForm.description = '';
-                        _this.isEdit =false;
-                    })
-                }
+                    }
+                })
+                
             },
             addRoot () {
                 this.clientClassifyModel = true;

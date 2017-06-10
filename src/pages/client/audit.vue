@@ -171,5 +171,6 @@ export default {
 
     .addFooter {
         margin-top: 20px;
+        padding-bottom: 20px;
     }
 </style>

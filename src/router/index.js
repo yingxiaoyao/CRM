@@ -6,7 +6,7 @@ import Login from '@/pages/login/login'
 import Hello from '@/pages/Hello'
 import Index from '@/pages/index'
 import Welcome from '@/pages/welcome/welcome'
-import customerList from '@/pages/client/customerList'
+import applyCustomerList from '@/pages/client/applyCustomerList'
 import addCustomer from '@/pages/client/addCustomer'
 import auditCustomerList from '@/pages/client/auditCustomerList'
 import audit from '@/pages/client/audit'
@@ -45,8 +45,8 @@ const routes = [
         },
         {
           path : '/applyCustomerList',
-          name : 'customerList',
-          component : customerList
+          name : 'applyCustomerList',
+          component : applyCustomerList
         }, 
         {
           path : '/auditCustomer',

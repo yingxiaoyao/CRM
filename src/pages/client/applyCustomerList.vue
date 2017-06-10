@@ -175,10 +175,10 @@ export default {
         query () {
             const _this = this;
             _this.$store.commit('auditCustomer',1);
-            if(!this.data.name) {
+            /*if(!this.data.name) {
                 this.$Message.warning('请输入查询条件');
                 return;
-            }
+            }*/
 
             _this.axios({
                 method : 'post',

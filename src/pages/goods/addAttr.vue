@@ -32,9 +32,9 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td">属性值</div>
-                    <div class="table-td">属性值编码</div>
-                    <div class="table-td">属性值描述</div>
+                    <div class="table-td">属性名称</div>
+                    <div class="table-td">属性编码</div>
+                    <div class="table-td">属性描述</div>
                     <div class="table-td">排序</div>
                     <div class="table-td">操作</div>
                 </div>

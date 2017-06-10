@@ -15,11 +15,11 @@
             </Col>
         </Row>
         <Row type="flex" justify="end" class="fileHandle">
-            <div class="buttonM">
+            <!-- <div class="buttonM">
                 <router-link to='/addCustomer'>
                    <Button type="warning">添加</Button>
                </router-link>
-            </div>
+            </div> -->
             <div class="buttonM">
                 <Button type="info">导入</Button>
             </div>
@@ -55,7 +55,7 @@ export default {
         };
         _this.axios({
             method : 'post',
-            url :api.customer + api.queryAllPost,
+            url :api.customer + api.customerNew,
             data : api.jsonData(this.data)
         })
             .then(function(res){
@@ -174,14 +174,14 @@ export default {
         query () {
             const _this = this;
             _this.$store.commit('auditCustomer',1);
-            if(!this.data.name) {
+            /*if(!this.data.name) {
                 this.$Message.warning('请输入查询条件');
                 return;
-            }
+            }*/
 
             _this.axios({
                 method : 'post',
-                url :api.customer + api.queryAllPost,
+                url :api.customer + api.customerNew,
                 data : api.jsonData(this.data)
             })
                 .then(function(res){

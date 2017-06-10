@@ -40,20 +40,18 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
-            @on-ok="addChild"
-            @on-cancel="cancel">
+            title="新增分类">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <div class="prevClassName">
                     <div class="title">上级分类</div>
                     <div class="prevName">{{ parentName }}</div>
                 </div>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
-                </Form-item>
                 <Form-item label="分类名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                </Form-item>
+                <Form-item label="分类编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
                 </Form-item>
                 <!-- <Form-item label="EPR编码" prop="EPR">
                     <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
@@ -62,6 +60,10 @@
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
                 </Form-item>
             </Form>
+            <div class="modelFooter" slot='footer'>
+                <Button type="text" @click='cancel'>取消</Button>
+                <Button type="info" @click="addChild('compileForm')">确定</Button>
+            </div>
         </Modal>
     </div>
 </div>
@@ -89,10 +91,16 @@ export default {
             },
             ruleValidate: {
                 name: [
-                    { required: true, message: '分类名称不能为空', trigger: 'blur' }
+                    { required: true, message: '分类名称不能为空', trigger: 'blur' },
+                    { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
                 ],
                 code: [
-                    { required: true, message: '分类编码不能为空', trigger: 'blur' }
+                    { required: true, message: '分类编码不能为空', trigger: 'blur' },
+                    { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                ],
+                description : [
+                    { required: true, message: '分类描述不能为空', trigger: 'blur' },
+                    { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
                 ]
             },
             parentName : '无',  //父级分类名称
@@ -111,53 +119,60 @@ export default {
 			this.compileForm.parentId = this.model.id;
 			this.clientClassifyModel = true;
 		},
-		addChild (data) {
+		addChild (name) {
 			const _this = this;
-			if(!this.isEdit){
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.region + api.regionAdd,
-				    data : api.jsonData(_this.compileForm)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    if(res.data.status == 1) {
-				    	if(_this.model.children) {
-				    		_this.model.children.push(res.data.datas);
-				    	}else {
-				    		_this.model.children = [res.data.datas];
+			 this.$refs[name].validate((valid) => {
+			 	if(valid) {
+			 		if(!this.isEdit){
+			 			_this.axios({
+			 			    method : 'post',
+			 			    header : {
+			 			        "Content-Type" : 'application/x-www-form-urlencoded'
+			 			    },
+			 			    url :api.region + api.regionAdd,
+			 			    data : api.jsonData(_this.compileForm)
+			 			})
+			 			.then(function(res) {
+			 			    console.log(res);
+			 			    if(res.data.status == 1) {
+			 			    	if(_this.model.children) {
+			 			    		_this.model.children.push(res.data.datas);
+			 			    	}else {
+			 			    		_this.model.children = [res.data.datas];
 
-				    	}
-					    _this.compileForm.name = '';
-					    _this.compileForm.parentId = '';
-					    _this.compileForm.code = '';
-					    _this.compileForm.description = '';
-				    }
-				})
-			}else {
-				const editInfo = _this.compileForm;
-				editInfo.id = this.model.id;
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.region + api.regionModify,
-				    data : api.jsonData(editInfo)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    _this.model = res.data.datas;
-				    _this.compileForm.name = '';
-				    _this.compileForm.parentId = '';
-				    _this.compileForm.code = '';
-				    _this.compileForm.description = '';
-				})
-				this.isEdit = false;
-			}
+			 			    	}
+			 			    	_this.clientClassifyModel = false;
+			 				    _this.compileForm.name = '';
+			 				    _this.compileForm.parentId = '';
+			 				    _this.compileForm.code = '';
+			 				    _this.compileForm.description = '';
+			 			    }
+			 			})
+			 		}else {
+			 			const editInfo = _this.compileForm;
+			 			editInfo.id = this.model.id;
+			 			_this.axios({
+			 			    method : 'post',
+			 			    header : {
+			 			        "Content-Type" : 'application/x-www-form-urlencoded'
+			 			    },
+			 			    url :api.region + api.regionModify,
+			 			    data : api.jsonData(editInfo)
+			 			})
+			 			.then(function(res) {
+			 			    console.log(res);
+			 			    _this.model = res.data.datas;
+			 			    _this.clientClassifyModel = false;
+			 			    _this.compileForm.name = '';
+			 			    _this.compileForm.parentId = '';
+			 			    _this.compileForm.code = '';
+			 			    _this.compileForm.description = '';
+			 			})
+			 			this.isEdit = false;
+			 		}
+			 	}
+			 })
+			
 		},
 		toEdit () {
 

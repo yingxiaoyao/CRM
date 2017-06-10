@@ -22,7 +22,7 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td bold">客户级别</div>
+                    <div class="table-td bold">行业名称</div>
                     <div class="table-td bold">操作</div>
                 </div>
                 <div class="table-tbody">
@@ -36,9 +36,7 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
-            @on-ok="confirm"
-            @on-cancel="cancel">
+            title="新增行业分类">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <Form-item label="名称" prop="name">
@@ -51,6 +49,10 @@
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
                 </Form-item>
             </Form>
+            <div class="modelFooter" slot='footer'>
+                <Button type="text" @click='cancel'>取消</Button>
+                <Button type="info" @click="confirm('compileForm')">确定</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -85,10 +87,16 @@ export default {
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '分类名称不能为空', trigger: 'blur' }
+                        { required: true, message: '分类名称不能为空', trigger: 'blur' },
+                        { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
                     ],
                     code: [
-                        { required: true, message: '分类编码不能为空', trigger: 'blur' }
+                        { required: true, message: '分类编码不能为空', trigger: 'blur' },
+                        { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                    ],
+                    description : [
+                        { required: true, message: '分类描述不能为空', trigger: 'blur' },
+                        { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
                     ]
                 },
                 isEdit : false,
@@ -101,48 +109,55 @@ export default {
             show (index) {
                 this.clientClassifyModel = true;
             },
-            confirm () {
+            confirm (name) {
                 const _this = this;
 
-                if(!this.isEdit) {
-                    _this.axios({
-                        method : 'post',
-                        header : {
-                            "Content-Type" : 'application/x-www-form-urlencoded'
-                        },
-                        url :api.indeustry + api.indeustryAdd,
-                        data : api.jsonData(_this.compileForm)
-                    })
-                    .then(function(res) {
-                        console.log(res);
-                        if(res.data.status == 1) {
-                            _this.data.push(res.data.datas);
-                            _this.compileForm.name = '';
-                            _this.compileForm.code = '';
-                            _this.compileForm.description = '';
-                            _this.$Message.success('添加成功');
-                        }
-                    })
-                }else {
+                this.$refs[name].validate((valid) => {
+                    if(valid) {
+                        if(!this.isEdit) {
+                            _this.axios({
+                                method : 'post',
+                                header : {
+                                    "Content-Type" : 'application/x-www-form-urlencoded'
+                                },
+                                url :api.indeustry + api.indeustryAdd,
+                                data : api.jsonData(_this.compileForm)
+                            })
+                            .then(function(res) {
+                                console.log(res);
+                                if(res.data.status == 1) {
+                                    _this.data.push(res.data.datas);
+                                    _this.clientClassifyModel = false;
+                                    _this.compileForm.name = '';
+                                    _this.compileForm.code = '';
+                                    _this.compileForm.description = '';
+                                    _this.$Message.success('添加成功');
+                                }
+                            })
+                        }else {
 
-                    const editInfo = _this.compileForm;
-                    editInfo.id = this.data[this.editIndex].id;
-                    _this.axios({
-                        method : 'post',
-                        header : {
-                            "Content-Type" : 'application/x-www-form-urlencoded'
-                        },
-                        url :api.indeustry + api.indeustryModify,
-                        data : api.jsonData(editInfo)
-                    })
-                    .then(function(res) {
-                        _this.data[_this.editIndex] = res.data.datas;
-                        _this.compileForm.name = '';
-                        _this.compileForm.code = '';
-                        _this.compileForm.description = '';
-                        _this.isEdit =false;
-                    })
-                }
+                            const editInfo = _this.compileForm;
+                            editInfo.id = this.data[this.editIndex].id;
+                            _this.axios({
+                                method : 'post',
+                                header : {
+                                    "Content-Type" : 'application/x-www-form-urlencoded'
+                                },
+                                url :api.indeustry + api.indeustryModify,
+                                data : api.jsonData(editInfo)
+                            })
+                            .then(function(res) {
+                                _this.data[_this.editIndex] = res.data.datas;
+                                _this.clientClassifyModel = false;
+                                _this.compileForm.name = '';
+                                _this.compileForm.code = '';
+                                _this.compileForm.description = '';
+                                _this.isEdit =false;
+                            })
+                        }
+                    }
+                })
+                
             },
             addRoot () {
                 this.clientClassifyModel = true;

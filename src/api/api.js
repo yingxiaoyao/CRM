@@ -48,6 +48,7 @@ export default {
 	/* 客户列表 */
 	customer : '/api/cooperation/customer/',		// 客户列表
 	customerSubmitAudit : 'submitToAudit.do',		// 客户提交审核
+	customerNew : 'queryAuditListByRequest.do',		// 新客户列表
 
 	/* 客户分类 */
 	category : '/api/customer/category/', 	//客户分类 api 根路径

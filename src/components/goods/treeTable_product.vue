@@ -45,11 +45,11 @@
                     <div class="title">上级分类</div>
                     <div class="prevName">{{ parentName }}</div>
                 </div>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
-                </Form-item>
                 <Form-item label="分类名称" prop="name">
                     <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                </Form-item>
+                <Form-item label="分类编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
                 </Form-item>
                 <Form-item label="图片" prop="imageUrl">
                     <Upload :action="uploadUrl" class='inline-block' :on-success="mainImgSuccess" :headers='uploadHeader' :show-upload-list="false" :before-upload="handleBeforeUpload">
@@ -63,6 +63,10 @@
                     </Upload>
                 </Form-item>
             </Form>
+            <div class="modelFooter" slot='footer'>
+                <Button type="text" @click='cancel'>取消</Button>
+                <Button type="info" @click="addChild('compileForm')">确定</Button>
+            </div>
         </Modal>
         
         <div  v-if='model.children' v-show='open'>
@@ -137,54 +141,61 @@ export default {
 			this.compileForm.parentId = this.model.id;
 			this.clientClassifyModel = true;
 		},
-		addChild (data) {
+		addChild (name) {
 			const _this = this;
-			if(!this.isEdit){
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.qroductCatalog + api.add,
-				    data : api.jsonData(_this.compileForm)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    if(res.data.status == 1) {
-				    	if(_this.model.children) {
-				    		_this.model.children.push(res.data.datas);
-				    	}else {
-				    		_this.model.children = [res.data.datas];
+			 this.$refs[name].validate((valid) => {
+			 	if(valid) {
+			 		if(!this.isEdit){
+			 			_this.axios({
+			 			    method : 'post',
+			 			    header : {
+			 			        "Content-Type" : 'application/x-www-form-urlencoded'
+			 			    },
+			 			    url :api.qroductCatalog + api.add,
+			 			    data : api.jsonData(_this.compileForm)
+			 			})
+			 			.then(function(res) {
+			 			    console.log(res);
+			 			    if(res.data.status == 1) {
+			 			    	if(_this.model.children) {
+			 			    		_this.model.children.push(res.data.datas);
+			 			    	}else {
+			 			    		_this.model.children = [res.data.datas];
 
-				    	}
-					    _this.compileForm.name = '';
-					    _this.compileForm.parentId = '';
-					    _this.compileForm.code = '';
-					    _this.compileForm.imageUrl = '';
-				    }
-				})
-			}else {
-				const editInfo = _this.compileForm;
-				editInfo.id = this.model.id;
-				_this.axios({
-				    method : 'post',
-				    header : {
-				        "Content-Type" : 'application/x-www-form-urlencoded'
-				    },
-				    url :api.qroductCatalog + api.modify,
-				    data : api.jsonData(editInfo)
-				})
-				.then(function(res) {
-				    console.log(res);
-				    _this.model = res.data.datas;
-				    _this.data = res.data.datas;
-				    _this.compileForm.name = '';
-				    _this.compileForm.parentId = '';
-				    _this.compileForm.code = '';
-				    _this.compileForm.imageUrl = '';
-				})
-				this.isEdit = false;
-			}
+			 			    	}
+			 			    	_this.clientClassifyModel = false;
+			 				    _this.compileForm.name = '';
+			 				    _this.compileForm.parentId = '';
+			 				    _this.compileForm.code = '';
+			 				    _this.compileForm.imageUrl = '';
+			 			    }
+			 			})
+			 		}else {
+			 			const editInfo = _this.compileForm;
+			 			editInfo.id = this.model.id;
+			 			_this.axios({
+			 			    method : 'post',
+			 			    header : {
+			 			        "Content-Type" : 'application/x-www-form-urlencoded'
+			 			    },
+			 			    url :api.qroductCatalog + api.modify,
+			 			    data : api.jsonData(editInfo)
+			 			})
+			 			.then(function(res) {
+			 			    console.log(res);
+			 			    _this.model = res.data.datas;
+			 			    _this.data = res.data.datas;
+			 			    _this.clientClassifyModel = false;
+			 			    _this.compileForm.name = '';
+			 			    _this.compileForm.parentId = '';
+			 			    _this.compileForm.code = '';
+			 			    _this.compileForm.imageUrl = '';
+			 			})
+			 			this.isEdit = false;
+			 		}
+			 	}
+			 })
+			
 		},
 		toEdit () {
 

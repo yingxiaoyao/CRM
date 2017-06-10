@@ -7,7 +7,7 @@
         </Breadcrumb>
         <Row type="flex" justify="end" class="fileHandle">
             <div class="buttonM">
-                <Button type="warning" @click='addRoot'>新增一级分类</Button>
+                <Button type="warning" @click='addRoot'>新增一级区域分类</Button>
             </div>
             <div class="buttonM">
                 <Button type="info">导入</Button>
@@ -22,7 +22,7 @@
         <div class="fileHandle">
             <div class="table">
                 <div class="table-header">
-                    <div class="table-td align_left">客户分类</div>
+                    <div class="table-td align_left">区域名称</div>
                     <div class="table-td">操作</div>
                 </div>
                 <div class="table-tbody">
@@ -36,25 +36,27 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
-            @on-ok="confirm"
-            @on-cancel="cancel">
+            title="新增区域">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <div class="prevClassName">
-                    <div class="title">上级分类</div>
+                    <div class="title">上级区域</div>
                     <div class="prevName">{{ parentName }}</div>
                 </div>
                 <Form-item label="分类名称" prop="name">
-                    <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                    <Input v-model="compileForm.name" placeholder="区域名称"></Input>
                 </Form-item>
                 <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
+                    <Input v-model="compileForm.code" placeholder="区域编码"></Input>
                 </Form-item>
                 <Form-item label="描述" prop="description">
                     <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
                 </Form-item>
             </Form>
+            <div class="modelFooter" slot='footer'>
+                <Button type="text" @click='cancel'>取消</Button>
+                <Button type="info" @click="confirm('compileForm')">确定</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -88,10 +90,16 @@ export default {
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '分类名称不能为空', trigger: 'blur' }
+                        { required: true, message: '分类名称不能为空', trigger: 'blur' },
+                        { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
                     ],
                     code: [
-                        { required: true, message: '分类编码不能为空', trigger: 'blur' }
+                        { required: true, message: '分类编码不能为空', trigger: 'blur' },
+                        { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                    ],
+                    description : [
+                        { required: true, message: '分类描述不能为空', trigger: 'blur' },
+                        { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
                     ]
                 },
                 parentName : '无',
@@ -103,28 +111,35 @@ export default {
             show (index) {
                 this.clientClassifyModel = true;
             },
-            confirm () {
+            confirm (name) { 
                 const _this = this;
-                _this.axios({
-                    method : 'post',
-                    header : {
-                        "Content-Type" : 'application/x-www-form-urlencoded'
-                    },
-                    url :api.region + api.regionAddRoot,
-                    // url : '/prize',
-                    data : api.jsonData(_this.compileForm)
-                })
-                .then(function(res) {
-                    console.log(res);
-                    if(res.data.status == 1) {
-                        _this.data.push(res.data.datas);
-                        _this.compileForm.name = '';
-                        _this.compileForm.parentId = '';
-                        _this.compileForm.code = '';
-                        _this.compileForm.description = '';
-                        _this.$Message.success('添加成功');
+
+                this.$refs[name].validate((valid) => {
+                    if(valid) {
+                        _this.axios({
+                            method : 'post',
+                            header : {
+                                "Content-Type" : 'application/x-www-form-urlencoded'
+                            },
+                            url :api.region + api.regionAddRoot,
+                            // url : '/prize',
+                            data : api.jsonData(_this.compileForm)
+                        })
+                        .then(function(res) {
+                            console.log(res);
+                            if(res.data.status == 1) {
+                                _this.data.push(res.data.datas);
+                                _this.clientClassifyModel = false;
+                                _this.compileForm.name = '';
+                                _this.compileForm.parentId = '';
+                                _this.compileForm.code = '';
+                                _this.compileForm.description = '';
+                                _this.$Message.success('添加成功');
+                            }
+                        })
                     }
                 })
+               
             },
             addRoot () {
                 // this.enterType = 1;
