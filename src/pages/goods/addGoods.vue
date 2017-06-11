@@ -287,7 +287,7 @@ export default {
             })
             .then(function(res) {
                 _this.CatalogList = res.data.datas;
-                console.log(res);
+                // console.log(res);
             })
             .catch(function(err) {
                 console.log(err);
@@ -323,15 +323,12 @@ export default {
 
 
             //  修改
-
-            if(this.$route.params.id) {
-                const id = this.$route.params.id;
+            if(this.$route.query.id) {
+                const id = this.$route.query.id;
                 _this.axios(api.product + id + api.productQueryById)
                     .then(function(res){
                         
                         const data = res.data.datas;
-                        console.log(data);
-                        data.isUp = data.status == 1 ? true : false;
                         data.skus.forEach(function(sku , index) {
                             sku.isUp = sku.status == 1 ? true : false;
                         })
@@ -356,9 +353,9 @@ export default {
                             skus : data.skus
                         };
 
-                        if(data.description) {
+                        /*if(data.description) {
                             _this.editor.setContent(data.description);
-                        }
+                        }*/
 
                         const catalog = data.catalogAncestorIds.split(',');
                         catalog.push(data.catalogId);
@@ -380,12 +377,16 @@ export default {
                             attrIds = attrIds.slice(0,attrIds.length-1);
                             _this.axios(api.productAttr + attrIds + api.productGetById )
                                 .then(function(res){
+                                    console.log(res.data.datas);
                                     _this.attrList = res.data.datas; 
                                 })
                                 .catch(function(err) {
                                     console.log(err);
                                 }) 
+                            console.log(checkedAttr);
+                            console.log(_this.attributeChecked);
                        }
+
 
                        data.attachments.forEach(function(img , index) {
                             // _this.defaultList[index] = [];

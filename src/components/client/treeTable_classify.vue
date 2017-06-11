@@ -92,7 +92,7 @@ export default {
             ruleValidate: {
                 name: [
                     { required: true, message: '分类名称不能为空', trigger: 'blur' },
-                    { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
+                    { type: 'string', max: 100, message: '分类名称不能超过100个字符'}
                 ],
                 code: [
                     { required: true, message: '分类编码不能为空', trigger: 'blur' },
@@ -100,7 +100,7 @@ export default {
                 ],
                 description : [
                     { required: true, message: '分类描述不能为空', trigger: 'blur' },
-                    { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
+                    { type: 'string', max: 500, message: '分类描述不能超过500个字符'}
                 ]
             },
             parentName : '无',  //父级分类名称

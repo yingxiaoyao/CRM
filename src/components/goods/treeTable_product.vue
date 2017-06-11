@@ -36,7 +36,7 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
+            title="新增子分类"
             @on-ok="addChild"
             @on-cancel="cancel">
 
@@ -99,10 +99,12 @@ export default {
             },
             ruleValidate: {
                 name: [
-                    { required: true, message: '分类名称不能为空', trigger: 'blur' }
+                    { required: true, message: '分类名称不能为空', trigger: 'blur' },
+                    { type: 'string', max: 100, message: '分类名称不能超过100个字符'}
                 ],
                 code: [
-                    { required: true, message: '分类编码不能为空', trigger: 'blur' }
+                    { required: true, message: '分类编码不能为空', trigger: 'blur' },
+                    { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
                 ]
             },
             isUpload : false,

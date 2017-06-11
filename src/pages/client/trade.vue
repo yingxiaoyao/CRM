@@ -46,7 +46,7 @@
                     <Input v-model="compileForm.code" placeholder="编码"></Input>
                 </Form-item>
                 <Form-item label="描述" prop="description">
-                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
+                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="行业描述"></Input>
                 </Form-item>
             </Form>
             <div class="modelFooter" slot='footer'>
@@ -87,16 +87,16 @@ export default {
                 },
                 ruleValidate: {
                     name: [
-                        { required: true, message: '分类名称不能为空', trigger: 'blur' },
-                        { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
+                        { required: true, message: '行业名称不能为空', trigger: 'blur' },
+                        { type: 'string', max: 100, message: '行业名称不能超过100个字符'}
                     ],
                     code: [
-                        { required: true, message: '分类编码不能为空', trigger: 'blur' },
-                        { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                        { required: true, message: '行业编码不能为空', trigger: 'blur' },
+                        { type: 'string', max: 30, message: '行业编码不能超过30个字符'}
                     ],
                     description : [
-                        { required: true, message: '分类描述不能为空', trigger: 'blur' },
-                        { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
+                        { required: true, message: '行业描述不能为空', trigger: 'blur' },
+                        { type: 'string', max: 500, message: '行业描述不能超过500个字符'}
                     ]
                 },
                 isEdit : false,

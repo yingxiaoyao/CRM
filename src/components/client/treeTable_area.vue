@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="table-td">
-                <Button type="text" v-on:click='add'  v-if='model.level!==5'>添加子类</Button>
+                <Button type="text" v-on:click='add'  v-if='model.level!==5'>添加子区域</Button>
                 <Button type="text" v-on:click='toEdit'>编辑</Button>
                 <Button type="text" v-on:click='moveUp'>上移</Button>
                 <Button type="text" v-on:click='moveDown'>下移</Button>
@@ -40,24 +40,24 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类">
+            title="新增子区域">
 
             <Form ref="compileForm" :model="compileForm" :rules="ruleValidate" :label-width="80">
                 <div class="prevClassName">
-                    <div class="title">上级分类</div>
+                    <div class="title">上级区域</div>
                     <div class="prevName">{{ parentName }}</div>
                 </div>
-                <Form-item label="分类名称" prop="name">
-                    <Input v-model="compileForm.name" placeholder="分类名称"></Input>
+                <Form-item label="区域名称" prop="name">
+                    <Input v-model="compileForm.name" placeholder="区域名称"></Input>
                 </Form-item>
-                <Form-item label="分类编码" prop="code">
-                    <Input v-model="compileForm.code" placeholder="分类编码"></Input>
+                <Form-item label="区域编码" prop="code">
+                    <Input v-model="compileForm.code" placeholder="区域编码"></Input>
                 </Form-item>
                 <!-- <Form-item label="EPR编码" prop="EPR">
                     <Input v-model="compileForm.EPR" placeholder="EPR编码"></Input>
                 </Form-item> -->
-                <Form-item label="描述" prop="description">
-                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="分类描述"></Input>
+                <Form-item label="区域描述" prop="description">
+                    <Input v-model="compileForm.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="区域描述"></Input>
                 </Form-item>
             </Form>
             <div class="modelFooter" slot='footer'>
@@ -91,16 +91,16 @@ export default {
             },
             ruleValidate: {
                 name: [
-                    { required: true, message: '分类名称不能为空', trigger: 'blur' },
-                    { type: 'string', max: 100, message: '分类编码不能超过100个字符'}
+                    { required: true, message: '区域名称不能为空', trigger: 'blur' },
+                    { type: 'string', max: 100, message: '区域名称不能超过100个字符'}
                 ],
                 code: [
-                    { required: true, message: '分类编码不能为空', trigger: 'blur' },
-                    { type: 'string', max: 30, message: '分类编码不能超过30个字符'}
+                    { required: true, message: '区域编码不能为空', trigger: 'blur' },
+                    { type: 'string', max: 30, message: '区域编码不能超过30个字符'}
                 ],
                 description : [
-                    { required: true, message: '分类描述不能为空', trigger: 'blur' },
-                    { type: 'string', max: 500, message: '分类编码不能超过500个字符'}
+                    { required: true, message: '区域描述不能为空', trigger: 'blur' },
+                    { type: 'string', max: 500, message: '区域描述不能超过500个字符'}
                 ]
             },
             parentName : '无',  //父级分类名称

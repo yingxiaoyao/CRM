@@ -13,18 +13,18 @@
              
             <Row class="fileHandle" type='flex' justify='center'>
                 <Col span='7'>
-                    <Form-item label="属性：" prop="name">
+                    <Form-item label="属性名称：" prop="name">
                         <Input v-model="data.name" style="width: 200px" placeholder="必填"></Input>
-                    </Form-item>
-                </Col>
-                <Col span='7'>
-                    <Form-item label="属性描述：">
-                        <Input v-model="data.description" style="width: 200px"></Input>
                     </Form-item>
                 </Col>
                 <Col span='7'>
                     <Form-item label="属性编码：">
                         <Input v-model="data.code" style="width: 200px"></Input>
+                    </Form-item>
+                </Col>
+                <Col span='7'>
+                    <Form-item label="属性描述：">
+                        <Input v-model="data.description" style="width: 200px"></Input>
                     </Form-item>
                 </Col>
             </Row>

@@ -35,7 +35,7 @@
 
         <Modal
             v-model="clientClassifyModel"
-            title="新增分类"
+            title="新增商品一级分类"
             @on-ok="confirm"
             @on-cancel="cancel">
 

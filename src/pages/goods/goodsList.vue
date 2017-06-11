@@ -414,7 +414,7 @@ export default {
 
         },
         modify (index, data) {
-            this.$router.push({name : 'addGoods' , params : {id : this.goodsList[index].id}})
+            this.$router.push({name : 'addGoods' , query : {id : this.goodsList[index].id}})
         },
        
     }
