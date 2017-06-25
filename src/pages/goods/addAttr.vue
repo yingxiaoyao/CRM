@@ -53,8 +53,8 @@
                             <Input v-model="item.orderNum"></Input>
                         </div>
                         <div class="table-td">
-                            <Button type='text' @click='add'>增加</Button>
-                            <Button type="text" @click="del(index)">删除</Button>
+                            <Button type='info' @click='add'>增加</Button>
+                            <Button type="info" @click="del(index)">删除</Button>
                         </div>
                     </div>
                 </div>
@@ -172,6 +172,16 @@ export default {
                         }
                     }else {
                         this.data.values.splice(index,1);
+                    }
+                    // console.log(this.)
+                    if(this.data.values.length == 0) {
+                        const values = {
+                            name : '',
+                            code : '',
+                            orderNum : '',
+                            description : ''
+                        }
+                        this.data.values.push(values);
                     }
                 }
             });

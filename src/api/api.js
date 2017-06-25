@@ -24,6 +24,9 @@ export default {
 		const json = jsondata.substr(0,jsondata.length-1);
 		return json;
 	},
+	convertParam : function(data){
+		return data ;
+	},
 	login : '/verifyUser.do',
 	logout : '/api/sys/logout.do',
 	menus : '/sys/menu/fetchUserMenus.do',

@@ -11,11 +11,11 @@
                 </div>
             </div>
             <div class="table-td">
-                <Button type="text" v-on:click='add'  v-if='model.level!==5'>添加子类</Button>
-                <Button type="text" v-on:click='toEdit'>编辑</Button>
-                <Button type="text" v-on:click='moveUp'>上移</Button>
-                <Button type="text" v-on:click='moveDown'>下移</Button>
-                <Button type="text" v-on:click='isDel'>删除</Button>
+                <Button size='small' v-on:click='add'  v-if='model.level!==5'>添加子类</Button>
+                <Button size='small' v-on:click='toEdit'>编辑</Button>
+                <Button size='small' v-on:click='moveUp'>上移</Button>
+                <Button size='small' v-on:click='moveDown'>下移</Button>
+                <Button size='small' v-on:click='isDel'>删除</Button>
             </div>
         </div>
         <div class="table-tr" v-if='model.children' v-show='open'>

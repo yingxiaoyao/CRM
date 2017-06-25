@@ -42,7 +42,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .index {
     height: 100%;
     background: #eee;
@@ -61,8 +61,11 @@ export default {
     padding: 20px 30px 0 10px;
     overflow-y :scroll;
   }
-    .home-warp {
-        position: relative;
-    }
+  .home-warp {
+      position: relative;
+  }
+ button, html [type="button"], [type="reset"], [type="submit"] {
+  margin-right: 5px;
+ }
     
 </style>

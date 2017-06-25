@@ -73,9 +73,10 @@ export default {
                 url :api.qroductCatalog + api.queryAll
             })
             .then(function(res) {
-                console.log(res);
+               
                 _this.CatalogList = res.data.datas;
-                // console.log(res);
+                
+                
             })
             .catch(function(err) {
                 console.log(err);
@@ -209,7 +210,6 @@ export default {
                         return h('div',[
                             h('Button',{
                                 props : {
-                                    type : 'text',
                                     size : 'small'
                                 },
                                 on : {
@@ -220,7 +220,6 @@ export default {
                             },'修改'),
                             h('Button',{
                                 props : {
-                                    type : 'text',
                                     size : 'small'
                                 },
                                 on: {

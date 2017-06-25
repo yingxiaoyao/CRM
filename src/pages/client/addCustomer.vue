@@ -15,7 +15,7 @@
                <Col span="24" class='span8'>
                    <Form-item label="客户名称" prop="name">
                        <Input v-model="customer.name" placeholder="请输入客户名称" style='width : 200px;'></Input>
-                       <Button type="warning" @click='queryClient'>查找</Button> <!-- 选择页面 @click='select' -->
+                       <Button type="info" @click='queryClient'>搜索</Button> <!-- 选择页面 @click='select' -->
                    </Form-item>
                </Col>
                <Col span="8" class='span8'>
@@ -50,9 +50,11 @@
                <Button type="ghost" icon="ios-cloud-upload-outline">添加附件</Button>
            </Upload>
        </div>
-           <Row type="flex" justify="center" class="code-row-bg addFooter">
+           <Row type="flex" class="code-row-bg addFooter">
                <!-- <Button type="info" @click="save">保存</Button> -->
-               <Button type="info" @click="submitAudit" style="margin-left: 8px">添加</Button>
+               
+                <Button type="warning" @click="submitAudit" style="margin-left: 280px">添加</Button>
+               
            </Row>
 
 

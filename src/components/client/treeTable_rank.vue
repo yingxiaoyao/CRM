@@ -10,8 +10,8 @@
                 </div>
             </div>
             <div class="table-td">
-                <Button type="text" v-on:click='edit'>编辑</Button>
-                <Button type="text" v-on:click='isDel'>删除</Button>
+                <Button size='small' v-on:click='edit'>编辑</Button>
+                <Button size='small' v-on:click='isDel'>删除</Button>
             </div>
         </div>
 

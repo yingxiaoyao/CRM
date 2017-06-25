@@ -88,7 +88,9 @@ import api from '@/api/api'
     	background : #03b8cc;
     	width: 100%;
     }
-
+    button {
+        margin-right: 5px;
+    }
     .ivu-poptip-inner .ivu-poptip-body {
         padding: 10px 0;
     }

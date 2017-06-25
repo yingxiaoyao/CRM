@@ -3,14 +3,14 @@
         <Breadcrumb>
             <Breadcrumb-item>首页</Breadcrumb-item>
             <Breadcrumb-item>客户管理</Breadcrumb-item>
-            <Breadcrumb-item>客户申请</Breadcrumb-item>
+            <Breadcrumb-item>新客户</Breadcrumb-item>
         </Breadcrumb>
         <Row class="fileHandle">
             <Col span='8'>
                <span>客户名称：</span>
                <Input placeholder="商品名称/编码" style="width: 230px" v-model='name'></Input>
                     
-               <Button type="warning"  @click='query'>查询</Button>
+               <Button type="info"  @click='query'>查询</Button>
             
             </Col>
         </Row>
@@ -112,7 +112,6 @@ export default {
 
                             return h('Button',{
                                 props : {
-                                    type : 'text',
                                     size : 'small'
                                 },
                                 on : {
@@ -124,7 +123,6 @@ export default {
                         }
                         return h('Button',{
                             props : {
-                                type : 'text',
                                 size : 'small'
                             },
                             on : {

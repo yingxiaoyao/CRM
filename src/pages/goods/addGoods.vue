@@ -52,6 +52,11 @@
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
+                        <Form-item label="成本价格" prop='costPrice'>
+                            <Input type="number" v-model="formItem.costPrice"></Input>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
                         <Form-item label="销售价格" prop='price'>
                             <Input type="text" v-model="formItem.price" number></Input>
                         </Form-item>
@@ -64,6 +69,11 @@
                     <Col span="8" class='span8'>
                         <Form-item label="排序号" prop='orderNum'>
                             <Input type="text" v-model="formItem.orderNum"></Input>
+                        </Form-item>
+                    </Col>
+                    <Col span="8" class='span8'>
+                        <Form-item label="起订量" prop='minimumOrderQuantity'>
+                            <Input type="number" v-model="formItem.minimumOrderQuantity"></Input>
                         </Form-item>
                     </Col>
                     <Col span="24" class='span8'>
@@ -95,8 +105,9 @@
                                     <div class="table-td bold">主图</div>
                                     <div class="table-td bold" v-for='(attr,index) in attrList' :key='index'>{{attr.name}}</div>
                                     <div class="table-td bold">SKU编码</div>
+                                    <div class="table-td bold">成本价格</div>
                                     <div class="table-td bold">销售价格</div>
-                                    <div class="table-td bold">商品描述</div>
+                                    <div class="table-td bold">起订量</div>
                                     <div class="table-td bold">库存设置</div>
                                     <div class="table-td bold">上下架</div>
                                     <div class="table-td bold">操作</div>
@@ -121,14 +132,20 @@
                                             <Input v-model="skus[index].code" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].price" size="small" style='width:100px'></Input>
+                                            <Input v-model="skus[index].costPrice" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].description" size="small" style='width:100px'></Input>
+                                            <Input v-model="skus[index].price" size="small" style='width:100px'></Input>
+                                        </div>
+                                       <!--  <div class="table-td">
+                                           <Input v-model="skus[index].description" size="small" style='width:100px'></Input>
+                                       </div> -->
+                                        <div class="table-td">
+                                            <Input v-model="skus[index].minimumOrderQuantity" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
                                             <Input v-model="skus[index].inventoryQty" size="small" style='width:100px'></Input>
-                                        </div>
+                                        </div> 
                                         <div class="table-td">
                                             <i-switch size="large" v-model='skus[index].isUp' @on-change='change(skus[index])'>
                                                 <span slot="open">上架</span>
@@ -353,9 +370,11 @@ export default {
                             skus : data.skus
                         };
 
-                        /*if(data.description) {
+                        console.log(data);
+
+                        if(data.description) {
                             _this.editor.setContent(data.description);
-                        }*/
+                        }
 
                         const catalog = data.catalogAncestorIds.split(',');
                         catalog.push(data.catalogId);
@@ -374,6 +393,7 @@ export default {
                             })
 
                             _this.attrCheck = checkedAttr;
+
                             attrIds = attrIds.slice(0,attrIds.length-1);
                             _this.axios(api.productAttr + attrIds + api.productGetById )
                                 .then(function(res){
@@ -382,14 +402,11 @@ export default {
                                 })
                                 .catch(function(err) {
                                     console.log(err);
-                                }) 
-                            console.log(checkedAttr);
-                            console.log(_this.attributeChecked);
+                                })
                        }
 
 
                        data.attachments.forEach(function(img , index) {
-                            // _this.defaultList[index] = [];
                             _this.defaultList.push({
                                 name : img.fileName,
                                 url : img.url,
@@ -458,7 +475,10 @@ export default {
                 attachments : [],
                 imageUrl : '',
                 brandId : '',
-                skus : []
+                skus : [],
+                costPrice : '' ,     //成本价格
+                minimumOrderQuantity : ''       // 起订量
+
             },
             img : false,
             goodsRule : {
@@ -546,7 +566,8 @@ export default {
                                         attributeId : _this.attrList[j].id,
                                         attributeName : _this.attrList[j].name,
                                         attributeValueId : e.id,
-                                        attributeValueName : e.name
+                                        attributeValueName : e.name,
+                                        orderNum : j
                                     })
                                 }
                             })
@@ -556,7 +577,9 @@ export default {
                             code : '',
                             inventoryQty : '',
                             price : '',
-                            description : '',
+                            // description : '',
+                            minimumOrderQuantity : '',
+                            costPrice : '',
                             orderNum : index + 1,
                             isMainImg : 0,
                             imageUrl : '',
@@ -768,6 +791,10 @@ export default {
 
         save (name) {
             const _this = this;
+
+            // _this.formItem.description = _this.editor.getContent();
+            console.log(_this.skus);
+            console.log(this.attrCheck);
             this.$refs[name].validate((valid) => {
 
                 _this.spinShow = true;
@@ -775,7 +802,7 @@ export default {
                     _this.formItem.description = _this.editor.getContent();
                     _this.formItem.catalogId = _this.formItem.catalog[_this.formItem.catalog.length-1];
 
-                    console.log(_this.formItem);
+                    // console.log(_this.formItem);
 
                     if(!this.isModify) {
                         _this.axios({
@@ -784,7 +811,7 @@ export default {
                                     "Content-Type" : 'application/x-www-form-urlencoded'
                                 },
                                 url :api.product + api.add,
-                                data : api.jsonData(_this.formItem)
+                                data : api.convertParam(_this.formItem)
                             })
                             .then(function(res) {
                                 
@@ -807,7 +834,7 @@ export default {
                                 "Content-Type" : 'application/x-www-form-urlencoded'
                             },
                             url :api.product + api.productModeify,
-                            data : api.jsonData(_this.formItem)
+                            data : api.convertParam(_this.formItem)
                         })
                         .then(function(res){
                             const data = res.data;

@@ -86,7 +86,6 @@ export default {
                             return h('div',[
                                 h('Button',{
                                     props: {
-                                        type : 'text',
                                         size : 'small'
                                     },
                                     on : {
@@ -97,7 +96,6 @@ export default {
                                 },'编辑'),
                                 h('Button',{
                                     props: {
-                                        type : 'text',
                                         size : 'small'
                                     },
                                     on : {
