@@ -53,12 +53,14 @@
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="成本价格" prop='costPrice'>
-                            <Input type="number" v-model="formItem.costPrice"></Input>
+                            <Input type="text" v-model="formItem.costPrice" number></Input>
+                            <!-- <Input-number :max="99999999" :min="0" v-model="formItem.costPrice"></Input-number> -->
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="销售价格" prop='price'>
                             <Input type="text" v-model="formItem.price" number></Input>
+                            <!-- <Input-number :max="99999999" :min="0"  v-model="formItem.price"></Input-number> -->
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
@@ -68,12 +70,13 @@
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="排序号" prop='orderNum'>
-                            <Input type="text" v-model="formItem.orderNum"></Input>
+                            <Input type="text" v-model="formItem.orderNum" number></Input>
                         </Form-item>
                     </Col>
                     <Col span="8" class='span8'>
                         <Form-item label="起订量" prop='minimumOrderQuantity'>
-                            <Input type="number" v-model="formItem.minimumOrderQuantity"></Input>
+                            <Input type="text" v-model="formItem.minimumOrderQuantity" number></Input>
+                            <!-- <Input-number :max="9999999999" :min="0" v-model="formItem.minimumOrderQuantity"></Input-number> -->
                         </Form-item>
                     </Col>
                     <Col span="24" class='span8'>
@@ -132,16 +135,21 @@
                                             <Input v-model="skus[index].code" size="small" style='width:100px'></Input>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].costPrice" size="small" style='width:100px'></Input>
+                                            
+                                            <!-- <Input v-model="skus[index].costPrice" size="small" style='width:100px' number></Input> -->
+                                            
+                                            <Input-number :max="99999999" :min="0" size='small' v-model="skus[index].costPrice" style='width:100px'></Input-number>
                                         </div>
                                         <div class="table-td">
-                                            <Input v-model="skus[index].price" size="small" style='width:100px'></Input>
+                                            <!-- <Input v-model="skus[index].price" size="small" style='width:100px' number></Input> -->
+                                            <Input-number :max="99999999" :min="0" size='small' v-model="skus[index].price" style='width:100px'></Input-number>
                                         </div>
                                        <!--  <div class="table-td">
                                            <Input v-model="skus[index].description" size="small" style='width:100px'></Input>
                                        </div> -->
                                         <div class="table-td">
-                                            <Input v-model="skus[index].minimumOrderQuantity" size="small" style='width:100px'></Input>
+                                            <!-- <Input v-model="skus[index].minimumOrderQuantity" size="small" style='width:100px' number></Input> -->
+                                            <Input-number :max="9999999999" :min="0" size='small' v-model="skus[index].minimumOrderQuantity" style='width:100px'></Input-number>
                                         </div>
                                         <div class="table-td">
                                             <Input v-model="skus[index].inventoryQty" size="small" style='width:100px'></Input>
@@ -502,7 +510,13 @@ export default {
                     {required : true , message : '请选择主计量单位'}
                 ],
                 price : [
-                    // {type : 'number' , message : '请输入数字'}
+                    {type : 'number', max : 99999999 , min : 0, message : '请输入最多为8位数的数字'}
+                ],
+                costPrice : [
+                    {type : 'number', max : 99999999 , min : 0, message : '请输入最多为8位数的数字'}
+                ],
+                minimumOrderQuantity : [
+                    {type : 'number', max : 9999999999 , min : 0, message : '请输入最多为10位数的数字'}
                 ]
             },
             /* 文件上传 */
@@ -695,6 +709,7 @@ export default {
         },
         change (data) {
             data.status = data.isUp ? '1' : '0';
+            console.log(this.formItem);
             // console.log(this.skus);
             // console.log(this.formItem);
         },
